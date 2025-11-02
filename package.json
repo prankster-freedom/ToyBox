@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "name": "practice_nodejs",
+  "version": "1.0.0",
+  "description": "node.js practice",
+  "main": "simple_server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
