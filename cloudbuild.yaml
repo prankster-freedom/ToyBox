@@ -1,0 +1,40 @@
+steps:
+  # Step 1: Dockerイメージをビルドします
+  # $PROJECT_ID と $SHORT_SHA はCloud Buildによって自動的に提供される変数です
+  # 保存先をContainer Registry (gcr.io) から Artifact Registry (pkg.dev) に変更
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/toybox/toybox-image:$SHORT_SHA', '.']
+
+  # Step 2: ビルドしたイメージをArtifact Registryにプッシュします
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/toybox/toybox-image:$SHORT_SHA']
+
+  # Step 3: プッシュしたイメージをCloud Runにデプロイします
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Deploy'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'toybox-service' # デプロイするサービス名
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/toybox/toybox-image:$SHORT_SHA'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - '${_REGION}' # リージョンを置換変数に変更
+      - '--allow-unauthenticated' # 認証なしアクセスを許可
+
+# ビルドしたイメージをArtifact Registryに保存します
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/toybox/toybox-image:$SHORT_SHA'
+
+# ログの保存先をCloud Loggingに設定します
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# デフォルトの置換変数を設定
+substitutions:
+  _REGION: 'asia-northeast1'

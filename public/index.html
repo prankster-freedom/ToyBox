@@ -2,21 +2,27 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>簡単なWebページ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester</title>
     <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 50px;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            color: #333;
-        }
+        body { font-family: sans-serif; padding: 1em; }
+        .api-section { margin-bottom: 2em; padding: 1em; border: 1px solid #ccc; border-radius: 5px; }
+        button { margin-top: 0.5em; }
+        #result { margin-top: 1em; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>こんにちは、世界！</h1>
-    <p>これは <code>http-server</code> によって配信されています。</p>
+    <h1>API Tester</h1>
+    <div class="api-section">
+        <h2>Greet API (POST /api/greet)</h2>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button id="greetButton">Greet</button>
+    </div>
+    <div class="api-section">
+        <h2>Health Check API (GET /api/health)</h2>
+        <button id="healthCheckButton">Run Health Check</button>
+    </div>
+    <p id="result"></p>
+    <script src="script.js"></script>
 </body>
 </html>
