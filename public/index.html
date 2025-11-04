@@ -13,16 +13,23 @@
 </head>
 <body>
     <h1>API Tester</h1>
-    <div class="api-section">
-        <h2>Greet API (POST /api/greet)</h2>
-        <input type="text" id="nameInput" placeholder="Enter your name">
-        <button id="greetButton">Greet</button>
+    <div id="auth-section">
+        <p>You are not logged in.</p>
+        <button id="loginButton" onclick="window.location.href='/auth/google'">Login with Google</button>
     </div>
-    <div class="api-section">
-        <h2>Health Check API (GET /api/health)</h2>
-        <button id="healthCheckButton">Run Health Check</button>
+    <div id="app-section" style="display: none;">
+        <p>Welcome, <span id="userName"></span>! <button id="logoutButton" onclick="window.location.href='/auth/logout'">Logout</button></p>
+        <div class="api-section">
+            <h2>Greet API (POST /api/greet)</h2>
+            <input type="text" id="nameInput" placeholder="Enter your name">
+            <button id="greetButton">Greet</button>
+        </div>
+        <div class="api-section">
+            <h2>Health Check API (GET /api/health)</h2>
+            <button id="healthCheckButton">Run Health Check</button>
+        </div>
+        <p id="result"></p>
     </div>
-    <p id="result"></p>
     <script src="script.js"></script>
 </body>
 </html>

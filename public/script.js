@@ -3,6 +3,35 @@ const greetButton = document.getElementById('greetButton');
 const healthCheckButton = document.getElementById('healthCheckButton');
 const resultParagraph = document.getElementById('result');
 
+const authSection = document.getElementById('auth-section');
+const appSection = document.getElementById('app-section');
+const userNameSpan = document.getElementById('userName');
+
+// ページロード時に認証状態をチェック
+// サーバーサイドで認証済みの場合のみこのページに到達するため、常にapp-sectionを表示
+window.onload = async () => {
+    try {
+        const response = await fetch('/user'); // ユーザー情報を取得する新しいエンドポイントを想定
+        if (response.ok) {
+            const user = await response.json();
+            if (user && user.displayName) {
+                userNameSpan.textContent = user.displayName;
+                authSection.style.display = 'none';
+                appSection.style.display = 'block';
+            } else {
+                // ユーザー情報が取得できない場合はログインページへリダイレクト
+                window.location.href = '/auth/google';
+            }
+        } else {
+            // 応答がOKでない場合もログインページへリダイレクト
+            window.location.href = '/auth/google';
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        window.location.href = '/auth/google';
+    }
+};
+
 greetButton.addEventListener('click', async () => {
     const name = nameInput.value || 'World'; // 入力が空なら'World'を使う
     resultParagraph.textContent = '通信中...';
