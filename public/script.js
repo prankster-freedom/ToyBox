@@ -1,77 +1,121 @@
-const nameInput = document.getElementById('nameInput');
-const greetButton = document.getElementById('greetButton');
-const healthCheckButton = document.getElementById('healthCheckButton');
-const resultParagraph = document.getElementById('result');
+const { createApp } = Vue;
 
-const authSection = document.getElementById('auth-section');
-const appSection = document.getElementById('app-section');
-const userNameSpan = document.getElementById('userName');
+const app = createApp({
+  template: `
+    <div>
+      <div class="user-info">
+        <div v-if="user">
+          <p>Welcome, {{ user.displayName }}! <button @click="logout">Logout</button></p>
+        </div>
+        <div v-else>
+          <p>You are not logged in. <button @click="login">Login with Google</button></p>
+        </div>
+      </div>
 
-// ページロード時に認証状態をチェック
-// サーバーサイドで認証済みの場合のみこのページに到達するため、常にapp-sectionを表示
-window.onload = async () => {
-    try {
-        const response = await fetch('/user'); // ユーザー情報を取得する新しいエンドポイントを想定
+      <div v-if="user">
+        <div class="new-post-form">
+          <h2>Create New Post</h2>
+          <input v-model="newPost.title" placeholder="Title">
+          <textarea v-model="newPost.content" placeholder="Content"></textarea>
+          <button @click="createPost">Create</button>
+        </div>
+
+        <h2>Posts</h2>
+        <ul class="posts-list">
+          <li v-for="post in posts" :key="post.id" class="post-item">
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            <small>Created at: {{ new Date(post.createdAt).toLocaleString() }}</small>
+            <div v-if="user.id === post.authorId">
+              <button @click="deletePost(post.id)">Delete</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  `,
+  data() {
+    return {
+      user: null,
+      posts: [],
+      newPost: {
+        title: '',
+        content: ''
+      }
+    };
+  },
+  async created() {
+    await this.fetchUser();
+    if (this.user) {
+      await this.fetchPosts();
+    }
+  },
+  methods: {
+    async fetchUser() {
+      try {
+        const response = await fetch('/user');
         if (response.ok) {
-            const user = await response.json();
-            if (user && user.displayName) {
-                userNameSpan.textContent = user.displayName;
-                authSection.style.display = 'none';
-                appSection.style.display = 'block';
-            } else {
-                // ユーザー情報が取得できない場合はログインページへリダイレクト
-                window.location.href = '/auth/google';
-            }
+          this.user = await response.json();
         } else {
-            // 応答がOKでない場合もログインページへリダイレクト
-            window.location.href = '/auth/google';
+          this.user = null;
         }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        window.location.href = '/auth/google';
-    }
-};
-
-greetButton.addEventListener('click', async () => {
-    const name = nameInput.value || 'World'; // 入力が空なら'World'を使う
-    resultParagraph.textContent = '通信中...';
-
-    try {
-        const response = await fetch('/api/greet', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: name }),
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        this.user = null;
+      }
+    },
+    async fetchPosts() {
+      try {
+        const response = await fetch('/api/posts');
+        if (response.ok) {
+          this.posts = await response.json();
+        } else {
+          console.error('Error fetching posts:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    },
+    async createPost() {
+      try {
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.newPost)
         });
-
-        if (!response.ok) {
-            throw new Error('サーバーからの応答が正常ではありません。');
+        if (response.ok) {
+          this.newPost.title = '';
+          this.newPost.content = '';
+          await this.fetchPosts();
+        } else {
+          console.error('Error creating post:', response.statusText);
         }
-
-        const data = await response.json();
-        resultParagraph.textContent = data.message;
-    } catch (error) {
-        console.error('エラーが発生しました:', error);
-        resultParagraph.textContent = 'エラーが発生しました。';
+      } catch (error) {
+        console.error('Error creating post:', error);
+      }
+    },
+    async deletePost(postId) {
+      if (!confirm('Are you sure you want to delete this post?')) return;
+      try {
+        const response = await fetch(`/api/posts/${postId}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          await this.fetchPosts();
+        } else {
+          console.error('Error deleting post:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      }
+    },
+    login() {
+      window.location.href = '/auth/google';
+    },
+    logout() {
+      window.location.href = '/auth/logout';
     }
+  }
 });
 
-healthCheckButton.addEventListener('click', async () => {
-    resultParagraph.textContent = '通信中...';
-
-    try {
-        // GETリクエストなので、fetchの第二引数は省略可能です
-        const response = await fetch('/api/health');
-
-        if (!response.ok) {
-            throw new Error('サーバーからの応答が正常ではありません。');
-        }
-
-        const data = await response.json();
-        resultParagraph.textContent = `Status: ${data.status}, Timestamp: ${data.timestamp}`;
-    } catch (error) {
-        console.error('エラーが発生しました:', error);
-        resultParagraph.textContent = 'エラーが発生しました。';
-    }
-});
+app.mount('#app');

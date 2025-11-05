@@ -3,33 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Tester</title>
+    <title>ToyBox App</title>
     <style>
         body { font-family: sans-serif; padding: 1em; }
-        .api-section { margin-bottom: 2em; padding: 1em; border: 1px solid #ccc; border-radius: 5px; }
-        button { margin-top: 0.5em; }
-        #result { margin-top: 1em; font-weight: bold; }
+        #app { max-width: 800px; margin: 0 auto; }
+        .posts-list { list-style: none; padding: 0; }
+        .post-item { border: 1px solid #ccc; border-radius: 5px; padding: 1em; margin-bottom: 1em; }
+        .post-item h3 { margin-top: 0; }
+        .post-item button { background: #f44336; color: white; border: none; padding: 0.5em 1em; border-radius: 3px; cursor: pointer; }
+        .new-post-form { margin-bottom: 2em; }
+        .new-post-form input, .new-post-form textarea { display: block; width: 100%; margin-bottom: 0.5em; padding: 0.5em; }
     </style>
 </head>
 <body>
-    <h1>API Tester</h1>
-    <div id="auth-section">
-        <p>You are not logged in.</p>
-        <button id="loginButton" onclick="window.location.href='/auth/google'">Login with Google</button>
-    </div>
-    <div id="app-section" style="display: none;">
-        <p>Welcome, <span id="userName"></span>! <button id="logoutButton" onclick="window.location.href='/auth/logout'">Logout</button></p>
-        <div class="api-section">
-            <h2>Greet API (POST /api/greet)</h2>
-            <input type="text" id="nameInput" placeholder="Enter your name">
-            <button id="greetButton">Greet</button>
-        </div>
-        <div class="api-section">
-            <h2>Health Check API (GET /api/health)</h2>
-            <button id="healthCheckButton">Run Health Check</button>
-        </div>
-        <p id="result"></p>
-    </div>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
