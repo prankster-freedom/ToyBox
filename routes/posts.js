@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
+
 const fs = require('fs');
 const auth = require('../middleware/auth');
 
@@ -47,7 +47,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/posts
-router.post('/', auth, (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -56,6 +56,7 @@ router.post('/', auth, (req, res) => {
     }
 
     const posts = readPosts();
+    const { v4: uuidv4 } = await import('uuid');
 
     const newPost = {
       id: uuidv4(),
