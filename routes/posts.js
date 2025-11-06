@@ -4,6 +4,7 @@ const router = express.Router();
 
 const fs = require('fs');
 const auth = require('../middleware/auth');
+const { v4: uuidv4 } = require('uuid');
 
 const postsDB = './data/posts.json';
 
@@ -47,7 +48,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/posts
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -56,7 +57,6 @@ router.post('/', auth, async (req, res) => {
     }
 
     const posts = readPosts();
-    const { v4: uuidv4 } = await import('uuid');
 
     const newPost = {
       id: uuidv4(),
