@@ -11,6 +11,10 @@ const postsDB = './data/posts.json';
 // Helper function to read posts from DB
 const readPosts = () => {
   const data = fs.readFileSync(postsDB);
+  // If the file is empty, return an empty array to avoid JSON parsing errors
+  if (data.length === 0) {
+    return [];
+  }
   return JSON.parse(data);
 };
 
@@ -20,18 +24,17 @@ const writePosts = (posts) => {
 };
 
 // GET /api/posts
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   try {
     const posts = readPosts();
     res.json(posts);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Server error');
+    next(error);
   }
 });
 
 // GET /api/posts/:id
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
   try {
     const posts = readPosts();
     const post = posts.find(p => p.id === req.params.id);
@@ -42,13 +45,12 @@ router.get('/:id', (req, res) => {
 
     res.json(post);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Server error');
+    next(error);
   }
 });
 
 // POST /api/posts
-router.post('/', auth, (req, res) => {
+router.post('/', auth, (req, res, next) => {
   try {
     const { title, content } = req.body;
 
@@ -71,13 +73,12 @@ router.post('/', auth, (req, res) => {
 
     res.status(201).json(newPost);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Server error');
+    next(error);
   }
 });
 
 // DELETE /api/posts/:id
-router.delete('/:id', auth, (req, res) => {
+router.delete('/:id', auth, (req, res, next) => {
   try {
     const posts = readPosts();
     const postIndex = posts.findIndex(p => p.id === req.params.id);
@@ -97,8 +98,7 @@ router.delete('/:id', auth, (req, res) => {
 
     res.json({ message: 'Post removed' });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Server error');
+    next(error);
   }
 });
 
