@@ -14,6 +14,9 @@ RUN npm install --only=production
 # アプリケーションのソースコードをコンテナ内にコピーします。
 COPY . .
 
+# dataディレクトリの所有者をnodeユーザーに変更します。
+RUN chown -R node:node /usr/src/app/data
+
 # セキュリティ向上のため、非rootユーザーであるnodeユーザーに切り替えます。
 USER node
 
