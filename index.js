@@ -19,6 +19,10 @@ app.use(requestLogger);
 // Inject logs into response
 app.use(responseLogger);
 
+// 'public' ディレクトリ内の静的ファイル（HTML, CSS, JS）を配信するミドルウェア
+// この一行により、ルートURL ('/') へのアクセスで public/index.html が自動的に返されます。
+app.use(express.static('public'));
+
 // セッションミドルウェアの設定
 app.use(session({
   secret: process.env.SESSION_SECRET, // 環境変数からシークレットキーを取得
@@ -103,10 +107,6 @@ app.get('/auth/logout', (req, res, next) => {
 
 // リクエストボディのJSONを解析するためのミドルウェア
 app.use(express.json());
-
-// 'public' ディレクトリ内の静的ファイル（HTML, CSS, JS）を配信するミドルウェア
-// この一行により、ルートURL ('/') へのアクセスで public/index.html が自動的に返されます。
-app.use(express.static('public'));
 
 // APIルーターを '/api' パスにマウント
 import apiRouter from './routes/api.js';

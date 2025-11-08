@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer API Console</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .api-endpoint { border: 1px solid #ccc; padding: 1em; margin-bottom: 1em; border-radius: 5px; }
+        .api-endpoint h2 { margin-top: 0; }
+        .method { font-weight: bold; padding: 0.2em 0.5em; border-radius: 3px; color: white; }
+        .get { background-color: #007bff; }
+        .post { background-color: #28a745; }
+        .delete { background-color: #dc3545; }
+        label { display: block; margin-top: 0.5em; }
+        input, textarea { width: 100%; padding: 0.5em; margin-top: 0.2em; }
+        button { margin-top: 1em; padding: 0.5em 1em; }
+        pre { background-color: #f4f4f4; padding: 1em; border: 1px solid #ddd; white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <p><a href="/index.html">Home</a></p>
+    <h1>Developer API Console</h1>
+
+    <!-- API Endpoints -->
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /api/health</h2>
+        <p>システムの稼働状態を確認します。</p>
+        <button onclick="fetchApi('health', 'GET', '/api/health')">Execute</button>
+        <pre id="response-health"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /api/posts</h2>
+        <p>投稿の一覧を取得します。</p>
+        <button onclick="fetchApi('posts-get-all', 'GET', '/api/posts')">Execute</button>
+        <pre id="response-posts-get-all"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /api/posts/:id</h2>
+        <p>個別の投稿を取得します。</p>
+        <label for="param-posts-get-one-id">id:</label>
+        <input type="text" id="param-posts-get-one-id" placeholder="post-id">
+        <button onclick="fetchApi('posts-get-one', 'GET', `/api/posts/${document.getElementById('param-posts-get-one-id').value}`)">Execute</button>
+        <pre id="response-posts-get-one"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/posts</h2>
+        <p>新しい投稿を作成します。（要認証）</p>
+        <label for="param-posts-post-content">content:</label>
+        <textarea id="param-posts-post-content" rows="3">{"content": "新しい投稿です。"}</textarea>
+        <button onclick="fetchApi('posts-post', 'POST', '/api/posts', document.getElementById('param-posts-post-content').value)">Execute</button>
+        <pre id="response-posts-post"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method delete">DELETE</span> /api/posts/:id</h2>
+        <p>投稿を削除します。（要認証）</p>
+        <label for="param-posts-delete-id">id:</label>
+        <input type="text" id="param-posts-delete-id" placeholder="post-id">
+        <button onclick="fetchApi('posts-delete', 'DELETE', `/api/posts/${document.getElementById('param-posts-delete-id').value}`)">Execute</button>
+        <pre id="response-posts-delete"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /user</h2>
+        <p>認証済みのユーザー情報を取得します。（要認証）</p>
+        <button onclick="fetchApi('user-get', 'GET', '/user')">Execute</button>
+        <pre id="response-user-get"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/greet</h2>
+        <p>挨拶を返します。（要認証）</p>
+        <label for="param-greet-post-name">name:</label>
+        <textarea id="param-greet-post-name" rows="1">{"name": "Developer"}</textarea>
+        <button onclick="fetchApi('greet-post', 'POST', '/api/greet', document.getElementById('param-greet-post-name').value)">Execute</button>
+        <pre id="response-greet-post"></pre>
+    </div>
+
+
+    <script>
+        async function fetchApi(id, method, path, body = null) {
+            const responseElement = document.getElementById(`response-${id}`);
+            responseElement.textContent = 'Fetching...';
+
+            const options = {
+                method: method,
+                headers: {}
+            };
+
+            if (body) {
+                options.headers['Content-Type'] = 'application/json';
+                options.body = body;
+            }
+
+            try {
+                const response = await fetch(path, options);
+                const responseData = await response.json();
+                const responseText = `Status: ${response.status}\n\n${JSON.stringify(responseData, null, 2)}`;
+                responseElement.textContent = responseText;
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+</html>
