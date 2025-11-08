@@ -3,17 +3,28 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 require('dotenv').config(); // dotenvを読み込み、環境変数をロード
-const { log, enter, exit, isDevMode } = require('./lib/logger');
+
+const { log, enter, exit } = require('./lib/logger');
+const { requestLogger } = require('./middleware/requestLogger');
+const { responseLogger } = require('./middleware/responseLogger');
+const { isAuthenticated } = require('./middleware/auth');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const isDevMode = process.env.NODE_ENV !== 'production';
+
+// Setup request-scoped logging
+app.use(requestLogger);
+// Inject logs into response
+app.use(responseLogger);
 
 // セッションミドルウェアの設定
 app.use(session({
   secret: process.env.SESSION_SECRET, // 環境変数からシークレットキーを取得
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: isDevMode ? false : process.env.NODE_ENV === 'production' }
+  cookie: { secure: !isDevMode ? true : false }
 }));
 
 // Passportの初期化
@@ -33,7 +44,7 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
     const functionName = 'GoogleStrategy.verify';
-    enter(functionName, { profile });
+    enter(functionName);
     exit(functionName, profile);
     return cb(null, profile);
   }
@@ -42,7 +53,7 @@ passport.use(new GoogleStrategy({
 // ユーザーオブジェクトをセッションに保存
 passport.serializeUser(function(user, cb) {
   const functionName = 'passport.serializeUser';
-  enter(functionName, { user });
+  enter(functionName);
   exit(functionName);
   cb(null, user);
 });
@@ -50,7 +61,7 @@ passport.serializeUser(function(user, cb) {
 // セッションからユーザーオブジェクトを復元
 passport.deserializeUser(function(obj, cb) {
   const functionName = 'passport.deserializeUser';
-  enter(functionName, { obj });
+  enter(functionName);
   exit(functionName);
   cb(null, obj);
 });
@@ -90,23 +101,8 @@ app.get('/auth/logout', (req, res, next) => {
   });
 });
 
-// 認証済みユーザーのみアクセスを許可するミドルウェア
-function isAuthenticated(req, res, next) {
-  const functionName = 'isAuthenticated middleware';
-  enter(functionName, { path: req.path });
-  if (req.isAuthenticated()) {
-    exit(functionName, { result: 'authenticated' });
-    return next();
-  }
-  exit(functionName, { result: 'unauthenticated, redirecting' });
-  res.redirect('/auth/google'); // 未認証の場合はGoogleログインページへリダイレクト
-}
-
 // リクエストボディのJSONを解析するためのミドルウェア
 app.use(express.json());
-
-// 認証済みユーザーのみが静的ファイルにアクセスできるようにする
-app.use(isAuthenticated);
 
 // 'public' ディレクトリ内の静的ファイル（HTML, CSS, JS）を配信するミドルウェア
 // この一行により、ルートURL ('/') へのアクセスで public/index.html が自動的に返されます。
@@ -117,21 +113,17 @@ const apiRouter = require('./routes/api.js');
 app.use('/api', apiRouter);
 
 // 認証済みユーザー情報を返すエンドポイント
-app.get('/user', (req, res) => {
+app.get('/user', isAuthenticated, (req, res) => {
   const functionName = 'GET /user';
   enter(functionName);
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-    exit(functionName, { user: req.user.displayName });
-  } else {
-    res.status(401).json({ message: 'Unauthorized' });
-    exit(functionName, { message: 'Unauthorized' });
-  }
+  res.json(req.user);
+  exit(functionName, { user: req.user.displayName });
 });
 
 
 app.listen(port, () => {
   // 起動時のログメッセージを、ローカル開発とクラウド環境の両方で分かりやすいように修正します。
-  log(`ToyBox server listening on port ${port}`);
-  log(`Development mode is ${isDevMode ? 'enabled' : 'disabled'}.`);
+  // Note: This log will not be captured in API responses as it's outside a request context.
+  console.log(`ToyBox server listening on port ${port}`);
+  console.log(`Development mode is ${isDevMode ? 'enabled' : 'disabled'}.`);
 });
