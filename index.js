@@ -20,10 +20,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // PassportのGoogle OAuth 2.0戦略を設定
+console.log(`[DEBUG] BASE_URL from env: ${process.env.BASE_URL}`);
+const baseURL = process.env.BASE_URL || `http://localhost:${port}`;
+const callbackURL = `${baseURL}/auth/google/callback`;
+console.log(`[DEBUG] Generated callbackURL: ${callbackURL}`);
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID, // 環境変数からクライアントIDを取得
     clientSecret: process.env.GOOGLE_CLIENT_SECRET, // 環境変数からクライアントシークレットを取得
-    callbackURL: "/auth/google/callback"
+    callbackURL: callbackURL
   },
   function(accessToken, refreshToken, profile, cb) {
     return cb(null, profile);
