@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPosts, addPost, deletePost } from '../lib/posts.js';
+import { getPosts, getPostById, addPost, deletePost } from '../lib/posts.js';
 import { enter, exit } from '../lib/logger.js';
 import { isAuthenticated } from '../middleware/auth.js';
 
@@ -18,6 +18,28 @@ router.get('/', async (req, res) => {
   } catch (error) {
     exit(functionName, { error });
     res.status(500).json({ message: 'Error retrieving posts' });
+  }
+});
+
+// GET /api/posts/:id - Get a single post by ID (Public)
+router.get('/:id', async (req, res) => {
+  const functionName = 'GET /api/posts/:id';
+  const { id } = req.params;
+  enter(functionName, { postId: id });
+
+  try {
+    const post = await getPostById(id);
+    if (post) {
+      res.status(200).json(post);
+      exit(functionName, post);
+    } else {
+      const response = { message: 'Post not found' };
+      exit(functionName, response);
+      res.status(404).json(response);
+    }
+  } catch (error) {
+    exit(functionName, { error });
+    res.status(500).json({ message: 'Error retrieving post' });
   }
 });
 

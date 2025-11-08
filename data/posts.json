@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "109156be-c4fb-41ea-b1b4-efe1671c5836",
+    "content": "This is a sample post.",
+    "author": {
+      "id": "sample-user-id",
+      "displayName": "Sample User",
+      "photo": null
+    },
+    "createdAt": "2025-11-09T12:00:00.000Z"
+  }
+]
