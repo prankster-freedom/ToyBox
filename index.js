@@ -1,13 +1,13 @@
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-require('dotenv').config(); // dotenvを読み込み、環境変数をロード
+import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import 'dotenv/config';
 
-const { log, enter, exit } = require('./lib/logger');
-const { requestLogger } = require('./middleware/requestLogger');
-const { responseLogger } = require('./middleware/responseLogger');
-const { isAuthenticated } = require('./middleware/auth');
+import { log, enter, exit } from './lib/logger.js';
+import { requestLogger } from './middleware/requestLogger.js';
+import { responseLogger } from './middleware/responseLogger.js';
+import { isAuthenticated } from './middleware/auth.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -109,7 +109,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // APIルーターを '/api' パスにマウント
-const apiRouter = require('./routes/api.js');
+import apiRouter from './routes/api.js';
 app.use('/api', apiRouter);
 
 // 認証済みユーザー情報を返すエンドポイント

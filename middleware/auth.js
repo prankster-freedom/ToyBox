@@ -1,6 +1,4 @@
-'use strict';
-
-const { enter, exit } = require('../lib/logger');
+import { enter, exit } from '../lib/logger.js';
 
 /**
  * Middleware to ensure a user is authenticated.
@@ -19,6 +17,6 @@ function isAuthenticated(req, res, next) {
   res.status(401).json({ message: 'Unauthorized' });
 }
 
-module.exports = {
+export {
   isAuthenticated,
 };

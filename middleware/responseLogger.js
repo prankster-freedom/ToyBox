@@ -1,6 +1,4 @@
-'use strict';
-
-const { getLogStore } = require('../lib/logger');
+import { getLogStore } from '../lib/logger.js';
 
 const isDevMode = process.env.NODE_ENV !== 'production';
 
@@ -29,6 +27,6 @@ function responseLogger(req, res, next) {
   next();
 }
 
-module.exports = {
+export {
   responseLogger,
 };

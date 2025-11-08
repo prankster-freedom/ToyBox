@@ -1,6 +1,4 @@
-'use strict';
-
-const { asyncLocalStorage } = require('../lib/logger');
+import { asyncLocalStorage } from '../lib/logger.js';
 
 /**
  * Middleware to initialize the request-scoped log store.
@@ -13,6 +11,6 @@ function requestLogger(req, res, next) {
   });
 }
 
-module.exports = {
+export {
   requestLogger,
 };

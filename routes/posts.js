@@ -1,9 +1,7 @@
-'use strict';
-
-const express = require('express');
-const { getPosts, addPost, deletePost } = require('../lib/posts');
-const { enter, exit } = require('../lib/logger');
-const { isAuthenticated } = require('../middleware/auth');
+import express from 'express';
+import { getPosts, addPost, deletePost } from '../lib/posts.js';
+import { enter, exit } from '../lib/logger.js';
+import { isAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -69,4 +67,4 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

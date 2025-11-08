@@ -1,8 +1,8 @@
-const express = require('express');
-const greet = require('../lib/greet.js');
-const { enter, exit } = require('../lib/logger');
-const { isAuthenticated } = require('../middleware/auth');
-const postsRouter = require('./posts');
+import express from 'express';
+import greet from '../lib/greet.js';
+import { enter, exit } from '../lib/logger.js';
+import { isAuthenticated } from '../middleware/auth.js';
+import postsRouter from './posts.js';
 
 // 新しいルーターインスタンスを作成
 const router = express.Router();
@@ -40,4 +40,4 @@ router.post('/greet', isAuthenticated, (req, res) => {
   exit(functionName, response);
 });
 
-module.exports = router;
+export default router;
