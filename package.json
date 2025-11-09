@@ -1,21 +1,34 @@
 {
-    "name":  "toybox",
-    "version":  "1.0.0",
-    "description":  "A simple API server.",
-    "main":  "index.js",
+    "name": "toybox",
+    "version": "1.0.0",
+    "description": "A simple API server.",
+    "main": "index.js",
     "type": "module",
-    "scripts":  {
-                    "start":  "cross-env NODE_ENV=development node index.js",
-                    "start:prod":  "cross-env NODE_ENV=production node index.js"
-                },
-    "dependencies":  {
-                         "dotenv":  "^16.3.1",
-                         "express":  "^4.18.2",
-                         "express-session":  "^1.17.3",
-                         "passport":  "^0.6.0",
-                         "passport-google-oauth20":  "^2.0.0",
-                         "uuid":  "^13.0.0"
-                     },
-    "author":  "",
-    "license":  "ISC"
+    "scripts": {
+        "start": "cross-env NODE_ENV=development node index.js",
+        "start:prod": "cross-env NODE_ENV=production node index.js"
+    },
+    "dependencies": {
+        "cross-env": "^10.1.0",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-session": "^1.17.3",
+        "passport": "^0.6.0",
+        "passport-google-oauth20": "^2.0.0",
+        "uuid": "^13.0.0"
+    },
+    "author": "",
+    "license": "ISC",
+    "directories": {
+        "doc": "doc",
+        "lib": "lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/prankster-freedom/ToyBox.git"
+    },
+    "bugs": {
+        "url": "https://github.com/prankster-freedom/ToyBox/issues"
+    },
+    "homepage": "https://github.com/prankster-freedom/ToyBox#readme"
 }
