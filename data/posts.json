@@ -1,5 +1,32 @@
 [
   {
+    "id": "bdaca6bc-3686-45bc-9481-311632f9ecb2",
+    "content": "新しい投稿です。",
+    "author": {
+      "displayName": "Test User",
+      "photo": null
+    },
+    "createdAt": "2025-11-20T12:43:49.807Z"
+  },
+  {
+    "id": "a79acb50-1752-468f-990b-1afe6d23ff8e",
+    "content": "新しい投稿です。",
+    "author": {
+      "displayName": "Test User",
+      "photo": null
+    },
+    "createdAt": "2025-11-20T12:43:02.201Z"
+  },
+  {
+    "id": "c5d01e16-5708-4fb2-aa16-a4e34a599867",
+    "content": "新しい投稿です。",
+    "author": {
+      "displayName": "Test User",
+      "photo": null
+    },
+    "createdAt": "2025-11-14T16:35:14.392Z"
+  },
+  {
     "id": "8b8b61df-ee15-4717-bcfd-d6e56b6435da",
     "content": "新しい投稿です。",
     "author": {

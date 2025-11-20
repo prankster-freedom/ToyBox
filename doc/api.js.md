@@ -13,6 +13,8 @@ This file acts as a central hub or an aggregator for all API-related routes in t
 
 - **Line 4:** `import greetRouter from './greet.js';`
   - Imports the router responsible for the greet endpoint (`/greet`).
+- **Line 5:** `import chatRouter from './chat.js';`
+  - Imports the router for the new AI chat endpoint (`/chat`).
 
 - **Line 7:** `const router = express.Router();`
   - Creates a new instance of an Express router. This object can have middleware and HTTP method routes (like `get`, `post`, etc.) registered on it.
@@ -25,6 +27,9 @@ This file acts as a central hub or an aggregator for all API-related routes in t
 
 - **Line 12:** `router.use('/greet', greetRouter);`
   - Mounts the `greetRouter` on the `/greet` path. Requests to `/api/greet` will be handled by `greetRouter`.
+
+- **Line 13:** `router.use('/chat', chatRouter);`
+  - Mounts the `chatRouter` on the `/chat` path. Requests to `/api/chat` will be handled by `chatRouter`.
 
 - **Line 14:** `export default router;`
   - Exports the fully configured router. This router will then be imported by the main server file (e.g., `index.js`) and mounted on the `/api` path, creating the full API routes like `/api/posts`, `/api/health`, etc.

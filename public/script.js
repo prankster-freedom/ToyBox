@@ -1,6 +1,9 @@
 const nameInput = document.getElementById('nameInput');
 const greetButton = document.getElementById('greetButton');
 const healthCheckButton = document.getElementById('healthCheckButton');
+const chatHistory = document.getElementById('chatHistory');
+const chatInput = document.getElementById('chatInput');
+const chatButton = document.getElementById('chatButton');
 const resultParagraph = document.getElementById('result');
 
 const authSection = document.getElementById('auth-section');
@@ -56,6 +59,44 @@ greetButton.addEventListener('click', async () => {
         resultParagraph.textContent = 'エラーが発生しました。';
     }
 });
+
+chatButton.addEventListener('click', async () => {
+    const message = chatInput.value;
+    if (!message) return;
+
+    appendMessage('You', message);
+    chatInput.value = '';
+    resultParagraph.textContent = 'AIが応答を生成中...';
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message }),
+        });
+
+        if (!response.ok) {
+            throw new Error('サーバーからの応答が正常ではありません。');
+        }
+
+        const data = await response.json();
+        appendMessage('AI', data.reply);
+        resultParagraph.textContent = ''; // 応答が成功したらクリア
+    } catch (error) {
+        console.error('チャットエラー:', error);
+        appendMessage('System', 'エラーが発生しました。');
+        resultParagraph.textContent = 'エラーが発生しました。';
+    }
+});
+
+function appendMessage(sender, message) {
+    const messageElement = document.createElement('p');
+    messageElement.textContent = `[${sender}]: ${message}`;
+    chatHistory.appendChild(messageElement);
+    chatHistory.scrollTop = chatHistory.scrollHeight; // 自動スクロール
+}
 
 healthCheckButton.addEventListener('click', async () => {
     resultParagraph.textContent = '通信中...';

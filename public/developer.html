@@ -81,32 +81,16 @@
         <pre id="response-greet-post"></pre>
     </div>
 
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/chat</h2>
+        <p>AIと対話します。（要認証）</p>
+        <label for="param-chat-post-message">message:</label>
+        <textarea id="param-chat-post-message" rows="2">{"message": "こんにちは"}</textarea>
+        <button onclick="fetchApi('chat-post', 'POST', '/api/chat', document.getElementById('param-chat-post-message').value)">Execute</button>
+        <pre id="response-chat-post"></pre>
+    </div>
 
-    <script>
-        async function fetchApi(id, method, path, body = null) {
-            const responseElement = document.getElementById(`response-${id}`);
-            responseElement.textContent = 'Fetching...';
-
-            const options = {
-                method: method,
-                headers: {}
-            };
-
-            if (body) {
-                options.headers['Content-Type'] = 'application/json';
-                options.body = body;
-            }
-
-            try {
-                const response = await fetch(path, options);
-                const responseData = await response.json();
-                const responseText = `Status: ${response.status}\n\n${JSON.stringify(responseData, null, 2)}`;
-                responseElement.textContent = responseText;
-            } catch (error) {
-                responseElement.textContent = `Error: ${error.message}`;
-            }
-        }
-    </script>
+    <script src="developer.js"></script>
 
 </body>
 </html>
