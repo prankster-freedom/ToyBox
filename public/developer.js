@@ -14,16 +14,22 @@ async function fetchApi(id, method, path, body = null) {
 
     try {
         const response = await fetch(path, options);
-        const responseData = await response.json();
 
-        // Separate debug info if it exists
-        let debugInfo = null;
-        if (responseData._debug) {
-            debugInfo = responseData._debug;
-            delete responseData._debug;
+        let responseText = `Status: ${response.status}\n\n`;
+        let debugInfo;
+
+        if (response.status === 204) {
+            responseText += '(No Content)';
+        } else {
+            const responseData = await response.json();
+
+            // Separate debug info if it exists
+            if (responseData._debug) {
+                debugInfo = responseData._debug;
+                delete responseData._debug;
+            }
+            responseText += JSON.stringify(responseData, null, 2);
         }
-
-        let responseText = `Status: ${response.status}\n\n${JSON.stringify(responseData, null, 2)}`;
         
         if (debugInfo) {
             responseText += `\n\n--- DEBUG INFO ---\n${debugInfo.join('\n')}`;

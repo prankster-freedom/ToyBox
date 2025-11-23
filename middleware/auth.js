@@ -16,6 +16,7 @@ function isAuthenticated(req, res, next) {
     // We can create a mock user for consistent behavior downstream.
     if (!req.user) {
       req.user = {
+        "id": "test-user-id",
         displayName: 'Test User',
         emails: [{ value: 'test@example.com' }],
       };
