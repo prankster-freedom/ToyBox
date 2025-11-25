@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "64ced840-bc42-4633-8599-8088ca2a19f8",
+    "content": "新しい投稿です。",
+    "author": {
+      "id": "test-user-id",
+      "displayName": "Test User",
+      "photo": null
+    },
+    "createdAt": "2025-11-23T16:49:00.360Z"
+  }
+]
