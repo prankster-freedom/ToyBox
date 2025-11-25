@@ -1,14 +1,18 @@
 {
     "name": "toybox",
-    "version": "1.0.0",
-    "description": "A simple API server.",
+    "version": "1.1.0",
+    "description": "A simple API server with AI agent.",
     "main": "index.js",
     "type": "module",
     "scripts": {
         "start": "cross-env NODE_ENV=development node index.js",
-        "start:prod": "cross-env NODE_ENV=production node index.js"
+        "start:prod": "cross-env NODE_ENV=production node index.js",
+        "start:emulator": "cross-env NODE_ENV=development DATASTORE_EMULATOR_HOST=localhost:8081 node index.js",
+        "job:dream": "node jobs/dream.js"
     },
     "dependencies": {
+        "@google-cloud/datastore": "^8.0.0",
+        "@google-cloud/tasks": "^5.0.0",
         "@google/genai": "^1.29.1",
         "cross-env": "^10.1.0",
         "dotenv": "^16.3.1",
@@ -31,5 +35,6 @@
     "bugs": {
         "url": "https://github.com/prankster-freedom/ToyBox/issues"
     },
-    "homepage": "https://github.com/prankster-freedom/ToyBox#readme"
+    "homepage": "https://github.com/prankster-freedom/ToyBox#readme",
+    "devDependencies": {}
 }

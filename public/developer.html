@@ -90,7 +90,67 @@
         <pre id="response-chat-post"></pre>
     </div>
 
-    <script src="developer.js"></script>
+    <hr>
+    <h2>Store API (Datastore)</h2>
 
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/store/users</h2>
+        <p>認証済みユーザーをDatastoreに保存します。（要認証）<br>Bodyを空にすると、現在認証中の<code>req.user</code>が保存されます。</p>
+        <label for="param-store-post-user-body">Body (任意):</label>
+        <textarea id="param-store-post-user-body" rows="4" placeholder='{"user": {"id": "test-user-123", "displayName": "Test User"}}'></textarea>
+        <button onclick="fetchApi('store-post-user', 'POST', '/api/store/users', document.getElementById('param-store-post-user-body').value)">Execute</button>
+        <pre id="response-store-post-user"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /api/store/ai-personas/:userId</h2>
+        <p>AIペルソナを取得します。（要認証）</p>
+        <label for="param-store-get-persona-id">userId:</label>
+        <input type="text" id="param-store-get-persona-id" placeholder="user-id">
+        <button onclick="fetchApi('store-get-persona', 'GET', `/api/store/ai-personas/${document.getElementById('param-store-get-persona-id').value}`)">Execute</button>
+        <pre id="response-store-get-persona"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/store/ai-personas/:userId</h2>
+        <p>AIペルソナを更新します。（要認証）</p>
+        <label for="param-store-post-persona-id">userId:</label>
+        <input type="text" id="param-store-post-persona-id" placeholder="user-id">
+        <label for="param-store-post-persona-body">Body:</label>
+        <textarea id="param-store-post-persona-body" rows="3">{"basePersonality": "あなたは関西弁を話すAIです。"}</textarea>
+        <button onclick="fetchApi('store-post-persona', 'POST', `/api/store/ai-personas/${document.getElementById('param-store-post-persona-id').value}`, document.getElementById('param-store-post-persona-body').value)">Execute</button>
+        <pre id="response-store-post-persona"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/store/chat-messages/:userId</h2>
+        <p>チャットメッセージを保存します。（要認証）</p>
+        <label for="param-store-post-chat-id">userId:</label>
+        <input type="text" id="param-store-post-chat-id" placeholder="user-id">
+        <label for="param-store-post-chat-body">Body:</label>
+        <textarea id="param-store-post-chat-body" rows="3">{"role": "user", "content": "今日の天気は？"}</textarea>
+        <button onclick="fetchApi('store-post-chat', 'POST', `/api/store/chat-messages/${document.getElementById('param-store-post-chat-id').value}`, document.getElementById('param-store-post-chat-body').value)">Execute</button>
+        <pre id="response-store-post-chat"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2><span class="method get">GET</span> /api/store/chat-messages/:userId</h2>
+        <p>最近のチャット履歴を取得します。（要認証）</p>
+        <label for="param-store-get-chat-id">userId:</label>
+        <input type="text" id="param-store-get-chat-id" placeholder="user-id">
+        <button onclick="fetchApi('store-get-chat', 'GET', `/api/store/chat-messages/${document.getElementById('param-store-get-chat-id').value}`)">Execute</button>
+        <pre id="response-store-get-chat"></pre>
+    </div>
+
+    <div class="api-endpoint">
+        <h2 style="color: red;"><span class="method delete">DELETE</span> /api/store/users/:userId</h2>
+        <p style="color: red;">指定したユーザーの全てのデータをDatastoreから削除します。<strong>（危険な操作）</strong></p>
+        <label for="param-store-delete-user-id">userId:</label>
+        <input type="text" id="param-store-delete-user-id" placeholder="user-id">
+        <button onclick="if(confirm('本当にこのユーザーの全データを削除しますか？')) fetchApi('store-delete-user', 'DELETE', `/api/store/users/${document.getElementById('param-store-delete-user-id').value}`)">Execute Delete</button>
+        <pre id="response-store-delete-user"></pre>
+    </div>
+
+    <script src="developer.js"></script>
 </body>
 </html>
