@@ -2,6 +2,9 @@
 # 'slim'版は、本番環境に不要なパッケージを削減した軽量なイメージです。
 FROM node:18-slim
 
+# Set production environment by default
+ENV NODE_ENV=production
+
 # アプリケーションのコードを配置するディレクトリを作成し、ワーキングディレクトリとして設定します。
 WORKDIR /usr/src/app
 
