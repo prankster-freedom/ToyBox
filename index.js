@@ -23,6 +23,10 @@ app.use(responseLogger);
 // この一行により、ルートURL ('/') へのアクセスで public/index.html が自動的に返されます。
 app.use(express.static('public'));
 
+// Cloud Runなどのプロキシ背後で実行する場合、X-Forwarded-Protoヘッダーを信頼するように設定
+// これにより、httpsプロトコルが正しく認識され、secure cookieが機能します。
+app.set('trust proxy', 1);
+
 // セッションミドルウェアの設定
 app.use(session({
   secret: process.env.SESSION_SECRET, // 環境変数からシークレットキーを取得
