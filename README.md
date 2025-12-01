@@ -31,14 +31,14 @@
 ```mermaid
 graph TD
     subgraph Browser
-        A[Frontend UI <br> (index.html, script.js)]
+        A["Frontend UI <br> (index.html, script.js)"]
     end
 
-    subgraph Server (Node.js/Express)
-        B[Entrypoint <br> (index.js)]
-        C[API Router <br> (routes/api.js)]
-        D[Static Files <br> (public/)]
-        E[Business Logic <br> (lib/greet.js)]
+    subgraph Server ["Server (Node.js/Express)"]
+        B["Entrypoint <br> (index.js)"]
+        C["API Router <br> (routes/api.js)"]
+        D["Static Files <br> (public/)"]
+        E["Business Logic <br> (lib/greet.js)"]
     end
 
     A -- HTTP Request --> B
@@ -170,12 +170,13 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
     ここでは、独自に作成したサービスアカウント `cloudbuild@[YOUR_PROJECT_ID].iam.gserviceaccount.com` を使用する例を示します。
 
     **Linux / macOS (Bash):**
+
     ```bash
     PROJECT_NUMBER=$(gcloud projects describe $(gcloud config get-value project) --format="value(projectNumber)")
     PROJECT_ID=$(gcloud config get-value project)
     # Cloud Build で使用するサービスアカウント
     SA_EMAIL="cloudbuild@${PROJECT_ID}.iam.gserviceaccount.com"
-    
+
     # Artifact Registry への書き込み権限を付与
     gcloud projects add-iam-policy-binding $PROJECT_ID \
       --member="serviceAccount:${SA_EMAIL}" \
@@ -193,6 +194,7 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
     ```
 
     **Windows (PowerShell):**
+
     ```powershell
     $PROJECT_ID = (gcloud config get-value project)
     $PROJECT_NUMBER = (gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
@@ -208,10 +210,12 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
     # Cloud Run サービスの実行アカウントとして動作する権限を付与
     gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" --member="serviceAccount:${SA_EMAIL}" --role="roles/iam.serviceAccountUser"
     ```
+
 6.  **Artifact Registry リポジトリの作成**:
     コンテナイメージを保存するためのリポジトリを作成します。
 
     **Linux / macOS (Bash):**
+
     ```bash
     gcloud artifacts repositories create toybox \
       --repository-format=docker \
@@ -220,6 +224,7 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
     ```
 
     **Windows (PowerShell):**
+
     ```powershell
     gcloud artifacts repositories create toybox --repository-format=docker --location=asia-northeast1 --description="Docker repository for ToyBox project"
     ```
@@ -229,16 +234,17 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
 このプロジェクトでは、Git リポジトリの特定のブランチ（例: `main`）へのプッシュをトリガーとして、Cloud Build による自動デプロイが設定されています。
 
 1.  **リポジトリの接続とトリガーのセットアップ（初回のみ）**:
+
     1.  Google Cloud コンソールで **[Cloud Build] > [トリガー]** に移動します。
     2.  ページ上部の **[リポジトリを接続]** をクリックし、ソースリポジトリ（例: GitHub）を選択して認証とリポジトリの選択を完了させます。
-        -   **ソースを選択**: `GitHub (Cloud Build GitHub App)` などを選択します。
-        -   **認証**: 指示に従い、GitHubアカウントと連携します。
-        -   **リポジトリを選択**: このプロジェクトのリポジトリを選択し、接続します。
+        - **ソースを選択**: `GitHub (Cloud Build GitHub App)` などを選択します。
+        - **認証**: 指示に従い、GitHub アカウントと連携します。
+        - **リポジトリを選択**: このプロジェクトのリポジトリを選択し、接続します。
     3.  リポジトリの接続後、**[トリガーを作成]** をクリックし、以下のように設定します。
-        -   **名前**: `deploy-to-cloud-run` など、分かりやすい名前を入力します。
-        -   **イベント**: `ブランチにプッシュ` を選択します。
-        -   **ソース**: 接続したリポジトリと、トリガーの対象となるブランチ（例: `^main$`）を指定します。
-        -   **構成**: `Cloud Build 構成ファイル (yaml または json)` を選択し、場所を `/cloudbuild.yaml` に設定します。
+        - **名前**: `deploy-to-cloud-run` など、分かりやすい名前を入力します。
+        - **イベント**: `ブランチにプッシュ` を選択します。
+        - **ソース**: 接続したリポジトリと、トリガーの対象となるブランチ（例: `^main$`）を指定します。
+        - **構成**: `Cloud Build 構成ファイル (yaml または json)` を選択し、場所を `/cloudbuild.yaml` に設定します。
     4.  **[作成]** をクリックしてトリガーを保存します。
 
 2.  **自動デプロイの実行**:
@@ -247,6 +253,7 @@ Google Cloud プロジェクトが未作成の場合は、以下の手順でセ�
     ```bash
     git push origin main
     ```
+
     プッシュが完了すると、Cloud Build が自動的にトリガーされ、`cloudbuild.yaml` に定義されたビルドとデプロイが実行されます。
 
 #### 動作確認
