@@ -22,16 +22,16 @@ window.onload = async () => {
                 authSection.style.display = 'none';
                 appSection.style.display = 'block';
             } else {
-                // ユーザー情報が取得できない場合はログインページへリダイレクト
-                window.location.href = '/auth/google';
+                // ユーザー情報が取得できない場合は、ログインボタンを表示（何もしない）
+                console.log('User not logged in');
             }
         } else {
-            // 応答がOKでない場合もログインページへリダイレクト
-            window.location.href = '/auth/google';
+            // 応答がOKでない場合も、ログインボタンを表示（何もしない）
+            console.log('Failed to fetch user info');
         }
     } catch (error) {
         console.error('Error fetching user data:', error);
-        window.location.href = '/auth/google';
+        // エラー時もログインボタンを表示（何もしない）
     }
 };
 
