@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "cross-env NODE_ENV=development node index.js",
+        "dev": "npm run start:emulator",
         "start:prod": "cross-env NODE_ENV=production node index.js",
         "start:emulator": "cross-env NODE_ENV=development DATASTORE_EMULATOR_HOST=localhost:8081 node index.js",
         "job:dream": "node jobs/dream.js"
