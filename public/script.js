@@ -82,7 +82,7 @@ chatButton.addEventListener('click', async () => {
         }
 
         const data = await response.json();
-        appendMessage('AI', data.reply);
+        appendMessage('AI', data.message);
         resultParagraph.textContent = ''; // 応答が成功したらクリア
     } catch (error) {
         console.error('チャットエラー:', error);
