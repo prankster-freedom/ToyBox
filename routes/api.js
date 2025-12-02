@@ -19,4 +19,9 @@ router.use('/tasks', tasksRouter);
 router.use('/memory', memoryRouter);
 router.use('/store', storeRouter);
 
+// 404 handler for API routes
+router.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.originalUrl });
+});
+
 export default router;
