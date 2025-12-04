@@ -12,7 +12,7 @@ import { isAuthenticated } from './middleware/auth.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-const isDevMode = process.env.NODE_ENV !== 'production';
+const isLocal = process.env.IS_LOCAL === 'true';
 
 // Setup request-scoped logging
 app.use(requestLogger);
@@ -32,7 +32,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET, // 環境変数からシークレットキーを取得
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: !isDevMode ? true : false }
+  cookie: { secure: !isLocal ? true : false }
 }));
 
 // Passportの初期化
@@ -129,5 +129,5 @@ app.listen(port, () => {
   // 起動時のログメッセージを、ローカル開発とクラウド環境の両方で分かりやすいように修正します。
   // Note: This log will not be captured in API responses as it's outside a request context.
   console.log(`ToyBox server listening on port ${port}`);
-  console.log(`Development mode is ${isDevMode ? 'enabled' : 'disabled'}.`);
+  console.log(`Local mode (IS_LOCAL) is ${isLocal ? 'enabled' : 'disabled'}.`);
 });

@@ -1,17 +1,19 @@
 import { enter, exit, log } from '../lib/logger.js';
 
+const isLocal = process.env.IS_LOCAL === 'true';
+
 /**
  * Middleware to ensure a user is authenticated.
  * If not, it sends a 401 Unauthorized response.
- * In development mode, this check is bypassed.
+ * In local environment (IS_LOCAL=true), this check is bypassed.
  */
 function isAuthenticated(req, res, next) {
   const functionName = 'isAuthenticated';
   enter(functionName, { path: req.path });
 
-  // Bypass authentication in development mode
-  if (process.env.NODE_ENV !== 'production') {
-    log('Bypassing authentication in development mode.');
+  // Bypass authentication in local environment
+  if (isLocal) {
+    log('Bypassing authentication in local environment.');
     // In dev mode, we might not have a real user object.
     // We can create a mock user for consistent behavior downstream.
     if (!req.user) {

@@ -1,12 +1,13 @@
 import { getLogStore } from '../lib/logger.js';
 
-const isDevMode = process.env.NODE_ENV !== 'production';
+const enableDebugLogs = process.env.ENABLE_DEBUG_LOGS !== 'false';
 
 /**
- * Middleware to inject logs into the JSON response body in development mode.
+ * Middleware to inject logs into the JSON response body.
+ * Controlled by ENABLE_DEBUG_LOGS environment variable (default: true).
  */
 function responseLogger(req, res, next) {
-  if (!isDevMode) {
+  if (!enableDebugLogs) {
     return next();
   }
 
