@@ -130,4 +130,9 @@ app.listen(port, () => {
   // Note: This log will not be captured in API responses as it's outside a request context.
   console.log(`ToyBox server listening on port ${port}`);
   console.log(`Local mode (IS_LOCAL) is ${isLocal ? 'enabled' : 'disabled'}.`);
+  if (process.env.GOOGLE_CLOUD_PROJECT) {
+    console.log(`GOOGLE_CLOUD_PROJECT is set to: ${process.env.GOOGLE_CLOUD_PROJECT}`);
+  } else {
+    console.log('GOOGLE_CLOUD_PROJECT is NOT set.');
+  }
 });
