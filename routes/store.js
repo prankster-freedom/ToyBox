@@ -81,7 +81,7 @@ router.delete("/users/:userId", isAuthenticated, async (req, res) => {
     ) {
       return res
         .status(403)
-        .send("You can only delete your own data in production.");
+        .json({ error: "You can only delete your own data in production." });
     }
     await store.deleteUserData(req.params.userId);
     res.status(200).json({ message: `All data for user ${req.params.userId} deleted.` });

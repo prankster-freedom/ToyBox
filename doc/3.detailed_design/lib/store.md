@@ -109,3 +109,9 @@ Google Cloud Datastore へのアクセスをカプセル化し、アプリケー
 - **ロジック**:
   1. `User`, `AiPersona` は Key 指定で削除。
   2. `ChatMessage`, `PersonalityAnalysis` はクエリで Key を取得し、バッチ削除 (`delete(keys)`).
+
+## API 実装上の注意 (Routes)
+
+`routes/store.js` などでこのライブラリを使用する際は、以下の点に留意する。
+
+- **エラーレスポンス**: クライアント側でのパースエラーを防ぐため、権限エラーやサーバエラー発生時は必ず **JSON 形式** (`{ error: "..." }`) でレスポンスを返すこと (テキスト形式 `.send("...")` は不可)。
