@@ -91,6 +91,22 @@
     </div>
 
     <hr>
+    <h2>Tasks API (Cloud Tasks / Scheduler)</h2>
+
+    <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/tasks/daydream</h2>
+        <p>Daydream タスクを手動実行します。（要 Service Account 認証相当 -> 現状は認証なしで通過可能ですが、本番では注意）<br>
+        <strong>Test Mode</strong> を有効にすると、AI分析をスキップして固定データを保存します。</p>
+        <label for="param-tasks-daydream-id">userId:</label>
+        <input type="text" id="param-tasks-daydream-id" placeholder="user-id">
+        <label>
+            <input type="checkbox" id="param-tasks-daydream-test" checked> Test Mode (Mock AI)
+        </label>
+        <button onclick="fetchApi('tasks-daydream', 'POST', '/api/tasks/daydream', JSON.stringify({ userId: document.getElementById('param-tasks-daydream-id').value, isTest: document.getElementById('param-tasks-daydream-test').checked }))">Execute</button>
+        <pre id="response-tasks-daydream"></pre>
+    </div>
+
+    <hr>
     <h2>Store API (Datastore)</h2>
 
     <div class="api-endpoint">

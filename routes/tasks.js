@@ -11,13 +11,25 @@ router.post('/daydream', async (req, res) => {
   const functionName = 'POST /api/tasks/daydream';
   enter(functionName, { body: req.body });
 
-  const { userId } = req.body;
+  const { userId, isTest } = req.body;
   if (!userId) {
       res.status(400).json({ error: 'userId is required' });
       return;
   }
 
   try {
+      if (isTest) {
+          log(functionName, 'Running in TEST mode.');
+          // テスト用固定データ
+          const mockAnalysis = 'あなたはソフトウェアテストの専門用語が好きです';
+          await savePersonalityAnalysis(userId, mockAnalysis, 'daydream');
+          
+          log(functionName, 'Daydream analysis completed (Test Mode).');
+          res.status(200).json({ message: 'Daydream completed (Test Mode)' });
+          exit(functionName);
+          return;
+      }
+
       // 直近の会話履歴を取得 (例: 過去10件)
       const history = await getRecentChatHistory(userId, 10);
       if (history.length === 0) {

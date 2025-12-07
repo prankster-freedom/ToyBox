@@ -14,15 +14,20 @@ Cloud Tasks や Cloud Scheduler からの非同期リクエストを処理する
 - **リクエストボディ**:
   ```json
   {
-    "userId": "user-123"
+    "userId": "user-123",
+    "isTest": true // Optional: true の場合、分析をスキップしテストデータを保存
   }
   ```
 - **処理フロー**:
   1. **認証**: リクエストヘッダーの Bearer トークンを検証。
-  2. **履歴取得**: `store.getRecentChatHistory(userId)` で分析に必要な履歴を取得。
-  3. **分析実行**: `ai.analyzePersonality(history)` を呼び出す。
-  4. **結果保存**: 分析結果を `store.savePersonalityAnalysis` (要追加) で保存。
-  5. **ペルソナ更新**: 必要であれば `store.updateAiPersona` で短期的なペルソナ調整を行う。
+  2. **テストモード判定**: `req.body.isTest` が `true` の場合、以下の手順を実行し終了する。
+     - 固定の分析結果「あなたはソフトウェアテストの専門用語が好きです」を作成。
+     - `store.savePersonalityAnalysis` で保存。
+     - レスポンス `200 OK` を返却。
+  3. **履歴取得**: `store.getRecentChatHistory(userId)` で分析に必要な履歴を取得。
+  4. **分析実行**: `ai.analyzePersonality(history)` を呼び出す。
+  5. **結果保存**: 分析結果を `store.savePersonalityAnalysis` (要追加) で保存。
+  6. **ペルソナ更新**: 必要であれば `store.updateAiPersona` で短期的なペルソナ調整を行う。
 
 ### `POST /api/tasks/dream`
 

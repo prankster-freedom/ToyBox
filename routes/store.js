@@ -59,6 +59,18 @@ router.post("/chat-messages/:userId", isAuthenticated, async (req, res) => {
   }
 });
 
+// 最近の分析結果を取得
+router.get("/analyses/:userId", isAuthenticated, async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 5;
+    const analyses = await store.getRecentAnalyses(req.params.userId, limit);
+    res.status(200).json(analyses);
+  } catch (err) {
+    log("ERROR", `GET /analyses/${req.params.userId}`, err);
+    res.status(500).json({ error: "Error getting analyses." });
+  }
+});
+
 // 最近のチャット履歴を取得
 router.get("/chat-messages/:userId", isAuthenticated, async (req, res) => {
   try {
