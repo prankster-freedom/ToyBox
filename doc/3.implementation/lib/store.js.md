@@ -1,137 +1,130 @@
-# `lib/store.js` - 初学者向けのコードレベルの解説
-
-このファイルは、アプリケーションのデータベース処理を全て担当するモジュールです。Google Cloud Datastoreを使用して、ユーザー情報、AIのペルソナ、チャット履歴などのデータを永続化（保存）します。
+# 実装詳細: lib/store.js
 
 ## 概要
 
-`store.js`は、データベースとのやり取りを抽象化し、他のファイル（主にAPIルート）が具体的なデータベースの操作を意識することなく、「ユーザーを保存する」「チャット履歴を取得する」といった操作を簡単に行えるようにします。
+Google Cloud Datastore に対するデータ操作を一元管理する。
+ユーザー、AI ペルソナ、チャット履歴、分析結果の CRUD を提供する。
 
-### Datastoreの基本用語
+## 依存関係
 
--   **Datastore**: Google Cloudが提供するNoSQLデータベースサービスです。
--   **Kind**: データの種類を表すもので、リレーショナルデータベース（RDB）の「テーブル」に似ています。このファイルでは `User`, `AiPersona`, `ChatMessage`, `PersonalityAnalysis` の4つのKindを扱います。
--   **Key**: Kind内の各データを一意に識別するためのものです。RDBの「プライマリキー」に相当します。
--   **Entity**: 1つのデータレコードそのものです。Keyとプロパティ（データの集まり）で構成されます。RDBの「行」に似ています。
+```mermaid
+flowchart TD
+    %% Dependencies
+    store["lib/store.js"] -->|Uses| ds["@google-cloud/datastore"]
+    store -->|Uses| logger["lib/logger.js"]
 
-## コード解説
-
-```javascript
-import { Datastore } from '@google-cloud/datastore';
-import { enter, exit, log } from './logger.js';
-
-const datastore = new Datastore();
-
-const KIND_USER = 'User';
-const KIND_AI_PERSONA = 'AiPersona';
-const KIND_CHAT_MESSAGE = 'ChatMessage';
-const KIND_PERSONALITY_ANALYSIS = 'PersonalityAnalysis';
-
-// ... 各種関数 ...
+    %% Consumers
+    chat["routes/chat.js"] -->|Calls| store
+    tasks["routes/tasks.js"] -->|Calls| store
+    r_store["routes/store.js"] -->|Calls| store
+    memory["routes/memory.js"] -->|Calls| store
+    dream["jobs/dream.js"] -->|Calls| store
 ```
 
-最初に、Datastoreクライアントを初期化し、使用するKindの名前を定数として定義しています。
+## 関数詳細
 
----
+### `saveUser(user)`
 
-### ユーザー (Users)
+- **説明**: ユーザー情報を保存・更新する (Upsert)。
+- **引数**:
+  - `user` (Object): Google Profile Object (`id`, `displayName`, `emails`, `photos`).
+- **戻り値**: `Promise<void>`
+- **ロジック**:
+  1. `User` Kind のキー (`id`) を作成。
+  2. プロファイル情報から必要なフィールド (`email`, `displayName`, `photo`, `updatedAt`) を抽出。
+  3. `datastore.save` で保存。`photo` (URL) は `excludeFromIndexes` 指定。
 
-#### `saveUser(user)`
+### `getAiPersona(userId)`
 
-Google認証後に取得したユーザー情報をDatastoreに保存・更新します。
+- **説明**: ユーザーごとの AI ペルソナ設定を取得する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+- **戻り値**: `Promise<Object>`: ペルソナ設定オブジェクト。
+- **ロジック**:
+  1. `AiPersona` Kind のキー (`userId`) で取得。
+  2. 存在しない場合はデフォルト設定（`basePersonality`: "あなたは親切な AI アシスタントです。"）を返す。
 
-```javascript
-export async function saveUser(user) {
-  // ...
-  const key = datastore.key([KIND_USER, user.id]);
-  const entity = {
-    key: key,
-    data: { /* ... user data ... */ },
-  };
-  await datastore.save(entity);
-  // ...
-}
-```
+### `updateAiPersona(userId, data)`
 
--   `datastore.key([KIND_USER, user.id])` で、`User` Kindの中に`user.id`をキーとする一意なKeyを作成します。
--   `datastore.save()` は、指定されたKeyを持つエンティティが存在すれば更新し、なければ新規作成します（Upsert）。
+- **説明**: ペルソナ設定を更新する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `data` (Object): 更新・マージする設定値。
+- **戻り値**: `Promise<void>`
+- **ロジック**:
+  1. 現在のデータを取得。
+  2. 新しい `data` と `existing` をマージ。
+  3. `updatedAt` を更新して保存。`basePersonality` は `excludeFromIndexes` 指定。
 
----
+### `incrementInteractionCount(userId)`
 
-### AIペルソナ (AiPersonas)
+- **説明**: ユーザーとの対話回数をインクリメントする（トランザクション処理）。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+- **戻り値**: `Promise<Number>`: 新しいカウント値。
+- **ロジック**:
+  1. トランザクションを開始。
+  2. 現在のペルソナを取得し、カウントを確認。
+  3. カウント +1 して `transaction.save`、`transaction.commit`。`basePersonality` は `excludeFromIndexes` 指定。
 
-#### `getAiPersona(userId)`
+### `saveChatMessage(userId, role, content)`
 
-ユーザーごとのAIペルソナ設定を取得します。データがまだ存在しない場合は、デフォルト値を返します。
+- **説明**: チャットメッセージを保存する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `role` (String): 'user' | 'model'。
+  - `content` (String): メッセージ本文。
+- **戻り値**: `Promise<void>`
+- **ロジック**:
+  1. `ChatMessage` Kind のエンティティを作成（キーは自動生成）。
+  2. `timestamp` に現在時刻を設定して保存。`content` は `excludeFromIndexes` 指定。
 
-#### `updateAiPersona(userId, data)`
+### `getRecentChatHistory(userId, limit)`
 
-AIペルソナの情報を更新します。既存のデータと新しいデータをマージして保存します。
+- **説明**: 直近のチャット履歴を取得する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `limit` (Number): 取得件数 (デフォルト 10)。
+- **戻り値**: `Promise<Array>`: **古い順 (時系列)** にソートされたメッセージ配列。
+- **ロジック**:
+  1. `ChatMessage` を `user_uid` でフィルタ。
+  2. `timestamp` の **降順** で `limit` 件取得（最新の N 件）。
+  3. 取得結果を **リバース** して、古い順（会話の流れ）に戻して返す。
 
-#### `incrementInteractionCount(userId)`
+### `savePersonalityAnalysis(userId, traits, type)`
 
-ユーザーとAIの対話回数を1つ増やします。複数のリクエストが同時に来ても安全にカウンターを更新するため、**トランザクション**を使用しています。
+- **説明**: 性格分析結果を保存する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `traits` (Object/String): 分析結果データ。
+  - `type` (String): 分析タイプ ('daydream' 等)。
+- **戻り値**: `Promise<void>`
+- **ロジック**:
+  1. `PersonalityAnalysis` Kind として保存。
+  2. `traits` プロパティは長文（1500 bytes 超）になる可能性があるため、`excludeFromIndexes: ['traits']` を指定してインデックスを除外する。
 
-```javascript
-export async function incrementInteractionCount(userId) {
-  // ...
-  const transaction = datastore.transaction();
-  try {
-    await transaction.run();
-    const [persona] = await transaction.get(key); // データを読み取り
-    // ... カウントを増やす処理 ...
-    transaction.save(entity); // データを保存
-    await transaction.commit(); // トランザクションを確定
-    // ...
-  } catch (err) {
-    await transaction.rollback(); // エラー時は変更を破棄
-    // ...
-  }
-}
-```
+### `getRecentAnalyses(userId, limit)`
 
----
+- **説明**: 最新の分析結果を取得する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `limit` (Number): 件数。
+- **戻り値**: `Promise<Array>`: 新しい順の配列。
 
-### チャットメッセージ (Chat Messages)
+### `deleteUserData(userId)`
 
-#### `saveChatMessage(userId, role, content)`
+- **説明**: ユーザーに関連する全データを削除する。
+- **引数**:
+  - `userId` (String): 対象ユーザー ID。
+- **戻り値**: `Promise<void>`
+- **ロジック**:
+  1. `User`, `AiPersona` はキー指定で削除。
+  2. `ChatMessage`, `PersonalityAnalysis` はクエリしてキーを取得し、バッチ削除。
 
-ユーザーとAIの会話メッセージを1件保存します。
+### `getAllUserIdsActiveToday()`
 
-#### `getRecentChatHistory(userId, limit = 10)`
-
-指定されたユーザーの最新のチャット履歴を`limit`件数だけ取得します。
-
-```javascript
-export async function getRecentChatHistory(userId, limit = 10) {
-  // ...
-  const query = datastore.createQuery(KIND_CHAT_MESSAGE)
-    .filter('user_uid', '=', userId)
-    .order('timestamp', { descending: true })
-    .limit(limit);
-  // ...
-}
-```
--   `createQuery()` でクエリを作成し、`filter()`で特定ユーザーのメッセージに絞り込み、`order()`でタイムスタンプの降順（新しい順）に並べ替え、`limit()`で件数を制限しています。
-
-#### `getChatHistoryForDay(userId, date)`
-
-特定の日付のチャット履歴を全て取得します。
-
----
-
-### データ削除 (Delete All Data)
-
-#### `deleteUserData(userId)`
-
-指定されたユーザーに関連する全てのデータを削除します。
-
--   `User`と`AiPersona`は`userId`がキーになっているため、キーを直接指定して削除します。
--   `ChatMessage`と`PersonalityAnalysis`は`userId`をプロパティとして持つため、まずクエリで該当するデータのキーを全て取得し、そのキーのリストを使って一括で削除します。`select('__key__')`を使うことで、データ全体を読み込まずにキーだけを効率的に取得できます。
-
----
-
-### ユーティリティ (Utility)
-
-#### `getAllUserIdsActiveToday()`
-
-（デモ・バッチ処理用）現在登録されている全てのユーザーIDを取得します。本番環境では負荷が高くなる可能性があるため、注意が必要な実装です。
+- **説明**: 処理対象の全ユーザー ID を取得する（簡易実装）。
+- **引数**: なし。
+- **戻り値**: `Promise<Array>`: ユーザー ID の配列。
+- **ロジック**:
+  1. `User` Kind をキーのみ取得するクエリを実行し、ID リストを返す。
