@@ -34,11 +34,13 @@ Cloud Tasks と Cloud Scheduler を活用して実行される。
 ### 3.2. 夢・統合タスク (Dream)
 
 - **Handler**: `POST /api/tasks/dream`
-- **トリガー**: Cloud Scheduler (毎日 03:00 JST)。
+- **トリガー**:
+  - Cloud Scheduler (毎日 03:00 JST)。
+  - `developer.html` から手動実行 (動作テスト用)。
 - **処理フロー**:
-  1. アクティブな全ユーザー（または対象ユーザー）を取得。
+  1. アクティブな全ユーザー（またはリクエストで指定された `userId`）を取得。
   2. 各ユーザーについて、その日の `PersonalityAnalysis` 結果と会話ログを収集。
-  3. `ai.synthesizeDream` (または `jobs/dream.js` 内のロジック) を実行し、AI ペルソナの `basePersonality` を微調整・更新する。
+  3. `ai.synthesizePersonality` を実行し、AI ペルソナの `basePersonality` を微調整・更新する。
   4. 「昨日は〇〇の話で盛り上がった」といった長期記憶を形成する。
 
 ## 4. データモデル (Datastore: PersonalityAnalysis)

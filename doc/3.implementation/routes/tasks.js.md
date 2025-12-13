@@ -47,3 +47,21 @@ flowchart TD
      - 結果を `store.savePersonalityAnalysis` で保存。
      - 200 OK を返す。
   4. エラー時は 500 エラーをログ出力して返す。
+
+### `POST /dream`
+
+- **説明**: ユーザーの長期記憶統合（性格更新）を行う。Cloud Scheduler や開発者ツールからトリガーされる。
+- **Body**:
+  ```json
+  {
+    "userId": "user-123" // オプション。指定時はそのユーザーのみ処理。未指定時は全アクティブユーザー。
+  }
+  ```
+- **処理フロー**:
+  1. `userId`が指定されていればそのユーザー、なければ`store.getAllUserIdsActiveToday`で対象ユーザー一覧を取得。
+  2. 各ユーザーについてループ処理:
+     - `store.getChatHistoryForDay`で本日の会話履歴を取得。
+     - `store.getRecentAnalyses`で直近の分析結果を取得。
+     - `ai.synthesizePersonality`でこれらを統合し、新しい性格設定(Persona)を生成。
+     - `store.updateAiPersona`で保存。
+  3. 結果（処理したユーザーとステータス）を JSON で返す。
