@@ -103,7 +103,9 @@
       <div class="api-endpoint">
         <h2><span class="method get">GET</span> /api/posts</h2>
         <p>投稿の一覧を取得します。</p>
-        <button onclick="fetchApi('posts-get-all', 'GET', '/api/posts')">Execute</button>
+        <button onclick="fetchApi('posts-get-all', 'GET', '/api/posts')">
+          Execute
+        </button>
         <pre id="response-posts-get-all"></pre>
       </div>
 
@@ -112,7 +114,11 @@
         <p>個別の投稿を取得します。</p>
         <label for="param-posts-get-one-id">id:</label>
         <input type="text" id="param-posts-get-one-id" placeholder="post-id" />
-        <button onclick="fetchApi('posts-get-one', 'GET', `/api/posts/${document.getElementById('param-posts-get-one-id').value}`)">Execute</button>
+        <button
+          onclick="fetchApi('posts-get-one', 'GET', `/api/posts/${document.getElementById('param-posts-get-one-id').value}`)"
+        >
+          Execute
+        </button>
         <pre id="response-posts-get-one"></pre>
       </div>
 
@@ -120,8 +126,14 @@
         <h2><span class="method post">POST</span> /api/posts</h2>
         <p>新しい投稿を作成します。（要認証）</p>
         <label for="param-posts-post-content">content:</label>
-        <textarea id="param-posts-post-content" rows="3">{"content": "新しい投稿です。"}</textarea>
-        <button onclick="fetchApi('posts-post', 'POST', '/api/posts', document.getElementById('param-posts-post-content').value)">Execute</button>
+        <textarea id="param-posts-post-content" rows="3">
+{"content": "新しい投稿です。"}</textarea
+        >
+        <button
+          onclick="fetchApi('posts-post', 'POST', '/api/posts', document.getElementById('param-posts-post-content').value)"
+        >
+          Execute
+        </button>
         <pre id="response-posts-post"></pre>
       </div>
 
@@ -130,7 +142,11 @@
         <p>投稿を削除します。（要認証）</p>
         <label for="param-posts-delete-id">id:</label>
         <input type="text" id="param-posts-delete-id" placeholder="post-id" />
-        <button onclick="fetchApi('posts-delete', 'DELETE', `/api/posts/${document.getElementById('param-posts-delete-id').value}`)">Execute</button>
+        <button
+          onclick="fetchApi('posts-delete', 'DELETE', `/api/posts/${document.getElementById('param-posts-delete-id').value}`)"
+        >
+          Execute
+        </button>
         <pre id="response-posts-delete"></pre>
       </div>
     </div>
@@ -142,37 +158,67 @@
         <h2><span class="method post">POST</span> /api/chat</h2>
         <p>AIと対話します。（要認証）</p>
         <label for="param-chat-post-message">message:</label>
-        <textarea id="param-chat-post-message" rows="2">{"message": "こんにちは"}</textarea>
-        <button onclick="fetchApi('chat-post', 'POST', '/api/chat', document.getElementById('param-chat-post-message').value)">Execute</button>
+        <textarea id="param-chat-post-message" rows="2">
+{"message": "こんにちは"}</textarea
+        >
+        <button
+          onclick="fetchApi('chat-post', 'POST', '/api/chat', document.getElementById('param-chat-post-message').value)"
+        >
+          Execute
+        </button>
         <pre id="response-chat-post"></pre>
       </div>
 
       <div class="api-endpoint">
-        <h2><span class="method post">POST</span> /api/store/chat-messages/:userId</h2>
+        <h2>
+          <span class="method post">POST</span> /api/store/chat-messages/:userId
+        </h2>
         <p>チャットメッセージを保存します。（要認証）</p>
         <label for="param-store-post-chat-id">userId:</label>
-        <input type="text" id="param-store-post-chat-id" placeholder="user-id" />
+        <input
+          type="text"
+          id="param-store-post-chat-id"
+          placeholder="user-id"
+        />
         <label for="param-store-post-chat-body">Body:</label>
-        <textarea id="param-store-post-chat-body" rows="3">{"role": "user", "content": "今日の天気は？"}</textarea>
-        <button onclick="fetchApi('store-post-chat', 'POST', `/api/store/chat-messages/${document.getElementById('param-store-post-chat-id').value}`, document.getElementById('param-store-post-chat-body').value)">Execute</button>
+        <textarea id="param-store-post-chat-body" rows="3">
+{"role": "user", "content": "今日の天気は？"}</textarea
+        >
+        <button
+          onclick="fetchApi('store-post-chat', 'POST', `/api/store/chat-messages/${document.getElementById('param-store-post-chat-id').value}`, document.getElementById('param-store-post-chat-body').value)"
+        >
+          Execute
+        </button>
         <pre id="response-store-post-chat"></pre>
       </div>
 
       <div class="api-endpoint">
-        <h2><span class="method get">GET</span> /api/store/chat-messages/:userId</h2>
+        <h2>
+          <span class="method get">GET</span> /api/store/chat-messages/:userId
+        </h2>
         <p>最近のチャット履歴を取得します。（要認証）</p>
         <label for="param-store-get-chat-id">userId:</label>
         <input type="text" id="param-store-get-chat-id" placeholder="user-id" />
-        <button onclick="fetchApi('store-get-chat', 'GET', `/api/store/chat-messages/${document.getElementById('param-store-get-chat-id').value}`)">Execute</button>
+        <button
+          onclick="fetchApi('store-get-chat', 'GET', `/api/store/chat-messages/${document.getElementById('param-store-get-chat-id').value}`)"
+        >
+          Execute
+        </button>
         <pre id="response-store-get-chat"></pre>
       </div>
-      
+
       <div class="api-endpoint">
         <h2><span class="method post">POST</span> /api/greet</h2>
         <p>挨拶を返します。（要認証）</p>
         <label for="param-greet-post-name">name:</label>
-        <textarea id="param-greet-post-name" rows="1">{"name": "Developer"}</textarea>
-        <button onclick="fetchApi('greet-post', 'POST', '/api/greet', document.getElementById('param-greet-post-name').value)">Execute</button>
+        <textarea id="param-greet-post-name" rows="1">
+{"name": "Developer"}</textarea
+        >
+        <button
+          onclick="fetchApi('greet-post', 'POST', '/api/greet', document.getElementById('param-greet-post-name').value)"
+        >
+          Execute
+        </button>
         <pre id="response-greet-post"></pre>
       </div>
     </div>
@@ -181,45 +227,114 @@
     <h2>AI Agent & Analysis</h2>
     <div class="endpoint-grid">
       <div class="api-endpoint">
-        <h2><span class="method get">GET</span> /api/store/ai-personas/:userId</h2>
+        <h2>
+          <span class="method get">GET</span> /api/store/ai-personas/:userId
+        </h2>
         <p>AIペルソナを取得します。（要認証）</p>
         <label for="param-store-get-persona-id">userId:</label>
-        <input type="text" id="param-store-get-persona-id" placeholder="user-id" />
-        <button onclick="fetchApi('store-get-persona', 'GET', `/api/store/ai-personas/${document.getElementById('param-store-get-persona-id').value}`)">Execute</button>
+        <input
+          type="text"
+          id="param-store-get-persona-id"
+          placeholder="user-id"
+        />
+        <button
+          onclick="fetchApi('store-get-persona', 'GET', `/api/store/ai-personas/${document.getElementById('param-store-get-persona-id').value}`)"
+        >
+          Execute
+        </button>
         <pre id="response-store-get-persona"></pre>
       </div>
 
       <div class="api-endpoint">
-        <h2><span class="method post">POST</span> /api/store/ai-personas/:userId</h2>
+        <h2>
+          <span class="method post">POST</span> /api/store/ai-personas/:userId
+        </h2>
         <p>AIペルソナを更新します。（要認証）</p>
         <label for="param-store-post-persona-id">userId:</label>
-        <input type="text" id="param-store-post-persona-id" placeholder="user-id" />
+        <input
+          type="text"
+          id="param-store-post-persona-id"
+          placeholder="user-id"
+        />
         <label for="param-store-post-persona-body">Body:</label>
-        <textarea id="param-store-post-persona-body" rows="3">{"basePersonality": "あなたは関西弁を話すAIです。"}</textarea>
-        <button onclick="fetchApi('store-post-persona', 'POST', `/api/store/ai-personas/${document.getElementById('param-store-post-persona-id').value}`, document.getElementById('param-store-post-persona-body').value)">Execute</button>
+        <textarea id="param-store-post-persona-body" rows="3">
+{"basePersonality": "あなたは関西弁を話すAIです。"}</textarea
+        >
+        <button
+          onclick="fetchApi('store-post-persona', 'POST', `/api/store/ai-personas/${document.getElementById('param-store-post-persona-id').value}`, document.getElementById('param-store-post-persona-body').value)"
+        >
+          Execute
+        </button>
         <pre id="response-store-post-persona"></pre>
       </div>
 
       <div class="api-endpoint">
         <h2><span class="method post">POST</span> /api/tasks/daydream</h2>
-        <p>Daydream タスクを手動実行します。（要 Service Account 認証相当）<br><strong>Test Mode</strong> を有効にすると、AI分析をスキップして固定データを保存します。</p>
+        <p>
+          Daydream タスクを手動実行します。（要 Service Account 認証相当）<br /><strong
+            >Test Mode</strong
+          >
+          を有効にすると、AI分析をスキップして固定データを保存します。
+        </p>
         <label for="param-tasks-daydream-id">userId:</label>
         <input type="text" id="param-tasks-daydream-id" placeholder="user-id" />
         <label>
-          <input type="checkbox" id="param-tasks-daydream-test" checked /> Test Mode (Mock AI)
+          <input type="checkbox" id="param-tasks-daydream-test" checked /> Test
+          Mode (Mock AI)
         </label>
-        <button onclick="fetchApi('tasks-daydream', 'POST', '/api/tasks/daydream', JSON.stringify({ userId: document.getElementById('param-tasks-daydream-id').value, isTest: document.getElementById('param-tasks-daydream-test').checked }))">Execute</button>
+        <button
+          onclick="fetchApi('tasks-daydream', 'POST', '/api/tasks/daydream', JSON.stringify({ userId: document.getElementById('param-tasks-daydream-id').value, isTest: document.getElementById('param-tasks-daydream-test').checked }))"
+        >
+          Execute
+        </button>
         <pre id="response-tasks-daydream"></pre>
       </div>
 
       <div class="api-endpoint">
+        <h2><span class="method post">POST</span> /api/tasks/dream</h2>
+        <p>
+          Dream タスク（記憶統合・性格更新）を手動実行します。（要 Service
+          Account 認証相当）<br />userId
+          指定なしで実行すると全アクティブユーザー対象（バッチ動作）。
+        </p>
+        <label for="param-tasks-dream-id">userId (Optional):</label>
+        <input
+          type="text"
+          id="param-tasks-dream-id"
+          placeholder="user-id (指定なしで全ユーザー)"
+        />
+        <button
+          onclick="fetchApi('tasks-dream', 'POST', '/api/tasks/dream', JSON.stringify({ userId: document.getElementById('param-tasks-dream-id').value }))"
+        >
+          Execute
+        </button>
+        <pre id="response-tasks-dream"></pre>
+      </div>
+
+      <div class="api-endpoint">
         <h2><span class="method get">GET</span> /api/store/analyses/:userId</h2>
-        <p>保存されたPersonality Analysis（分析結果）を取得します。（要認証）<br>Daydream/Dream機能の結果確認用。</p>
+        <p>
+          保存されたPersonality Analysis（分析結果）を取得します。（要認証）<br />Daydream/Dream機能の結果確認用。
+        </p>
         <label for="param-store-get-analyses-id">userId:</label>
-        <input type="text" id="param-store-get-analyses-id" placeholder="user-id" />
+        <input
+          type="text"
+          id="param-store-get-analyses-id"
+          placeholder="user-id"
+        />
         <label for="param-store-get-analyses-limit">limit (件数):</label>
-        <input type="number" id="param-store-get-analyses-limit" value="5" min="1" max="20" />
-        <button onclick="fetchApi('store-get-analyses', 'GET', `/api/store/analyses/${document.getElementById('param-store-get-analyses-id').value}?limit=${document.getElementById('param-store-get-analyses-limit').value}`)">Execute</button>
+        <input
+          type="number"
+          id="param-store-get-analyses-limit"
+          value="5"
+          min="1"
+          max="20"
+        />
+        <button
+          onclick="fetchApi('store-get-analyses', 'GET', `/api/store/analyses/${document.getElementById('param-store-get-analyses-id').value}?limit=${document.getElementById('param-store-get-analyses-limit').value}`)"
+        >
+          Execute
+        </button>
         <pre id="response-store-get-analyses"></pre>
       </div>
     </div>
@@ -230,7 +345,9 @@
       <div class="api-endpoint">
         <h2><span class="method get">GET</span> /api/health</h2>
         <p>システムの稼働状態を確認します。</p>
-        <button onclick="fetchApi('health', 'GET', '/api/health')">Execute</button>
+        <button onclick="fetchApi('health', 'GET', '/api/health')">
+          Execute
+        </button>
         <pre id="response-health"></pre>
       </div>
 
@@ -243,19 +360,43 @@
 
       <div class="api-endpoint">
         <h2><span class="method post">POST</span> /api/store/users</h2>
-        <p>認証済みユーザーをDatastoreに保存します。（要認証）<br>Bodyを空にすると、現在認証中の<code>req.user</code>が保存されます。</p>
+        <p>
+          認証済みユーザーをDatastoreに保存します。（要認証）<br />Bodyを空にすると、現在認証中の<code>req.user</code>が保存されます。
+        </p>
         <label for="param-store-post-user-body">Body (任意):</label>
-        <textarea id="param-store-post-user-body" rows="4" placeholder='{"user": {"id": "test-user-123", "displayName": "Test User"}}'></textarea>
-        <button onclick="fetchApi('store-post-user', 'POST', '/api/store/users', document.getElementById('param-store-post-user-body').value)">Execute</button>
+        <textarea
+          id="param-store-post-user-body"
+          rows="4"
+          placeholder='{"user": {"id": "test-user-123", "displayName": "Test User"}}'
+        ></textarea>
+        <button
+          onclick="fetchApi('store-post-user', 'POST', '/api/store/users', document.getElementById('param-store-post-user-body').value)"
+        >
+          Execute
+        </button>
         <pre id="response-store-post-user"></pre>
       </div>
 
       <div class="api-endpoint">
-        <h2 style="color: red"><span class="method delete">DELETE</span> /api/store/users/:userId</h2>
-        <p style="color: red">指定したユーザーの全てのデータをDatastoreから削除します。<strong>（危険な操作）</strong></p>
+        <h2 style="color: red">
+          <span class="method delete">DELETE</span> /api/store/users/:userId
+        </h2>
+        <p style="color: red">
+          指定したユーザーの全てのデータをDatastoreから削除します。<strong
+            >（危険な操作）</strong
+          >
+        </p>
         <label for="param-store-delete-user-id">userId:</label>
-        <input type="text" id="param-store-delete-user-id" placeholder="user-id" />
-        <button onclick="if(confirm('本当にこのユーザーの全データを削除しますか？')) fetchApi('store-delete-user', 'DELETE', `/api/store/users/${document.getElementById('param-store-delete-user-id').value}`)">Execute Delete</button>
+        <input
+          type="text"
+          id="param-store-delete-user-id"
+          placeholder="user-id"
+        />
+        <button
+          onclick="if(confirm('本当にこのユーザーの全データを削除しますか？')) fetchApi('store-delete-user', 'DELETE', `/api/store/users/${document.getElementById('param-store-delete-user-id').value}`)"
+        >
+          Execute Delete
+        </button>
         <pre id="response-store-delete-user"></pre>
       </div>
     </div>
