@@ -21,6 +21,9 @@ window.onload = async () => {
                 userNameSpan.textContent = user.displayName;
                 authSection.style.display = 'none';
                 appSection.style.display = 'block';
+                
+                // 投稿一覧を取得・表示
+                fetchPosts(user);
             } else {
                 // ユーザー情報が取得できない場合は、ログインボタンを表示（何もしない）
                 console.log('User not logged in');
@@ -34,6 +37,89 @@ window.onload = async () => {
         // エラー時もログインボタンを表示（何もしない）
     }
 };
+
+async function fetchPosts(currentUser) {
+    const postsContainer = document.getElementById('posts-container');
+    postsContainer.innerHTML = '<p>Loading posts...</p>';
+    try {
+        const response = await fetch('/api/posts');
+        if (response.ok) {
+            const posts = await response.json();
+            renderPosts(posts, currentUser);
+        } else {
+            postsContainer.innerHTML = '<p>Failed to load posts.</p>';
+        }
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        postsContainer.innerHTML = '<p>Error loading posts.</p>';
+    }
+}
+
+function renderPosts(posts, currentUser) {
+    const postsContainer = document.getElementById('posts-container');
+    postsContainer.innerHTML = ''; // Clear loading message
+
+    if (posts.length === 0) {
+        postsContainer.innerHTML = '<p>No posts yet.</p>';
+        return;
+    }
+
+    posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.style.border = '1px solid #ddd';
+        postElement.style.padding = '10px';
+        postElement.style.marginBottom = '10px';
+        postElement.style.borderRadius = '5px';
+        postElement.style.backgroundColor = '#fff';
+
+        const meta = document.createElement('div');
+        meta.style.fontSize = '0.9em';
+        meta.style.color = '#666';
+        meta.textContent = `${post.author.displayName} - ${new Date(post.createdAt).toLocaleString()}`;
+        postElement.appendChild(meta);
+
+        const content = document.createElement('div');
+        content.style.marginTop = '5px';
+        content.textContent = post.content;
+        postElement.appendChild(content);
+
+        // Show delete button only if the current user is the author
+        if (currentUser && currentUser.id === post.author.id) {
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.style.marginTop = '10px';
+            deleteButton.style.backgroundColor = '#ffebee';
+            deleteButton.style.color = '#c62828';
+            deleteButton.style.border = '1px solid #ef9a9a';
+            deleteButton.onclick = () => deletePost(post.id, currentUser);
+            postElement.appendChild(deleteButton);
+        }
+
+        postsContainer.appendChild(postElement);
+    });
+}
+
+async function deletePost(postId, currentUser) {
+    if (!confirm('Are you sure you want to delete this post?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/posts/${postId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.status === 204) {
+            // Reload posts
+            fetchPosts(currentUser);
+        } else {
+            alert('Failed to delete post.');
+        }
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Error deleting post.');
+    }
+}
 
 greetButton.addEventListener('click', async () => {
     const name = nameInput.value || 'World'; // 入力が空なら'World'を使う

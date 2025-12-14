@@ -1,52 +1,30 @@
-# 実装詳細: public/script.js
+# Implementation: public/script.js
 
 ## 概要
 
-メインのチャット UI (`index.html`) を制御するフロントエンドロジック。
-メッセージの送信、表示、履歴の読み込みを行う。
+一般ユーザー向けトップページ (`index.html`) において、投稿一覧の取得・表示および削除機能のロジックを実装する。
 
 ## 依存関係
 
 ```mermaid
 flowchart TD
-    %% Dependencies
-    script["public/script.js"] -->|Manipulates| dom["index.html"]
-    script -->|Calls| chatAPI["/api/chat"]
-    script -->|Calls| historyAPI["/api/store/chat-messages"]
-    script -->|Calls| userAPI["/user"]
+    Current["public/script.js"]
+    API_GetPosts["GET /api/posts"]
+    API_DeletePost["DELETE /api/posts/:id"]
+    DOM_Container["#posts-container"]
 
-    %% Consumers
-    webuser["Web User"] -->|Interacts with| script
+    Current --> API_GetPosts
+    Current --> API_DeletePost
+    Current --> DOM_Container
 ```
 
-## 関数詳細
+## 実装内容
 
-### `appendMessage(role, text)`
-
-- **説明**: チャットウィンドウにメッセージを追加表示する。
-- **引数**:
-  - `role` (String): 'user' | 'model'。スタイル分けに使用。
-  - `text` (String): 表示するメッセージ本文。
-- **処理**:
-  1. `div` 要素を作成し、クラス (`message`, `user-message`/`model-message`) を付与。
-  2. テキストを設定。
-  3. チャット履歴コンテナ (`#chat-history`) に追加。
-  4. 最下部へスクロール。
-
-### `loadChatHistory()` (window.onload)
-
-- **説明**: ページ読み込み時に過去のチャット履歴を取得して表示する。
-- **処理**:
-  1. `GET /api/store/chat-messages/:userId` (または現在のユーザー ID を特定するエンドポイント) をコール。
-     - _注意_: 現在の実装では `userId` のハードコードや、`GET /user` からの動的取得など、実装状況に合わせて調整されている。
-  2. 取得した配列をループし、`appendMessage` で順次表示。
-
-### `sendMessage()` (form.onsubmit)
-
-- **説明**: ユーザーのメッセージを送信する。
-- **処理**:
-  1. 入力欄からテキストを取得。空なら何もしない。
-  2. `appendMessage` で自身の発言を即時表示。
-  3. `POST /api/chat` に送信 (`{ message: text }`)。
-  4. レスポンス ({ message: reply }) を受け取り、`appendMessage` で AI の応答を表示。
-  5. エラー時はアラート等で通知。
+- **既存機能**: ユーザー認証チェック、挨拶、チャット、ヘルスチェック
+- **新規機能**:
+  - `fetchPosts()`: `GET /api/posts` を呼び出し、投稿一覧を取得。
+  - `renderPosts(posts, currentUser)`: 取得した投稿を `#posts-container` に描画。
+    - 各投稿に対してカード要素を作成。
+    - 投稿者が現在のユーザー (`currentUser`) と一致する場合、「削除」ボタンを表示。
+    - 「削除」ボタンクリック時、`DELETE /api/posts/:id` を呼び出し、成功すれば一覧を再取得。
+  - `window.onload`: ユーザー情報取得後に `fetchPosts()` を呼び出すように修正。
