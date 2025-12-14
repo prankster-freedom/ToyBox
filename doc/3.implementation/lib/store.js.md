@@ -91,6 +91,19 @@ flowchart TD
   2. `timestamp` の **降順** で `limit` 件取得（最新の N 件）。
   3. 取得結果を **リバース** して、古い順（会話の流れ）に戻して返す。
 
+### `getChatHistoryForDay(userId, date)`
+
+- **説明**: 指定した日付の全チャット履歴を取得する。
+- **引数**:
+  - `userId` (String): ユーザー ID。
+  - `date` (Date/String): 対象日。
+- **戻り値**: `Promise<Array>`: **古い順 (時系列)** にソートされたメッセージ配列。
+- **ロジック**:
+  1. `date` からその日の開始時刻 (00:00:00) と終了時刻 (23:59:59) を生成。
+  2. `user_uid` と `timestamp` (範囲指定) でフィルタ。
+  3. `timestamp` の **昇順** でソートして取得。
+  4. ※ このクエリには `index.yaml` で `user_uid` + `timestamp` (ASC) の複合インデックスが必要。
+
 ### `savePersonalityAnalysis(userId, traits, type)`
 
 - **説明**: 性格分析結果を保存する。

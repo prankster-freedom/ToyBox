@@ -22,3 +22,6 @@ Cloud Scheduler からの 404 エラーを解消するために実装された `
 
 実装および動的検証が完了しました。
 `developer.html` からの実行、および Cloud Scheduler 想定の API コールともに正常に動作することを確認しました。
+
+> [!NOTE]
+> Cloud 環境での実行には、`ChatMessage` に対する `user_uid` + `timestamp` (昇順) の複合インデックスが必要です。不足していると 500 エラー (FAILED_PRECONDITION) が発生します。本件対応で `index.yaml` を更新済みです。
