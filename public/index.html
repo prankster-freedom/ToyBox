@@ -1,79 +1,76 @@
 <!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Tester</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        padding: 1em;
-      }
-      .api-section {
-        margin-bottom: 2em;
-        padding: 1em;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      button {
-        margin-top: 0.5em;
-      }
-      #result {
-        margin-top: 1em;
-        font-weight: bold;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>API Tester</h1>
-    <div id="auth-section">
-      <p>You are not logged in.</p>
-      <button id="loginButton" onclick="window.location.href='/auth/google'">
-        Login with Google
-      </button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ToyBox</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body class="lang-jp"> <!-- Default JP -->
+
+    <!-- BACKGROUND -->
+    <div class="flower-bg">
+        <div class="petal p1"></div>
+        <div class="petal p2"></div>
+        <div class="petal p3"></div>
     </div>
-    <div id="app-section" style="display: none">
-      <p>
-        Welcome, <span id="userName"></span>!
-        <button id="logoutButton" onclick="window.location.href='/auth/logout'">
-          Logout
-        </button>
-      </p>
-      <div class="api-section">
-        <h2>Greet API (POST /api/greet)</h2>
-        <input type="text" id="nameInput" placeholder="Enter your name" />
-        <button id="greetButton">Greet</button>
-      </div>
-      <div class="api-section">
-        <h2>Health Check API (GET /api/health)</h2>
-        <button id="healthCheckButton">Run Health Check</button>
-      </div>
-      <div class="api-section">
-        <h2>Chat API (POST /api/chat)</h2>
-        <div
-          id="chatHistory"
-          style="
-            height: 200px;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-          "
-        ></div>
-        <input type="text" id="chatInput" placeholder="Enter your message" />
-        <input type="text" id="chatInput" placeholder="Enter your message" />
-        <button id="chatButton">Send</button>
-      </div>
-      <div class="api-section">
-        <h2>Recent Posts</h2>
-        <div id="posts-container">
-          <p>Loading posts...</p>
+
+    <!-- LANGUAGE SWITCHER -->
+    <div class="lang-switch">
+        <button class="lang-btn" id="btn-lang-en">EN</button>
+        <button class="lang-btn active" id="btn-lang-jp">JP</button>
+    </div>
+
+    <!-- AUTH OVERLAY (Shown if not logged in) -->
+    <div class="auth-overlay active" id="authOverlay">
+        <div class="auth-card">
+            <h1 class="title-font" style="margin-bottom: 30px; color: #5a4d4d;">ToyBox</h1>
+            <a href="/auth/google" class="auth-btn">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="G" width="20">
+                Log in with Google
+            </a>
         </div>
-      </div>
-      <p id="result"></p>
     </div>
-    <hr />
-    <p><a href="/developer.html">Developer API Console</a></p>
+
+    <!-- MAIN APP (Shown if logged in) -->
+    <nav class="nav-header">
+        <button class="nav-btn active title-font" id="btn-chat" data-key="nav_chat">Dialogue</button>
+        <button class="nav-btn title-font" id="btn-diary" data-key="nav_diary">Collection</button>
+    </nav>
+
+    <!-- USER MENU -->
+    <div class="user-menu" id="userMenu" style="display: none;">
+        <span class="user-name" id="userName"></span>
+        <button class="logout-btn" onclick="location.href='/logout'" data-key="nav_logout">Log out</button>
+    </div>
+
+    <div class="viewport" id="appViewport">
+        <!-- SCENE: CHAT -->
+        <div class="scene active" id="scene-chat">
+            <div class="stage">
+                <div class="chest-target" id="chestTarget">🗝️</div>
+                <div class="curved-stream" id="stream"></div>
+            </div>
+        </div>
+
+        <!-- SCENE: DIARY -->
+        <div class="scene" id="scene-diary">
+            <div class="diary-container">
+                <div class="diary-title title-font" data-key="diary_title">Precious Moments</div>
+                <div class="masonry-grid" id="diaryGrid"></div>
+            </div>
+        </div>
+
+        <!-- GLOBAL INPUT DOCK -->
+        <div class="input-dock" id="inputDock">
+            <div class="input-wrapper">
+                <input type="text" class="main-input" id="inputBox" placeholder="Write something beautiful...">
+                <button class="send-btn" id="sendBtn">✦</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

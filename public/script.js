@@ -1,204 +1,423 @@
-const nameInput = document.getElementById('nameInput');
-const greetButton = document.getElementById('greetButton');
-const healthCheckButton = document.getElementById('healthCheckButton');
-const chatHistory = document.getElementById('chatHistory');
-const chatInput = document.getElementById('chatInput');
-const chatButton = document.getElementById('chatButton');
-const resultParagraph = document.getElementById('result');
-
-const authSection = document.getElementById('auth-section');
-const appSection = document.getElementById('app-section');
-const userNameSpan = document.getElementById('userName');
-
-// ページロード時に認証状態をチェック
-// サーバーサイドで認証済みの場合のみこのページに到達するため、常にapp-sectionを表示
-window.onload = async () => {
-    try {
-        const response = await fetch('/user'); // ユーザー情報を取得する新しいエンドポイントを想定
-        if (response.ok) {
-            const user = await response.json();
-            if (user && user.displayName) {
-                userNameSpan.textContent = user.displayName;
-                authSection.style.display = 'none';
-                appSection.style.display = 'block';
-                
-                // 投稿一覧を取得・表示
-                fetchPosts(user);
-            } else {
-                // ユーザー情報が取得できない場合は、ログインボタンを表示（何もしない）
-                console.log('User not logged in');
-            }
-        } else {
-            // 応答がOKでない場合も、ログインボタンを表示（何もしない）
-            console.log('Failed to fetch user info');
-        }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        // エラー時もログインボタンを表示（何もしない）
-    }
+/* === DICTIONARY === */
+const RESOURCES = {
+  en: {
+    nav_chat: "Dialogue",
+    nav_diary: "Collection",
+    nav_logout: "Log out",
+    diary_title: "Precious Moments",
+    input_placeholder: "Write something beautiful...",
+    ai_welcome: "Welcome to your sanctuary.\nHow are you feeling today?",
+    ai_resp: "That is truly beautiful.",
+    save_title: "Collect",
+    meta_ai: "ToyBox AI",
+    meta_user: "You",
+    dateFormat: (d) =>
+      new Date(d).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+  },
+  jp: {
+    nav_chat: "おはなし",
+    nav_diary: "想い出",
+    nav_logout: "ログアウト",
+    diary_title: "大切な言葉たち",
+    input_placeholder: "ここに想いを綴ってください...",
+    ai_welcome: "ようこそ。あなたの言葉は、\nここで大切な想い出になります。",
+    ai_resp: "それは素敵な考えですね。",
+    save_title: "想い出に残す",
+    meta_ai: "AI",
+    meta_user: "あなた",
+    dateFormat: (d) =>
+      new Date(d).toLocaleDateString("ja-JP").replace(/\//g, "."),
+  },
 };
 
-async function fetchPosts(currentUser) {
-    const postsContainer = document.getElementById('posts-container');
-    postsContainer.innerHTML = '<p>Loading posts...</p>';
-    try {
-        const response = await fetch('/api/posts');
-        if (response.ok) {
-            const posts = await response.json();
-            renderPosts(posts, currentUser);
-        } else {
-            postsContainer.innerHTML = '<p>Failed to load posts.</p>';
-        }
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        postsContainer.innerHTML = '<p>Error loading posts.</p>';
+let currentLang = "jp";
+let activeScene = "chat";
+let currentUser = null;
+let chatMessages = []; // Local state for chat message
+
+document.addEventListener("DOMContentLoaded", () => {
+  initAuth();
+  initUI();
+});
+
+/* === INITIALIZATION === */
+async function initAuth() {
+  try {
+    const res = await fetch("/user");
+    if (res.ok) {
+      currentUser = await res.json();
+      // Auth Success
+      document.getElementById("authOverlay").classList.remove("active");
+      document.getElementById("appViewport").classList.add("authenticated");
+      document.getElementById("userMenu").style.display = "flex";
+      document.getElementById("userName").textContent = currentUser.displayName;
+
+      // Initial Load
+      setLang("jp");
+      // Greet
+      if (chatMessages.length === 0) {
+        chatMessages.push({
+          id: "welcome",
+          type: "ai",
+          text: RESOURCES[currentLang].ai_welcome,
+        });
+        renderChat();
+      }
+    } else {
+      // Not logged in -> Show Overlay
+      document.getElementById("authOverlay").classList.add("active");
     }
+  } catch (e) {
+    console.error("Auth check failed", e);
+  }
 }
 
-function renderPosts(posts, currentUser) {
-    const postsContainer = document.getElementById('posts-container');
-    postsContainer.innerHTML = ''; // Clear loading message
+function initUI() {
+  // Lang Switchers
+  document.getElementById("btn-lang-en").onclick = () => setLang("en");
+  document.getElementById("btn-lang-jp").onclick = () => setLang("jp");
 
-    if (posts.length === 0) {
-        postsContainer.innerHTML = '<p>No posts yet.</p>';
-        return;
+  // Nav Switchers
+  document.getElementById("btn-chat").onclick = () => switchScene("chat");
+  document.getElementById("btn-diary").onclick = () => switchScene("diary");
+  document.getElementById("chestTarget").onclick = () => switchScene("diary");
+
+  // Input
+  document.getElementById("inputBox").onkeypress = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+  document.getElementById("sendBtn").onclick = handleSubmit;
+
+  // Resize Handler
+  window.onresize = renderChat;
+}
+
+/* === LOGIC: LANGUAGE === */
+function setLang(lang) {
+  currentLang = lang;
+  document.body.className = `lang-${lang}`;
+
+  document
+    .querySelectorAll(".lang-btn")
+    .forEach((b) => b.classList.remove("active"));
+  document.getElementById(`btn-lang-${lang}`).classList.add("active");
+
+  document.querySelectorAll("[data-key]").forEach((el) => {
+    const key = el.getAttribute("data-key");
+    if (RESOURCES[lang][key]) el.textContent = RESOURCES[lang][key];
+  });
+
+  document.getElementById("inputBox").placeholder =
+    RESOURCES[lang].input_placeholder;
+
+  if (activeScene === "chat") resetChatInLang();
+  if (activeScene === "diary") renderDiary(); // Re-render dates/text if needed?
+}
+
+/* === LOGIC: SCENE === */
+function switchScene(name) {
+  activeScene = name;
+
+  document
+    .querySelectorAll(".scene")
+    .forEach((el) => el.classList.remove("active"));
+  document.getElementById("scene-" + name).classList.add("active");
+
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  document.getElementById("btn-" + name).classList.add("active");
+
+  if (name === "chat") {
+    requestAnimationFrame(renderChat);
+  } else if (name === "diary") {
+    fetchAndRenderDiary();
+  }
+}
+
+/* === LOGIC: CHAT (CURVE) === */
+const stream = document.getElementById("stream");
+const inputDock = document.getElementById("inputDock");
+
+function resetChatInLang() {
+  // If we only have the welcome message, translate it.
+  if (chatMessages.length === 1 && chatMessages[0].id === "welcome") {
+    chatMessages[0].text = RESOURCES[currentLang].ai_welcome;
+    renderChat();
+  }
+}
+
+function renderChat() {
+  // 1. DOM Sync (Optimized for reuse would be better, but full rebuild is safe for prototypes)
+  // To avoid scroll issues, we'll rebuild.
+  while (stream.children.length > chatMessages.length)
+    stream.removeChild(stream.firstChild);
+    
+  while (stream.children.length < chatMessages.length) {
+    const i = stream.children.length;
+    const msg = chatMessages[i];
+    const el = document.createElement("div");
+    el.className = `card ${msg.type}`;
+
+    const meta =
+      msg.type === "ai"
+        ? RESOURCES[currentLang].meta_ai
+        : RESOURCES[currentLang].meta_user;
+    const tooltip = RESOURCES[currentLang].save_title;
+    // Escape HTML for safety
+    const safeText = msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    const html = `
+            <div class="card-meta">
+                <span>${meta}</span>
+                <span class="card-action" title="${tooltip}">💎</span>
+            </div>
+            <div class="msg-text">${safeText}</div>
+        `;
+    el.innerHTML = html;
+
+    // Add click listener for save
+    el.querySelector(".card-action").onclick = (e) =>
+      saveToDiaryFromChat(e.target, safeText);
+
+    stream.appendChild(el);
+  }
+
+  // 2. Layout Calculation (Dynamic Height + Curve)
+  const windowHeight = window.innerHeight;
+  const inputRect = inputDock.getBoundingClientRect();
+  const inputTop = inputRect.top === 0 ? windowHeight - 100 : inputRect.top;
+  const safeBottomY = inputTop - 30; // Start point for newest message
+  const curveThresholdY = windowHeight * 0.3; // Point where items start curving away
+  const GAP = 30; // Gap between cards
+
+  const nodes = Array.from(stream.children);
+  let currentBottomY = safeBottomY;
+
+  // Iterate backwards (Newest -> Oldest) to stack them on top of each other
+  for (let i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i];
+      const reverseIndex = (nodes.length - 1) - i;
+      
+      const cardHeight = node.offsetHeight || 120;
+      let targetTopY = currentBottomY - cardHeight;
+      
+      // Calculate visual transformation
+      let transformY = targetTopY;
+      let z = 0;
+      let xOffset = 0;
+      let scale = 1;
+      let opacity = 1;
+
+      // Apply Curve Logic
+      if (transformY < curveThresholdY) {
+          // It's in the "Curve Area"
+          const excess = curveThresholdY - transformY;
+          
+          // Compress the Y space in the curve area to create depth illusion
+          // Instead of moving linearly up, we slow down Y movement and increase Z/Scale
+          transformY = curveThresholdY - (excess * 0.4); 
+          
+          z = - (excess * 5); // Move deep into background
+          xOffset = Math.pow(excess, 1.1) * 0.2; // Slide slightly right? (or keep center)
+          
+          // Scale down
+          scale = Math.max(0, 1 - (excess * 0.002));
+          opacity = Math.max(0, 1 - (excess * 0.003));
+      } else {
+          // Standard Stack Area (Near User)
+          // Minimal Z effect
+          z = 0; 
+          scale = 1;
+      }
+      
+      if (opacity <= 0.05) {
+          node.style.opacity = 0;
+          node.style.visibility = "hidden";
+      } else {
+          node.style.opacity = opacity;
+          node.style.visibility = "visible";
+      }
+
+      node.style.transform = `translate(-50%, 0) translate3d(${xOffset}px, ${transformY}px, ${z}px) scale(${scale})`;
+      node.style.zIndex = 1000 - reverseIndex;
+      
+      // Update currentBottomY for the NEXT item (which is above this one)
+      currentBottomY -= (cardHeight + GAP);
+  }
+}
+
+/* === LOGIC: SUBMIT === */
+async function handleSubmit() {
+  const inp = document.getElementById("inputBox");
+  const text = inp.value.trim();
+  if (!text) return;
+
+  inp.value = "";
+
+  if (activeScene === "chat") {
+    // Optimistic UI
+    chatMessages.push({ type: "user", text: text });
+    renderChat();
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }), // Adjust payload according to API
+      });
+
+      if (res.ok) {
+        // Assuming JSON for now based on previous files.
+        const data = await res.json();
+        console.log("Chat API Response:", data);
+        const aiText = data.message || RESOURCES[currentLang].ai_resp; // Fixed key: message
+
+        chatMessages.push({ type: "ai", text: aiText });
+        renderChat();
+      }
+    } catch (e) {
+      console.error(e);
+      chatMessages.push({ type: "ai", text: "..." });
+      renderChat();
+    }
+  } else {
+    // Diary
+    createPost(text);
+  }
+}
+
+/* === LOGIC: DIARY / POSTS === */
+async function fetchAndRenderDiary() {
+  const grid = document.getElementById("diaryGrid");
+  grid.innerHTML =
+    '<div style="text-align:center;width:100%;">Loading...</div>'; // Simple loader
+
+  try {
+    const res = await fetch("/api/posts");
+    if (res.ok) {
+      const posts = await res.json();
+      renderDiaryGrid(posts);
+    }
+  } catch (e) {
+    console.error(e);
+    grid.innerHTML = "Error loading memories.";
+  }
+}
+
+function renderDiaryGrid(posts) {
+  const grid = document.getElementById("diaryGrid");
+  grid.innerHTML = "";
+
+  // Icons
+  const icons = ["🌸", "✨", "💎", "🔑", "🕊️"];
+
+  posts.forEach((post) => {
+    // Random visual attrs (should perform deterministically if possible, but random ok for now)
+    const rot = (Math.random() * 4 - 2).toFixed(1);
+    const icon = icons[Math.floor(Math.random() * icons.length)];
+
+    const el = document.createElement("div");
+    el.className = "polaroid";
+    el.style.transform = `rotate(${rot}deg)`;
+
+    const dateStr = post.createdAt
+      ? RESOURCES[currentLang].dateFormat(post.createdAt)
+      : "";
+    const safeContent = (post.content || "").replace(/</g, "&lt;");
+
+    // Delete button if owner
+    let delBtn = "";
+    if (currentUser && post.author && post.author.id === currentUser.id) {
+      delBtn = `<button class="del-btn" onclick="deletePost('${post.id}', this)">×</button>`;
     }
 
-    posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.style.border = '1px solid #ddd';
-        postElement.style.padding = '10px';
-        postElement.style.marginBottom = '10px';
-        postElement.style.borderRadius = '5px';
-        postElement.style.backgroundColor = '#fff';
+    el.innerHTML = `
+            ${delBtn}
+            <div class="polaroid-img-placeholder">${icon}</div>
+            <div class="polaroid-text">${safeContent}</div>
+            <div class="polaroid-date">${dateStr}</div>
+        `;
+    grid.prepend(el); // Newest first? usually API returns sorted. if API sorts by new, append. if API old first, prepend.
+    // Let's assume API list is New->Old or Old->New. `prepend` reverses order of iteration.
+    // If API is Old->New (default log), `prepend` makes Newest at top.
+  });
+}
 
-        const meta = document.createElement('div');
-        meta.style.fontSize = '0.9em';
-        meta.style.color = '#666';
-        meta.textContent = `${post.author.displayName} - ${new Date(post.createdAt).toLocaleString()}`;
-        postElement.appendChild(meta);
-
-        const content = document.createElement('div');
-        content.style.marginTop = '5px';
-        content.textContent = post.content;
-        postElement.appendChild(content);
-
-        // Show delete button only if the current user is the author
-        if (currentUser && currentUser.id === post.author.id) {
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.style.marginTop = '10px';
-            deleteButton.style.backgroundColor = '#ffebee';
-            deleteButton.style.color = '#c62828';
-            deleteButton.style.border = '1px solid #ef9a9a';
-            deleteButton.onclick = () => deletePost(post.id, currentUser);
-            postElement.appendChild(deleteButton);
-        }
-
-        postsContainer.appendChild(postElement);
+async function createPost(text) {
+  try {
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: text }),
     });
+
+    if (res.ok) {
+      // Refresh
+      fetchAndRenderDiary();
+
+      // Animation?
+      // For now simple refresh is reliable.
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-async function deletePost(postId, currentUser) {
-    if (!confirm('Are you sure you want to delete this post?')) {
-        return;
-    }
+async function deletePost(id, btn) {
+  if (!confirm("Are you sure?")) return;
 
-    try {
-        const response = await fetch(`/api/posts/${postId}`, {
-            method: 'DELETE'
-        });
-
-        if (response.status === 204) {
-            // Reload posts
-            fetchPosts(currentUser);
-        } else {
-            alert('Failed to delete post.');
-        }
-    } catch (error) {
-        console.error('Error deleting post:', error);
-        alert('Error deleting post.');
+  try {
+    const res = await fetch(`/api/posts/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      btn.closest(".polaroid").remove();
     }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-greetButton.addEventListener('click', async () => {
-    const name = nameInput.value || 'World'; // 入力が空なら'World'を使う
-    resultParagraph.textContent = '通信中...';
+async function saveToDiaryFromChat(btn, text) {
+  // Visual Feedback
+  const card = btn.closest(".card");
 
-    try {
-        const response = await fetch('/api/greet', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: name }),
-        });
+  // Clone Animation (Flying Polaroid)
+  const clone = card.cloneNode(true);
+  const rect = card.getBoundingClientRect();
+  clone.style.position = "fixed";
+  clone.style.left = rect.left + "px";
+  clone.style.top = rect.top + "px";
+  clone.style.width = rect.width + "px";
+  clone.style.zIndex = 2000;
+  clone.style.transition = "all 0.8s ease";
+  clone.style.boxShadow = "0 20px 50px rgba(0,0,0,0.2)";
+  clone.querySelector(".card-action").style.display = "none";
+  document.body.appendChild(clone);
 
-        if (!response.ok) {
-            throw new Error('サーバーからの応答が正常ではありません。');
-        }
+  requestAnimationFrame(() => {
+    const chestRect = document
+      .getElementById("chestTarget")
+      .getBoundingClientRect();
+    clone.style.transform = "scale(0.05) rotate(720deg)";
+    clone.style.opacity = "0";
+    clone.style.left = chestRect.left + "px";
+    clone.style.top = chestRect.top + "px";
+  });
+  setTimeout(() => clone.remove(), 800);
 
-        const data = await response.json();
-        resultParagraph.textContent = data.message;
-    } catch (error) {
-        console.error('エラーが発生しました:', error);
-        resultParagraph.textContent = 'エラーが発生しました。';
-    }
-});
+  // Actual API Call
+  await createPost(text);
 
-chatButton.addEventListener('click', async () => {
-    const message = chatInput.value;
-    if (!message) return;
-
-    appendMessage('You', message);
-    chatInput.value = '';
-    resultParagraph.textContent = 'AIが応答を生成中...';
-
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: message }),
-        });
-
-        if (!response.ok) {
-            throw new Error('サーバーからの応答が正常ではありません。');
-        }
-
-        const data = await response.json();
-        appendMessage('AI', data.message);
-        resultParagraph.textContent = ''; // 応答が成功したらクリア
-    } catch (error) {
-        console.error('チャットエラー:', error);
-        appendMessage('System', 'エラーが発生しました。');
-        resultParagraph.textContent = 'エラーが発生しました。';
-    }
-});
-
-function appendMessage(sender, message) {
-    const messageElement = document.createElement('p');
-    messageElement.textContent = `[${sender}]: ${message}`;
-    chatHistory.appendChild(messageElement);
-    chatHistory.scrollTop = chatHistory.scrollHeight; // 自動スクロール
+  // If not in diary scene, we don't need to refresh grid immediately,
+  // but `createPost` calls `fetchAndRenderDiary`. That's fine.
 }
 
-healthCheckButton.addEventListener('click', async () => {
-    resultParagraph.textContent = '通信中...';
-
-    try {
-        // GETリクエストなので、fetchの第二引数は省略可能です
-        const response = await fetch('/api/health');
-
-        if (!response.ok) {
-            throw new Error('サーバーからの応答が正常ではありません。');
-        }
-
-        const data = await response.json();
-        resultParagraph.textContent = `Status: ${data.status}, Timestamp: ${data.timestamp}`;
-    } catch (error) {
-        console.error('エラーが発生しました:', error);
-        resultParagraph.textContent = 'エラーが発生しました。';
-    }
-});
+/* === UTILS === */
+// CSS for PopIn provided in CSS file or here?
+// CSS file handles font and layout. Animations like popIn can be in CSS too or inline.
+// Adding PopIn keyframes to JS if needed, but style.css is better.
+// Assuming style.css handles base.
