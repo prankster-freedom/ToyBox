@@ -179,6 +179,13 @@ function renderChat() {
             <div class="msg-text">${safeText}</div>
         `;
     el.innerHTML = html;
+    
+    // Animation: Start from bottom (Initial state)
+    // We set this BEFORE appending to DOM or immediately after
+    // Current loop replaces logic.
+    // Ensure it starts 'low' so it flows UP to target.
+    // Use a large Y (e.g. window.innerHeight)
+    el.style.transform = `translate(-50%, 0) translate3d(0, ${window.innerHeight}px, 0)`;
 
     // Add click listener for save
     el.querySelector(".card-action").onclick = (e) =>
@@ -192,7 +199,7 @@ function renderChat() {
   const inputRect = inputDock.getBoundingClientRect();
   const inputTop = inputRect.top === 0 ? windowHeight - 100 : inputRect.top;
   const safeBottomY = inputTop - 30; // Start point for newest message
-  const curveThresholdY = windowHeight * 0.3; // Point where items start curving away
+  const curveThresholdY = windowHeight * 0.15; // 0.15: Keep bubbles big longer (was 0.3)
   const GAP = 30; // Gap between cards
 
   const nodes = Array.from(stream.children);
@@ -244,7 +251,13 @@ function renderChat() {
       }
 
       node.style.transform = `translate(-50%, 0) translate3d(${xOffset}px, ${transformY}px, ${z}px) scale(${scale})`;
-      node.style.zIndex = 1000 - reverseIndex;
+      
+      // Fix Z-Index: Lower base to avoid overlapping Header (z=200)
+      // Was 1000, now 50. Oldest messages go negative? That's fine, or clamp.
+      // Actually, if z is large negative (depth), css z-index manages stacking context.
+      // But we need them BEHIND header. Header is 200.
+      // So max z-index should be < 200.
+      node.style.zIndex = 100 - reverseIndex; 
       
       // Update currentBottomY for the NEXT item (which is above this one)
       currentBottomY -= (cardHeight + GAP);

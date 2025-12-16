@@ -78,6 +78,27 @@ passport.deserializeUser(function(obj, cb) {
 app.get('/auth/google', (req, res, next) => {
   const functionName = 'GET /auth/google';
   enter(functionName);
+
+  if (isLocal) {
+    log('Local mode: Performing mock login.');
+    const mockUser = {
+      id: "test-user-id",
+      displayName: 'Test User',
+      emails: [{ value: 'test@example.com' }],
+      photos: [{ value: 'https://lh3.googleusercontent.com/a/default-user=s96-c' }] // Add dummy photo
+    };
+    
+    req.login(mockUser, (err) => {
+      if (err) {
+        exit(functionName, { err });
+        return next(err);
+      }
+      res.redirect('/');
+      exit(functionName, { result: 'mock_login_success' });
+    });
+    return;
+  }
+
   passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
   exit(functionName);
 });

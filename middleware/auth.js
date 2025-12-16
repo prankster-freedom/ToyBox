@@ -12,20 +12,15 @@ function isAuthenticated(req, res, next) {
   enter(functionName, { path: req.path });
 
   // Bypass authentication in local environment
+  // REMOVED: Auto-injection of mock user prevents checking logout functionality.
+  // Instead, we will handle mock login in the /auth/google route in index.js.
+  /*
   if (isLocal) {
     log('Bypassing authentication in local environment.');
-    // In dev mode, we might not have a real user object.
-    // We can create a mock user for consistent behavior downstream.
-    if (!req.user) {
-      req.user = {
-        "id": "test-user-id",
-        displayName: 'Test User',
-        emails: [{ value: 'test@example.com' }],
-      };
-    }
-    exit(functionName, { result: 'bypassed_in_dev' });
+    // ...
     return next();
   }
+  */
 
   if (req.isAuthenticated()) {
     exit(functionName, { result: 'authenticated' });
