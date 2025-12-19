@@ -17,7 +17,7 @@ Google Gemini API を活用した AI との対話機能、およびペルソナ�
 ### 3.1. AI サービス (`lib/ai.js`)
 
 - **`generateResponse(history, persona)`**:
-  - `GoogleGenerativeAI` SDK を使用してレスポンスを生成する。
+  - `Google GenAI SDK` '(@google/genai)' を使用してレスポンスを生成する。
   - **System Prompt**: `persona.basePersonality` をベースに構築し、現在時刻などのコンテキストを含める。
   - **Chat Session**: 履歴 (`history`) を渡してセッションを開始し、文脈を維持した応答を得る。
 
@@ -60,3 +60,51 @@ Google Gemini API を活用した AI との対話機能、およびペルソナ�
 | `role`      | String | "user" or "model" |
 | `content`   | String | メッセージ本文    |
 | `timestamp` | Date   | 送信日時          |
+
+### 3.2. AI モデルのコンフィグ
+
+AI モデルのコンフィグは以下から選択できること。
+
+1. **Gemini 3 Pro (思考)**
+
+   ```javascript
+   const response = await ai.models.generateContent({
+     model: "gemini-3-pro-preview",
+     contents: "How does AI work?",
+     config: {
+       thinkingConfig: {
+         thinkingLevel: "High", // @param ["Low", "High"]
+       },
+     },
+   });
+   ```
+
+2. **Gemini 3 Pro (高速)**
+
+   ```javascript
+   const response = await ai.models.generateContent({
+     model: "gemini-3-pro-preview",
+     contents: "How does AI work?",
+     config: {
+       thinkingConfig: {
+         thinkingLevel: "Low", // @param ["Low", "High"]
+       },
+     },
+   });
+   ```
+
+3. **Gemini 3 Flash**
+   ```javascript
+   const response = await ai.models.generateContent({
+     model: "gemini-3-flash-preview",
+     contents:
+       "Provide a list of 3 famous physicists and their key contributions",
+     config: {
+       thinkingConfig: {
+         thinkingLevel: "Medium", // @param ["Minimal", "Low", "Medium", "High"]
+       },
+     },
+   });
+   ```
+
+AI モデルは chat, Daydream, Dream それぞれで異なるコンフィグを設定できること。
