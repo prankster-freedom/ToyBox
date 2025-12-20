@@ -9,6 +9,7 @@ import {
   getAiPersona,
   updateAiPersona,
 } from "../lib/store.js";
+import { getUserPosts } from "../lib/posts.js";
 import { analyzePersonality, synthesizePersonality } from "../lib/ai.js";
 
 const router = express.Router();
@@ -48,7 +49,8 @@ router.post("/daydream", async (req, res) => {
     }
 
     // AIによる分析
-    const analysisResult = await analyzePersonality(history);
+    const posts = await getUserPosts(userId);
+    const analysisResult = await analyzePersonality(history, posts);
 
     // 分析結果を保存
     await savePersonalityAnalysis(userId, analysisResult, "daydream");
@@ -100,10 +102,12 @@ router.post('/dream', async (req, res) => {
             const currentPersonaData = await getAiPersona(targetId);
 
             // 性格の再統合
+            const posts = await getUserPosts(targetId);
             const newPersonality = await synthesizePersonality(
                 currentPersonaData.basePersonality,
                 history,
-                analyses
+                analyses,
+                posts
             );
 
             // 更新

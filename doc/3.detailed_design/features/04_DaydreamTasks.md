@@ -26,7 +26,7 @@ Cloud Tasks と Cloud Scheduler を活用して実行される。
 - **OIDC 認証**: Service Account (Cloud Tasks Invoker) からの呼び出しのみ許可する。
 - **処理フロー**:
   1. **履歴取得**: 対象ユーザーの直近チャット履歴を取得。
-  2. **AI 分析**: `ai.analyzePersonality(history)` を実行し、ユーザーの性格や興味関心を抽出。
+  2. **AI 分析**: 対象ユーザーの「直近の対話履歴」および「これまでの想い出（投稿内容）のすべて」を取得し、`ai.analyzePersonality(history, posts)` を実行。ユーザーの性格や興味関心を抽出。
   3. **保存**: 結果を `PersonalityAnalysis` エンティティとして保存。
   4. **影響**: 分析結果は、次回の `Dream` ジョブで AI ペルソナに反映される可能性がある。
 - **Test Mode**: リクエストに `isTest: true` が含まれる場合、AI 分析をスキップし、固定のモックデータを保存する（コスト削減・動作テスト用）。
