@@ -38,6 +38,9 @@ let currentLang = "jp";
 let activeScene = "chat";
 let currentUser = null;
 let chatMessages = []; // Local state for chat message
+let scrollOffset = 0;
+let startY = 0;
+let isDragging = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   initAuth();
@@ -94,6 +97,42 @@ function initUI() {
 
   // Resize Handler
   window.onresize = renderChat;
+
+  // Scroll Events
+  window.addEventListener("wheel", (e) => {
+    if (activeScene !== "chat") return;
+    scrollOffset += e.deltaY;
+    clampScroll();
+    renderChat();
+  });
+
+  window.addEventListener("touchstart", (e) => {
+    if (activeScene !== "chat") return;
+    isDragging = true;
+    startY = e.touches[0].pageY;
+  });
+
+  window.addEventListener("touchmove", (e) => {
+    if (!isDragging || activeScene !== "chat") return;
+    const currentY = e.touches[0].pageY;
+    const diff = startY - currentY;
+    scrollOffset += diff;
+    startY = currentY;
+    clampScroll();
+    renderChat();
+  });
+
+  window.addEventListener("touchend", () => {
+    isDragging = false;
+  });
+}
+
+function clampScroll() {
+  const GAP = 30;
+  const totalHeight = Array.from(stream.children).reduce((acc, el) => acc + (el.offsetHeight || 120) + GAP, 0);
+  const maxScroll = Math.max(0, totalHeight - 200); 
+  if (scrollOffset < 0) scrollOffset = 0;
+  if (scrollOffset > maxScroll) scrollOffset = maxScroll;
 }
 
 /* === LOGIC: LANGUAGE === */
@@ -156,7 +195,7 @@ function renderChat() {
   // To avoid scroll issues, we'll rebuild.
   while (stream.children.length > chatMessages.length)
     stream.removeChild(stream.firstChild);
-    
+
   while (stream.children.length < chatMessages.length) {
     const i = stream.children.length;
     const msg = chatMessages[i];
@@ -179,7 +218,7 @@ function renderChat() {
             <div class="msg-text">${safeText}</div>
         `;
     el.innerHTML = html;
-    
+
     // Animation: Start from bottom (Initial state)
     // We set this BEFORE appending to DOM or immediately after
     // Current loop replaces logic.
@@ -200,67 +239,61 @@ function renderChat() {
   const inputTop = inputRect.top === 0 ? windowHeight - 100 : inputRect.top;
   const safeBottomY = inputTop - 30; // Start point for newest message
   const curveThresholdY = windowHeight * 0.15; // 0.15: Keep bubbles big longer (was 0.3)
-  const GAP = 30; // Gap between cards
-
+  const GAP = 30;
   const nodes = Array.from(stream.children);
-  let currentBottomY = safeBottomY;
+  let currentBottomY = safeBottomY + scrollOffset;
 
   // Iterate backwards (Newest -> Oldest) to stack them on top of each other
   for (let i = nodes.length - 1; i >= 0; i--) {
-      const node = nodes[i];
-      const reverseIndex = (nodes.length - 1) - i;
-      
-      const cardHeight = node.offsetHeight || 120;
-      let targetTopY = currentBottomY - cardHeight;
-      
-      // Calculate visual transformation
-      let transformY = targetTopY;
-      let z = 0;
-      let xOffset = 0;
-      let scale = 1;
-      let opacity = 1;
+    const node = nodes[i];
+    const reverseIndex = nodes.length - 1 - i;
 
-      // Apply Curve Logic
-      if (transformY < curveThresholdY) {
-          // It's in the "Curve Area"
-          const excess = curveThresholdY - transformY;
-          
-          // Compress the Y space in the curve area to create depth illusion
-          // Instead of moving linearly up, we slow down Y movement and increase Z/Scale
-          transformY = curveThresholdY - (excess * 0.4); 
-          
-          z = - (excess * 5); // Move deep into background
-          xOffset = Math.pow(excess, 1.1) * 0.2; // Slide slightly right? (or keep center)
-          
-          // Scale down
-          scale = Math.max(0, 1 - (excess * 0.002));
-          opacity = Math.max(0, 1 - (excess * 0.003));
-      } else {
-          // Standard Stack Area (Near User)
-          // Minimal Z effect
-          z = 0; 
-          scale = 1;
-      }
-      
-      if (opacity <= 0.05) {
-          node.style.opacity = 0;
-          node.style.visibility = "hidden";
-      } else {
-          node.style.opacity = opacity;
-          node.style.visibility = "visible";
-      }
+    const cardHeight = node.offsetHeight || 120;
+    let targetTopY = currentBottomY - cardHeight;
 
-      node.style.transform = `translate(-50%, 0) translate3d(${xOffset}px, ${transformY}px, ${z}px) scale(${scale})`;
-      
-      // Fix Z-Index: Lower base to avoid overlapping Header (z=200)
-      // Was 1000, now 50. Oldest messages go negative? That's fine, or clamp.
-      // Actually, if z is large negative (depth), css z-index manages stacking context.
-      // But we need them BEHIND header. Header is 200.
-      // So max z-index should be < 200.
-      node.style.zIndex = 100 - reverseIndex; 
-      
-      // Update currentBottomY for the NEXT item (which is above this one)
-      currentBottomY -= (cardHeight + GAP);
+    // Calculate visual transformation
+    let transformY = targetTopY;
+    let z = 0;
+    let xOffset = 0;
+    let scale = 1;
+    let opacity = 1;
+
+    // Apply Curve Logic
+    if (transformY < curveThresholdY) {
+      // It's in the "Curve Area"
+      const excess = curveThresholdY - transformY;
+
+      // Compress the Y space in the curve area to create depth illusion
+      transformY = curveThresholdY - excess * 0.4;
+
+      z = -(excess * 5); // Move deep into background
+      xOffset = Math.pow(excess, 1.1) * 0.2; // Slide slightly right
+
+      // Scale down
+      scale = Math.max(0, 1 - excess * 0.002);
+      opacity = Math.max(0, 1 - excess * 0.003);
+    } else {
+      // Standard Stack Area (Near User)
+      // Visual feedback for cards below the input box (hidden by input dock)
+      z = 0 - (Math.max(0, targetTopY - curveThresholdY) * 0.1); 
+      scale = 1;
+    }
+
+    if (opacity <= 0.05) {
+      node.style.opacity = 0;
+      node.style.visibility = "hidden";
+    } else {
+      node.style.opacity = opacity;
+      node.style.visibility = "visible";
+    }
+
+    node.style.transform = `translate(-50%, 0) translate3d(${xOffset}px, ${transformY}px, ${z}px) scale(${scale})`;
+
+    // Stacking: Newest message should be on top.
+    node.style.zIndex = 100 - reverseIndex;
+    
+    // Update currentBottomY for the NEXT item (which is above this one)
+    currentBottomY -= (cardHeight + GAP);
   }
 }
 

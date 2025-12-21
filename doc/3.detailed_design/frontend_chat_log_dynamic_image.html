@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>ToyBox - Final Prototype (Round)</title>
     <style>
         /* Imported Fonts: Quicksand (Round EN), Zen Maru Gothic (Round JP/EN) */
@@ -17,11 +17,16 @@
             --glass-border: rgba(255, 255, 255, 0.9);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             background: radial-gradient(circle at 50% 50%, #fff0f5 0%, #fff 100%);
             overflow: hidden;
             display: flex;
@@ -479,6 +484,9 @@
 
         let currentLang = 'en';
         let activeScene = 'chat';
+        let scrollOffset = 0;
+        let startY = 0;
+        let isDragging = false;
 
         function setLang(lang) {
             currentLang = lang;
@@ -504,7 +512,12 @@
 
         function resetChatInLang() {
             messages = [
-                { id: 1, type: 'ai', text: RESOURCES[currentLang].ai_welcome }
+                { id: 1, type: 'ai', text: RESOURCES[currentLang].ai_welcome },
+                { id: 2, type: 'user', text: "Hello AI!" },
+                { id: 3, type: 'ai', text: "Hello! How can I help you?" },
+                { id: 4, type: 'user', text: "Tell me a story." },
+                { id: 5, type: 'ai', text: "Once upon a time..." },
+                { id: 6, type: 'user', text: "That's nice." }
             ];
             renderChat();
         }
@@ -545,20 +558,23 @@
                 const visualSpacing = 180;
                 const cardHeight = node.offsetHeight || 120;
                 
-                let targetBottomY = safeBottomY - (reverseIndex * visualSpacing);
+                // Scroll Offset applied here
+                let targetBottomY = safeBottomY - (reverseIndex * visualSpacing) + scrollOffset;
                 let targetTopY = targetBottomY - cardHeight;
                 let transformY = targetTopY;
                 let z = 0; let xOffset = 0; let scale = 1; let opacity = 1;
 
                 if (transformY > curveThresholdY) {
-                    z = 0 - (reverseIndex * 30);
-                    scale = 1 - (reverseIndex * 0.03);
+                    // Normal state (bottom area)
+                    z = 0 - (Math.max(0, targetTopY - curveThresholdY) * 0.1); 
+                    scale = 1;
                 } else {
+                    // Curve state (top area)
                     const excess = curveThresholdY - transformY;
                     transformY = curveThresholdY - (excess * 0.25); 
                     z = - (excess * 6);
                     xOffset = Math.pow(excess, 1.25) * 0.4;
-                    scale = Math.max(0, 1 - (reverseIndex * 0.05) - (excess * 0.005));
+                    scale = Math.max(0, 1 - (excess * 0.005));
                     opacity = Math.max(0, 1 - (excess * 0.005));
                 }
                 
@@ -571,6 +587,39 @@
                 node.style.transform = `translate(-50%, 0) translate3d(${xOffset}px, ${transformY}px, ${z}px) scale(${scale})`;
                 node.style.zIndex = 1000 - reverseIndex;
             });
+        }
+
+        /* --- SCROLL EVENTS --- */
+        window.addEventListener('wheel', (e) => {
+            if(activeScene !== 'chat') return;
+            scrollOffset += e.deltaY;
+            clampScroll();
+            renderChat();
+        });
+
+        window.addEventListener('touchstart', (e) => {
+            if(activeScene !== 'chat') return;
+            isDragging = true;
+            startY = e.touches[0].pageY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if(!isDragging || activeScene !== 'chat') return;
+            const currentY = e.touches[0].pageY;
+            const diff = startY - currentY;
+            scrollOffset += diff;
+            startY = currentY;
+            clampScroll();
+            renderChat();
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        function clampScroll() {
+            const visualSpacing = 180;
+            const maxScroll = Math.max(0, (messages.length - 1) * visualSpacing);
+            if (scrollOffset < 0) scrollOffset = 0;
+            if (scrollOffset > maxScroll) scrollOffset = maxScroll;
         }
 
         function handleEnter(e) { if(e.key === 'Enter') handleSubmit(); }
