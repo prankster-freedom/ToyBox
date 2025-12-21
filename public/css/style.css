@@ -14,14 +14,19 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   height: 100dvh;
   background: radial-gradient(circle at 50% 50%, #fff0f5 0%, #fff 100%);
-  overflow: hidden;
+  overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,6 +58,7 @@ body.lang-jp {
   filter: blur(40px);
   opacity: 0.6;
   pointer-events: none;
+  overflow: hidden; /* Added to clip petals and prevent document expansion */
 }
 .petal {
   position: absolute;
@@ -548,5 +554,39 @@ body.lang-jp {
   100% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* --- MOBILE QUERIES --- */
+@media (max-width: 600px) {
+  .auth-card {
+    width: 90%;
+    max-width: 400px;
+    padding: 25px 20px;
+    margin: 0 15px;
+  }
+  .auth-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    width: 100%;
+    justify-content: center;
+  }
+  .nav-header {
+    width: 90%;
+    justify-content: center;
+    gap: 10px;
+  }
+  .nav-btn {
+    font-size: 0.95rem;
+    padding: 5px;
+  }
+  .user-menu {
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+  }
+  .lang-switch {
+    top: 15px;
+    left: 15px;
   }
 }

@@ -1,23 +1,42 @@
-# Implementation: public/index.html
+# 実装ドキュメント: public/index.html
 
 ## 概要
 
-一般ユーザー向けトップページに、投稿一覧を表示するためのコンテナ要素を追加する。
+アプリケーションのメインエントリーポイントとなる HTML ファイル。言語切り替え、認証オーバーレイ、チャット UI、コレクション UI の構造を定義する。
 
-## 依存関係
+## 依存関係 (Mermaid)
 
 ```mermaid
 flowchart TD
-    Current["public/index.html"]
-    Script["public/script.js"]
+    index["public/index.html"]
+    style["public/css/style.css"]
+    script["public/script.js"]
+    google_fonts["Google Fonts (Quicksand, Zen Maru Gothic)"]
+    google_logo["Google Identity Image"]
 
-    Current -.-> Script
+    index --> style
+    index --> script
+    index --> google_fonts
+    index --> google_logo
 ```
 
-## 実装内容
+### Dependencies
 
-- **既存機能**: 挨拶、ヘルスチェック、チャット機能の UI
-- **新規機能**:
-  - `#app-section` 内に、投稿一覧用のセクション (`.api-section`) を追加。
-  - セクション内に見出し (`h2`) "Recent Posts" を追加。
-  - 投稿を格納する空のコンテナ (`div#posts-container`) を追加。
+- `public/css/style.css`: スタイリング
+- `public/script.js`: アプリケーションロジック
+- `Google Fonts`: タイポグラフィ
+
+### Consumers
+
+- エンドユーザー（ブラウザ）
+
+## 構造
+
+- `flower-bg`: 背景アニメーション
+- `lang-switch`: 言語切り替えボタン
+- `auth-overlay`: ログインカード
+- `nav-header`: シーン切り替えナビゲーション
+- `viewport`: メインコンテンツ領域
+  - `scene-chat`: 3D チャットストリーム
+  - `scene-diary`: コレクション（石碑）
+- `input-dock`: 共通入力エリア
