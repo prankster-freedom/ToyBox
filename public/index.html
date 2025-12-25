@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>ToyBox</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="#">
 </head>
-<body class="lang-jp"> <!-- Default JP -->
+<body class="lang-jp">
 
     <!-- BACKGROUND -->
     <div class="flower-bg">
@@ -22,6 +22,12 @@
         <button class="lang-btn active" id="btn-lang-jp">JP</button>
     </div>
 
+    <!-- USER MENU (Shown if logged in) -->
+    <div class="user-menu" id="userMenu" style="display: none;">
+        <span class="user-name" id="userName"></span>
+        <button class="logout-btn" onclick="location.href='/auth/logout'" data-key="nav_logout">Log out</button>
+    </div>
+
     <!-- AUTH OVERLAY (Shown if not logged in) -->
     <div class="auth-overlay active" id="authOverlay">
         <div class="auth-card">
@@ -33,17 +39,12 @@
         </div>
     </div>
 
-    <!-- MAIN APP (Shown if logged in) -->
+    <!-- MAIN APP (Content) -->
+    <!-- Navigation -->
     <nav class="nav-header">
         <button class="nav-btn active title-font" id="btn-chat" data-key="nav_chat">Dialogue</button>
         <button class="nav-btn title-font" id="btn-diary" data-key="nav_diary">Collection</button>
     </nav>
-
-    <!-- USER MENU -->
-    <div class="user-menu" id="userMenu" style="display: none;">
-        <span class="user-name" id="userName"></span>
-        <button class="logout-btn" onclick="location.href='/auth/logout'" data-key="nav_logout">Log out</button>
-    </div>
 
     <div class="viewport" id="appViewport">
         <!-- SCENE: CHAT -->
@@ -74,4 +75,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
