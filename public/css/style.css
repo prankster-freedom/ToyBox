@@ -78,7 +78,7 @@ body.lang-jp {
   width: 400px;
   height: 400px;
   bottom: -100px;
-  right: -50px;
+  right: -100px; /* Increased to stay further outside but within clipped area */
   background: linear-gradient(45deg, #a18cd1 0%, #fbc2eb 100%);
   animation-delay: -5s;
   opacity: 0.3;
@@ -87,7 +87,7 @@ body.lang-jp {
   width: 150px;
   height: 150px;
   top: 20%;
-  left: 70%;
+  right: 10%; /* Changed from left: 70% to ensure it stays within 100% width */
   background: #ffd1ff;
   animation-delay: -10s;
   filter: blur(30px);
@@ -130,6 +130,8 @@ body.lang-jp {
   text-align: center;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--glass-border);
+  width: 100%;
+  max-width: 450px; /* Safe default */
 }
 
 .auth-btn {
@@ -327,7 +329,7 @@ body.lang-jp {
   top: 0;
   width: 70%;
   max-width: 550px;
-  min-width: 280px;
+  min-width: 250px; /* Reduced slightly for extreme mobile devices */
   padding: 25px 35px;
   background: var(--glass-card);
   border-radius: 20px;
@@ -560,16 +562,22 @@ body.lang-jp {
 /* --- MOBILE QUERIES --- */
 @media (max-width: 600px) {
   .auth-card {
-    width: 90%;
+    width: calc(100% - 32px); /* Absolute safety margin */
     max-width: 400px;
     padding: 25px 20px;
-    margin: 0 15px;
+    margin: 0 16px;
+  }
+  .card {
+    width: calc(100% - 24px);
+    min-width: 0; /* Important: Remove fixed min-width on mobile */
+    padding: 20px;
   }
   .auth-btn {
     font-size: 0.9rem;
     padding: 10px 20px;
     width: 100%;
     justify-content: center;
+    white-space: nowrap; /* Prevent ugly wrap */
   }
   .nav-header {
     width: 90%;
@@ -584,6 +592,7 @@ body.lang-jp {
     top: 15px;
     right: 15px;
     padding: 5px 12px;
+    max-width: 50%; /* Prevent overlapping with lang-switch */
   }
   .lang-switch {
     top: 15px;
