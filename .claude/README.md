@@ -30,6 +30,7 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
         ├── commit/                          # /commit
         ├── cr/                              # /cr（SKILL.md + template.md）
         ├── devenv/                          # /devenv
+        ├── devtools-update/                 # /devtools-update
         ├── doc/                             # /doc
         ├── pi/                              # /pi
         ├── release/                         # /release
@@ -71,6 +72,7 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
 | commit | 可           | git commit の実施（ブランチ・PR の確認、変更確認、Conventional Commits 準拠のコミット、セルフレビュー。承認工程なし、push は指示時のみ。main へのマージは PR 経由）（v2.0.0） |
 | cr     | 可           | 変更要求（CR）の登録・影響範囲の整理・対応の追跡。`doc/6.change_request/` に ID 付きで管理。ひな形付き（v2.0.0） |
 | devenv | 不可         | ローカルの開発環境（npm の開発サーバー）の起動・再起動・停止。承認工程なし（v2.0.0）                             |
+| devtools-update | 不可 | ローカル PC の開発ツール（Node.js・npm・Google Cloud SDK・GitHub CLI・uv）と、プロジェクトの Playwright（パッケージとブラウザー）の版とインストール方法の確認、更新計画の承認を得てからの更新（v1.0.0） |
 | doc    | 可           | ドキュメントのメンテナンス。指定範囲またはリポジトリ全体の整合確認・更新と、ドキュメントの格納先の定義（v2.0.0） |
 | pi     | 不可         | プロセス改善（直近の会話・不具合の振り返り。改定案には差分と理由を示す）（v2.0.0）                               |
 | release | 不可        | リリース（前回のリリース以降のコミットから版を決め、版番号の更新とリリースノートの記載、リリースコミット）（v2.0.0） |
