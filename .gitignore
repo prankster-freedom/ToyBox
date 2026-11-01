@@ -126,3 +126,10 @@ data/posts.json
 
 # AI エージェントの作業ディレクトリ（AGENTS.md 1.10）
 work/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
