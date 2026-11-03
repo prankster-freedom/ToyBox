@@ -133,3 +133,6 @@ work/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# VS Code workspace settings (local to each developer)
+.vscode/
