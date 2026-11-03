@@ -6,7 +6,7 @@ tags: ["Luxyno", "Markdown", "Mermaid", "standalone-apps"]
 
 # Luxyno — Exhibition-Grade Markdown Viewer
 
-- **Version**: `0.1.0`
+- **Version**: `0.1.0`（`1.0.0` に上げるまでは、互換性のない変更も MINOR で上げる。`AGENTS.repo.md` 5 章）
 
 Markdown 文書と Mermaid ダイアグラムを、エンジニアリング仕様書スタイルと 4 種のインフォグラフィックスタイル（Visual Stage）で表示する、スタンドアロンの Markdown ビューアーです。左ペインのエディタで書き換えると、プレビューにすぐ反映されます（エディタは当面は付随的な機能です）。旧名称は Linea です。
 
