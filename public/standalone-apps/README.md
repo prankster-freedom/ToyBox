@@ -1,7 +1,7 @@
 ---
 title: standalone-apps（スタンドアロン Web アプリケーション群）
 description: ToyBox リポジトリ内で管理・配信するスタンドアロン Web アプリケーションの一覧と構成規則。
-tags: ["standalone-apps", "Linea"]
+tags: ["standalone-apps", "Luxyno"]
 ---
 
 # standalone-apps
@@ -15,6 +15,6 @@ tags: ["standalone-apps", "Linea"]
 
 ## アプリケーション一覧
 
-| アプリ名        | パス               | 版番号  | 概要 |
-| :-------------- | :----------------- | :------ | :--- |
-| [Linea](linea/) | `linea/index.html` | `0.1.0` | Markdown と Mermaid ダイアグラムのリアルタイム仕様書・インフォグラフィックビューアー |
+| アプリ名          | パス                | 版番号  | 概要 |
+| :---------------- | :------------------ | :------ | :--- |
+| [Luxyno](luxyno/) | `luxyno/index.html` | `0.1.0` | Markdown と Mermaid ダイアグラムのリアルタイム仕様書・インフォグラフィックビューアー |
