@@ -1,7 +1,7 @@
 ---
-title: Linea テスト仕様 Markdown 要素の表示
+title: Luxyno テスト仕様 Markdown 要素の表示
 description: FR-009 のテストケース。
-tags: ["Linea", "テスト仕様", "Markdown"]
+tags: ["Luxyno", "テスト仕様", "Markdown"]
 ---
 
 # テスト仕様: Markdown 要素の表示（markdown-typography）

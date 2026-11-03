@@ -1,6 +1,6 @@
-# Linea サンプル文書
+# Luxyno サンプル文書
 
-Linea で使える Markdown と Mermaid の主な記法のサンプルです。左のエディタで書き換えると、右のプレビューにすぐ反映されます。
+Luxyno で使える Markdown と Mermaid の主な記法のサンプルです。左のエディタで書き換えると、右のプレビューにすぐ反映されます。
 
 ## 1. 見出しと段落
 
@@ -268,7 +268,7 @@ gitGraph
 
 ```mermaid
 mindmap
-  root((Linea))
+  root((Luxyno))
     Markdown
       見出し
       表

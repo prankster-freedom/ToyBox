@@ -1,7 +1,7 @@
 ---
-title: Linea 詳細設計書 目次
-description: Linea の機能単位（Feature-based）の詳細設計書一覧。
-tags: ["Linea", "詳細設計"]
+title: Luxyno 詳細設計書 目次
+description: Luxyno の機能単位（Feature-based）の詳細設計書一覧。
+tags: ["Luxyno", "詳細設計"]
 ---
 
 # 詳細設計書 目次
@@ -15,4 +15,4 @@ tags: ["Linea", "詳細設計"]
 | markdown-typography | `MD`   | [markdown-typography.md](features/markdown-typography.md) | `FR-002`, `FR-003`, `FR-009` |
 | math-rendering      | `MATH` | [math-rendering.md](features/math-rendering.md)           | `FR-010`, `NFR-003` |
 
-- 初期プロトタイプのデザイン仕様: [linea_functional_and_design_specification.md](../linea_functional_and_design_specification.md)
+- 初期プロトタイプのデザイン仕様: [luxyno_functional_and_design_specification.md](../luxyno_functional_and_design_specification.md)

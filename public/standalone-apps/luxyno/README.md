@@ -1,20 +1,27 @@
 ---
-title: Linea — Visual Markdown & Diagram Studio
+title: Luxyno — Exhibition-Grade Markdown Viewer
 description: Markdown 文書と Mermaid ダイアグラムをリアルタイムに編集・プレビュー・インフォグラフィック変換できるスタンドアロン Web アプリケーション。
-tags: ["Linea", "Markdown", "Mermaid", "standalone-apps"]
+tags: ["Luxyno", "Markdown", "Mermaid", "standalone-apps"]
 ---
 
-# Linea — Visual Markdown & Diagram Studio
+# Luxyno — Exhibition-Grade Markdown Viewer
 
 - **Version**: `0.1.0`
 
-Markdown 文書と Mermaid ダイアグラムをリアルタイムに編集・プレビューし、エンジニアリング仕様書スタイルと 4 種のインフォグラフィックスタイル（Visual Stage）を即座に切り替えられるスタンドアロンの Web アプリケーションです。
+Markdown 文書と Mermaid ダイアグラムを、エンジニアリング仕様書スタイルと 4 種のインフォグラフィックスタイル（Visual Stage）で表示する、スタンドアロンの Markdown ビューアーです。左ペインのエディタで書き換えると、プレビューにすぐ反映されます（エディタは当面は付随的な機能です）。旧名称は Linea です。
+
+既存のビューアーより洗練されたデザインの Mermaid の図と、軽快な動作を特長とします。
+
+- **通常モード**: 起動から閲覧の操作まで、軽快に動作することを最優先にしています。
+- **Visual Stage**: 講演資料や展示素材としてそのまま表示できる、プロのデザイナーが制作したような品質を目指しています。
+
+詳しくは [要求仕様書の「プロダクトコンセプト」](doc/1.SPEC.md#11-プロダクトコンセプト) を参照してください。
 
 ## 使い方
 
 ### 最も簡単な使い方
 
-1. ブラウザで [index.html](index.html) を直接開くか、ToyBox の開発サーバー起動中に `http://localhost:3000/standalone-apps/linea/` へアクセスします。
+1. ブラウザで [index.html](index.html) を直接開くか、ToyBox の開発サーバー起動中に `http://localhost:3000/standalone-apps/luxyno/` へアクセスします。
 2. ヘッダーの「ファイル」メニュー →「Markdown を開く…」で Markdown ファイル（`.md` / `.markdown` / `.txt`、UTF-8）を読み込みます。起動直後のエディタは空です。
 3. 左ペイン（`SOURCE MARKDOWN`）で Markdown と ```` ```mermaid ```` コードブロックを編集すると、右ペインにリアルタイムでプレビューが表示されます。
 
@@ -32,7 +39,7 @@ Markdown と Mermaid の記法の例は、同梱の [sample.md](sample.md) に�
 ## ディレクトリ構成
 
 ```text
-public/standalone-apps/linea/
+public/standalone-apps/luxyno/
 ├── README.md          # 本ファイル（概要・使い方・リリースノート）
 ├── index.html         # エントリーポイント HTML
 ├── sample.md          # Markdown と Mermaid の記法のサンプル
@@ -43,7 +50,7 @@ public/standalone-apps/linea/
 ├── js/
 │   └── app.js         # レンダリングエンジン・SVG ポストプロセッサ・UI 制御
 └── doc/               # 仕様書・設計書（doc スキル準拠）
-    ├── linea_functional_and_design_specification.md
+    ├── luxyno_functional_and_design_specification.md
     ├── 1.SPEC.md
     ├── 2.ARCHITECTURE.md
     ├── 3.detailed_design/
@@ -56,7 +63,7 @@ public/standalone-apps/linea/
 ToyBox のリポジトリ直下に Playwright（Chromium）を導入済みであれば、次のコマンドでテスト仕様（[doc/5.test_spec/](doc/5.test_spec/)）の自動確認を実行できます。図の画像は `work/test/` に保存されます（git 管理外）。CDN からライブラリを読み込むため、インターネット接続が必要です。
 
 ```bash
-node public/standalone-apps/linea/tests/e2e.cjs
+node public/standalone-apps/luxyno/tests/e2e.cjs
 ```
 
 - 所要時間は 3〜5 分です。合否は標準出力と `work/test/results.json` に出力されます。
@@ -67,6 +74,8 @@ node public/standalone-apps/linea/tests/e2e.cjs
 
 本アプリは、リポジトリの `AGENTS.md` と `.claude/skills/` の工程（swe1 → swe2-1 → swe3-1 → swe3-2 → test）で、増分ごとに開発しています。本フォルダが独立したプロジェクトのルートです（`AGENTS.repo.md` 3 章）。
 
+要求の追加や設計の判断は、[プロダクトコンセプト](doc/1.SPEC.md#11-プロダクトコンセプト) に照らして行ってください。通常モードは軽快さ、Visual Stage は見た目の品質を優先します。
+
 ### ドキュメントの地図
 
 | 知りたいこと                 | ドキュメント                                                                   |
@@ -76,7 +85,7 @@ node public/standalone-apps/linea/tests/e2e.cjs
 | 機能ごとの設計（ID 付き）    | [doc/3.detailed_design/](doc/3.detailed_design/README.md)（`DD-<略号>-<nnn>`） |
 | ソースのどこに何があるか     | [doc/4.implementation/](doc/4.implementation/README.md)                        |
 | 何をどう確かめるか           | [doc/5.test_spec/](doc/5.test_spec/README.md)（`TC-<略号>-<nnn>`）             |
-| 初期プロトタイプのデザイン   | [doc/linea_functional_and_design_specification.md](doc/linea_functional_and_design_specification.md) |
+| 初期プロトタイプのデザイン   | [doc/luxyno_functional_and_design_specification.md](doc/luxyno_functional_and_design_specification.md) |
 
 ### 変更するときの注意（過去にはまった点）
 
@@ -96,7 +105,18 @@ node public/standalone-apps/linea/tests/e2e.cjs
 
 ## 既知の課題
 
-テストで見つかった、不合格ではないが改善の余地がある点です。対応するときは、`doc/1.SPEC.md` への要求の追加から始めてください。
+テストで見つかった、不合格ではないが改善の余地がある点と、プロダクトコンセプトに照らして見直しが必要な点です。対応するときは、`doc/1.SPEC.md` への要求の追加から始めてください。
+
+### コンセプトに照らして見直しが必要な点
+
+- Visual Stage の品質（`NFR-007`）: Dark でも Visual Stage の図のカードが明るい色のままになる（[Issue #13](https://github.com/prankster-freedom/ToyBox/issues/13)）。
+
+- 通常モードの起動（`NFR-006`）: KaTeX（数式）は、数式がない文書でも起動時に必ず読み込まれる。数式が初めて現れたときに読み込む方式を検討する（推論。効果は未計測）。
+- 通常モードの入力（`NFR-006`）: `Fit` の縮小の下限（`DD-DIAG-030`）は、再描画のたびに、キャッシュから表示する図も含めて全図の文字の計算後のスタイルを調べ直す。図の多い文書で入力が重くなるおそれがある。結果を図のキャッシュと一緒に保存する方式を検討する（推論。効果は未計測）。
+- Visual Stage の品質（`NFR-007`）: `Fit` の縮小の下限により、展示用のカードの中に横スクロールバーが出ることがある（ガント、ジャーニー、タイムライン、大きな図）。展示素材としてはビューアーらしさが出る。Visual Stage での見せ方（カードの幅を広げる、図の構成を変えるなど）を検討する。
+- Visual Stage の品質（`NFR-007`）: 下記の「その他」のうち、小さな図の拡大、2-Tier Cards の帯と文字の間隔、Vibrant Circles のキャメル色のコントラストは、Visual Stage の品質に直結する。
+
+### その他
 
 - 小さな図は `Fit` で枠の幅まで拡大され、文字が大きすぎる印象になる（最初のフローチャートは約 2.7 倍）。拡大の上限がない。
 - Dark の Visual Stage で、表のセルの区切り線（`--border-subtle`）が本文のスラブの背景と同じ色で見えない。
@@ -109,5 +129,5 @@ node public/standalone-apps/linea/tests/e2e.cjs
 
 ### 0.1.0（初期構成）
 
-- プロトタイプ（単一 HTML）を HTML / CSS / JS に分割し、`public/standalone-apps/linea/` 配下で独立した単位として管理開始
+- プロトタイプ（単一 HTML）を HTML / CSS / JS に分割し、`public/standalone-apps/luxyno/` 配下で独立した単位として管理開始
 

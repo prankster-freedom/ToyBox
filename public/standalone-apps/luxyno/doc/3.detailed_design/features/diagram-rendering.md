@@ -1,7 +1,7 @@
 ---
-title: Linea 詳細設計書 図の描画と後処理
+title: Luxyno 詳細設計書 図の描画と後処理
 description: Mermaid 図の描画先の管理、SVG 内 id の一意化、図種ごとの装飾と配色（FR-003, FR-008, NFR-004）の詳細設計。
-tags: ["Linea", "詳細設計", "Mermaid", "SVG"]
+tags: ["Luxyno", "詳細設計", "Mermaid", "SVG"]
 ---
 
 # 図の描画と後処理（diagram-rendering）

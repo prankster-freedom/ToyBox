@@ -1,7 +1,7 @@
 ---
-title: Linea テスト仕様 ファイルの読み込みと初期表示
+title: Luxyno テスト仕様 ファイルの読み込みと初期表示
 description: FR-006・FR-007 のテストケース。
-tags: ["Linea", "テスト仕様", "ファイル読み込み"]
+tags: ["Luxyno", "テスト仕様", "ファイル読み込み"]
 ---
 
 # テスト仕様: ファイルの読み込みと初期表示（file-loading）

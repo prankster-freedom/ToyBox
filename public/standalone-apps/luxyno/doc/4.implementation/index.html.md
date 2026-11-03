@@ -1,7 +1,7 @@
 ---
-title: Linea 実装ドキュメント index.html
-description: Linea の画面の骨格と、CDN ライブラリ・CSS・スクリプトの読み込み順を定める index.html の構成。
-tags: ["Linea", "実装", "HTML"]
+title: Luxyno 実装ドキュメント index.html
+description: Luxyno の画面の骨格と、CDN ライブラリ・CSS・スクリプトの読み込み順を定める index.html の構成。
+tags: ["Luxyno", "実装", "HTML"]
 ---
 
 # index.html

@@ -1,7 +1,7 @@
 ---
-title: Linea 実装ドキュメント css/style.css
-description: Linea のデザイントークン・組版・Markdown 要素・図の表示枠・Visual Stage のスタイルを定める css/style.css の構成と、詳細設計との対応。
-tags: ["Linea", "実装", "CSS"]
+title: Luxyno 実装ドキュメント css/style.css
+description: Luxyno のデザイントークン・組版・Markdown 要素・図の表示枠・Visual Stage のスタイルを定める css/style.css の構成と、詳細設計との対応。
+tags: ["Luxyno", "実装", "CSS"]
 ---
 
 # css/style.css
@@ -40,7 +40,7 @@ flowchart TD
 | 2. Mermaid の計測と余白     | `svg .edgeLabel:empty` など                                                          | 空のエッジラベルの余白をなくす   | `DD-DIAG-023`                |
 | 3. 通常モードの組版         | `.prose-doc`, `.prose-doc h1`, `.prose-doc h2`, 表（`.table-container`, `th`, `td`） | 仕様書スタイルの本文             | `FR-002`                     |
 | 3. Markdown 要素            | `:is(.prose-doc, .exhibition-slab) …`                                                | 見出し・リスト・リンク・コード・引用・表の寄せ・水平線・標準の HTML 要素。通常モードと Visual Stage で共有 | `DD-MD-001`〜`019` |
-| 3. 数式                     | `.linea-math[data-display="true"]`                                                   | ブロック数式の配置と横スクロール | `DD-MATH-023`                |
+| 3. 数式                     | `.luxyno-math[data-display="true"]`                                                   | ブロック数式の配置と横スクロール | `DD-MATH-023`                |
 | 3. 図のカード（通常モード） | `.diagram-frame`, `.diagram-viewport`, `.is-actual-size`                             | 図のカードと表示枠、Fit / 1:1    | `DD-DIAG-030`, `DD-DIAG-032` |
 | 4. Visual Stage             | `#visual-stage-container`, `.exhibition-*`, `.infographic-bg-<スタイル>`             | 展示レイアウト（ヒーロー、スラブ、図のカード）と、スタイルごとのカード背景 | `FR-003`, `DD-DIAG-021` |
 | その他                      | `.callout-box`, `.badge-tag`, `#markdown-editor`, スクロールバー                     | アプリ独自の装飾、エディタ       | -                            |

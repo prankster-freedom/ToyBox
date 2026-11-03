@@ -1,7 +1,7 @@
 ---
-title: Linea テスト仕様 目次
-description: Linea の feature 単位のテスト仕様の一覧。
-tags: ["Linea", "テスト仕様"]
+title: Luxyno テスト仕様 目次
+description: Luxyno の feature 単位のテスト仕様の一覧。
+tags: ["Luxyno", "テスト仕様"]
 ---
 
 # テスト仕様 目次
@@ -15,7 +15,7 @@ tags: ["Linea", "テスト仕様"]
 
 ## 実行方法
 
-- 自動確認: リポジトリ直下で `node public/standalone-apps/linea/tests/e2e.cjs` を実行する。`index.html` を `file://` で開き、Chromium（Playwright）で確認する。CDN からライブラリを読み込むため、インターネット接続が必要。
+- 自動確認: リポジトリ直下で `node public/standalone-apps/luxyno/tests/e2e.cjs` を実行する。`index.html` を `file://` で開き、Chromium（Playwright）で確認する。CDN からライブラリを読み込むため、インターネット接続が必要。
 - 出力: `work/test/results.json`（TC ごとの合否と詳細）、`work/test/shots/`（図の画像）。いずれも git 管理外。
 - 目視確認: 「確認方法」が目視の TC は、`work/test/shots/` の画像で確認する。
 - 規模の目安: 自動確認は 3〜5 分、目視確認は 130 枚程度の画像。
