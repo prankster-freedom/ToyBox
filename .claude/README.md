@@ -22,7 +22,8 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
 │   ├── copilot-instructions.md # GitHub Copilot 向けの入口（AGENTS.md などを参照するだけ）
 │   └── instructions/README.md  # Copilot のパス別指示の置き場の説明
 ├── .agent/
-│   └── rules/agents.md # Antigravity 向けの入口（AGENTS.md などを参照するだけ）
+│   ├── rules/agents.md # Antigravity 向けの入口（AGENTS.md などを参照するだけ）
+│   └── skills.json     # Antigravity のスキル探索先として .claude/skills を登録
 └── .claude/
     ├── README.md      # 本ファイル
     ├── settings.json  # チームで共有する Claude Code の設定
