@@ -139,7 +139,7 @@
 
 - `AGENTS.md`、`CLAUDE.md`
 - `.claude/`（スキル、`README.md`、`settings.json`）
-- `.github/copilot-instructions.md`、`.github/instructions/README.md`、`.agent/rules/agents.md`
+- `.github/copilot-instructions.md`、`.github/instructions/README.md`、`.agent/rules/agents.md`、`.agent/skills.json`
 - `agents-support-tools/`（スキルの実行で使う補助スクリプト）
 
 リポジトリ固有の規則・例外（コミットメッセージの形式、ドキュメントの格納先など）は、リポジトリ直下の `AGENTS.repo.md` にだけ書く。作業の開始時に必ず読み、本ファイルやスキルと食い違うときは `AGENTS.repo.md` を優先する。
