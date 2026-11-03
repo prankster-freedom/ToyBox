@@ -1,6 +1,6 @@
-// Linea のブラウザ動作確認スクリプト（テスト仕様: doc/5.test_spec/）
-// 使い方: node public/standalone-apps/linea/tests/e2e.cjs
-// 出力: public/standalone-apps/linea/work/test/（結果 JSON と図の画像。git 管理外）
+// Luxyno のブラウザ動作確認スクリプト（テスト仕様: doc/5.test_spec/）
+// 使い方: node public/standalone-apps/luxyno/tests/e2e.cjs
+// 出力: public/standalone-apps/luxyno/work/test/（結果 JSON と図の画像。git 管理外）
 const path = require('path');
 const fs = require('fs');
 const { chromium } = require('playwright');
@@ -94,7 +94,7 @@ async function testFileLoading(browser) {
   }));
   const editorValue = await page.evaluate(() => document.getElementById('markdown-editor').value);
   after.sameAsFile = editorValue === fs.readFileSync(SAMPLE, 'utf8').replace(/^﻿/, '');
-  record('TC-FILE-003', !dialogOnFirstLoad && after.sameAsFile && after.h1 === 'Linea サンプル文書' && after.cards > 0 && /読み込みました/.test(after.toast), JSON.stringify({ dialogOnFirstLoad, ...after }));
+  record('TC-FILE-003', !dialogOnFirstLoad && after.sameAsFile && after.h1 === 'Luxyno サンプル文書' && after.cards > 0 && /読み込みました/.test(after.toast), JSON.stringify({ dialogOnFirstLoad, ...after }));
   record('TC-FILE-006', after.inputCleared, `file-input.value cleared: ${after.inputCleared}`);
 
   // TC-FILE-004 編集後の読み込み：キャンセルで内容を保つ
@@ -110,7 +110,7 @@ async function testFileLoading(browser) {
   let accepted = false;
   page.once('dialog', d => { accepted = true; d.accept(); });
   await page.setInputFiles('#file-input', SAMPLE);
-  await page.waitForFunction(() => document.getElementById('markdown-editor').value.startsWith('# Linea サンプル文書'));
+  await page.waitForFunction(() => document.getElementById('markdown-editor').value.startsWith('# Luxyno サンプル文書'));
   record('TC-FILE-005', accepted, `dialog accepted and replaced: ${accepted}`);
 
   // TC-FILE-008 埋め込みサンプルの削除
@@ -440,7 +440,7 @@ async function testMarkdownTypography(browser) {
 // 本文の数式（sample.md の 8 章）を調べる
 function inspectMath(isVisual) {
   const root = document.querySelector(isVisual ? '#visual-stage-container' : '#standard-doc-container');
-  const all = Array.from(root.querySelectorAll('.linea-math'));
+  const all = Array.from(root.querySelectorAll('.luxyno-math'));
   const section = Array.from(root.querySelectorAll('h2')).find(h => /数式/.test(h.textContent) && !/図の中/.test(h.textContent));
   // 8 章の段落（見出しの次の要素から、次の h2 まで。Visual Stage ではスラブの中）
   const scope = isVisual ? section.closest('.exhibition-slab') : null;
@@ -461,9 +461,9 @@ function inspectMath(isVisual) {
       errors: root.querySelectorAll('.katex-error').length
     },
     notMath: {
-      money: !!money && !money.querySelector('.linea-math') && /\$5 と \$10/.test(money.textContent),
-      escaped: !!escaped && /\$100/.test(escaped.textContent) && !/\\\$100/.test(escaped.textContent) && escaped.querySelectorAll('.linea-math').length === 0,
-      code: codeWithDollar.length >= 3 && codeWithDollar.every(c => !c.querySelector('.linea-math'))
+      money: !!money && !money.querySelector('.luxyno-math') && /\$5 と \$10/.test(money.textContent),
+      escaped: !!escaped && /\$100/.test(escaped.textContent) && !/\\\$100/.test(escaped.textContent) && escaped.querySelectorAll('.luxyno-math').length === 0,
+      code: codeWithDollar.length >= 3 && codeWithDollar.every(c => !c.querySelector('.luxyno-math'))
     }
   };
 }
@@ -506,7 +506,7 @@ async function testMathRendering(browser) {
     const root = document.getElementById('standard-doc-container');
     return {
       errorShown: root.querySelectorAll('.katex-error').length >= 1,
-      validRendered: Array.from(root.querySelectorAll('.linea-math .katex')).some(k => /a/.test(k.textContent) && /2/.test(k.textContent)),
+      validRendered: Array.from(root.querySelectorAll('.luxyno-math .katex')).some(k => /a/.test(k.textContent) && /2/.test(k.textContent)),
       jsLinks: root.querySelectorAll('a[href^="javascript"]').length,
       imgs: root.querySelectorAll('img').length,
       xss: !!window.__xss
@@ -529,7 +529,7 @@ async function testMathRendering(browser) {
   await offline.waitForTimeout(500);
   const raw = await offline.evaluate(() => {
     const root = document.getElementById('standard-doc-container');
-    return { katex: !!window.katex, text: Array.from(root.querySelectorAll('.linea-math')).map(e => e.textContent).slice(0, 2), h1: !!root.querySelector('h1') };
+    return { katex: !!window.katex, text: Array.from(root.querySelectorAll('.luxyno-math')).map(e => e.textContent).slice(0, 2), h1: !!root.querySelector('h1') };
   });
   record('TC-MATH-004', !raw.katex && raw.text[0] === '$E = mc^2$' && raw.h1 && pageErrors.length === 0, JSON.stringify({ ...raw, pageErrors }));
   await ctx.close();

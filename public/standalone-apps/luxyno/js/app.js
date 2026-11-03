@@ -440,7 +440,7 @@ function escapeHtml(str) {
 
 // 置き場所の中身は TeX の原文。KaTeX を読み込めない場合は原文がそのまま表示される（DD-MATH-012, 022）
 function mathPlaceholder(tag, tex, isDisplay, raw) {
-  return `<${tag} class="linea-math" data-display="${isDisplay}" data-tex="${escapeHtml(tex)}">${escapeHtml(raw)}</${tag}>`;
+  return `<${tag} class="luxyno-math" data-display="${isDisplay}" data-tex="${escapeHtml(tex)}">${escapeHtml(raw)}</${tag}>`;
 }
 
 const mathBlockExtension = {
@@ -482,7 +482,7 @@ function setupMarkedMath() {
 // サニタイズ後の HTML に入れた置き場所へ描画する。trust: false で、リンクや任意の属性を作るコマンドは描画しない
 function renderMath(container) {
   if (!window.katex) return;
-  container.querySelectorAll('.linea-math').forEach(el => {
+  container.querySelectorAll('.luxyno-math').forEach(el => {
     katex.render(el.dataset.tex, el, {
       displayMode: el.dataset.display === 'true',
       throwOnError: false,
@@ -504,7 +504,7 @@ function hexToRgba(hex, alpha) {
 // Mermaid はシーケンス図の矢じり（#arrowhead）などを図をまたいで同じ id で出力するため、
 // 同じページに複数の図があると、別の図（非表示のものを含む）のマーカーやグラデーションを参照してしまう
 function scopeSvgIds(svg) {
-  const prefix = svg.id || `linea-${Math.random().toString(36).slice(2, 9)}`;
+  const prefix = svg.id || `luxyno-${Math.random().toString(36).slice(2, 9)}`;
   const idMap = new Map();
   const used = new Set();
   svg.querySelectorAll('[id]').forEach(el => {
@@ -1138,8 +1138,8 @@ function renderApp() {
       mermaidBlocks.push({ index, code, hash });
       tokensToKeep.push({
         type: 'html',
-        raw: `<div class="linea-slot" data-slot="${index}"></div>`,
-        text: `<div class="linea-slot" data-slot="${index}"></div>`
+        raw: `<div class="luxyno-slot" data-slot="${index}"></div>`,
+        text: `<div class="luxyno-slot" data-slot="${index}"></div>`
       });
     } else {
       tokensToKeep.push(token);
@@ -1177,7 +1177,7 @@ function renderApp() {
 
   const activeContainer = isVisual ? visContainer : stdContainer;
   renderMath(activeContainer);
-  const slots = activeContainer.querySelectorAll('.linea-slot');
+  const slots = activeContainer.querySelectorAll('.luxyno-slot');
   const modeTag = isVisual ? `vis-${state.infographicStyle}` : 'std';
 
   const dirtyBlocks = [];
@@ -1471,7 +1471,7 @@ function setupEventListeners() {
 
   document.getElementById('btn-export-html').onclick = () => {
     const fullHtml = document.documentElement.outerHTML;
-    downloadBlob(fullHtml, 'linea-architecture-export.html', 'text/html');
+    downloadBlob(fullHtml, 'luxyno-architecture-export.html', 'text/html');
     showToast('単一HTMLファイルをエクスポートしました');
   };
 
