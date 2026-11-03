@@ -1,7 +1,7 @@
 ---
-title: Linea 実装ドキュメント js/app.js
-description: Linea の状態管理・描画パイプライン・SVG 後処理・数式・イベント処理を担う js/app.js の構成と、詳細設計との対応。
-tags: ["Linea", "実装", "JavaScript"]
+title: Luxyno 実装ドキュメント js/app.js
+description: Luxyno の状態管理・描画パイプライン・SVG 後処理・数式・イベント処理を担う js/app.js の構成と、詳細設計との対応。
+tags: ["Luxyno", "実装", "JavaScript"]
 ---
 
 # js/app.js

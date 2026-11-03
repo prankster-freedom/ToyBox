@@ -1,7 +1,7 @@
 ---
-title: Linea 詳細設計書 ファイルの読み込みと初期表示
+title: Luxyno 詳細設計書 ファイルの読み込みと初期表示
 description: Markdown ファイルの読み込み（FR-006）と起動時の初期表示（FR-007）の詳細設計。
-tags: ["Linea", "詳細設計", "ファイル読み込み"]
+tags: ["Luxyno", "詳細設計", "ファイル読み込み"]
 ---
 
 # ファイルの読み込みと初期表示（file-loading）

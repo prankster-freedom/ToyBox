@@ -1,7 +1,7 @@
 ---
-title: Linea 実装ドキュメント tests/e2e.cjs
+title: Luxyno 実装ドキュメント tests/e2e.cjs
 description: テスト仕様の自動確認と画面の撮影を行う Playwright スクリプト tests/e2e.cjs の構成。
-tags: ["Linea", "実装", "テスト", "Playwright"]
+tags: ["Luxyno", "実装", "テスト", "Playwright"]
 ---
 
 # tests/e2e.cjs
