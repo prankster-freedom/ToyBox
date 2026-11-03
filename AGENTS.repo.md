@@ -36,3 +36,7 @@
 - 開発サーバーは `npm run dev`（Datastore エミュレーターに接続する）で起動する
 - 事前に `npm run emulator` で Datastore エミュレーター（`localhost:8081`）を起動しておく必要がある。起動していない場合は、ユーザーに確認してから起動する
 - 環境の初期設定は `doc/9.運用資料_ローカル開発環境_初期設定マニュアル.md` を参照する
+- 開発 PC は Windows。シェルは Git Bash と PowerShell を使える
+- Python は uv で管理する（`uv python install --default` で、`python` / `python3` が uv の Python を指す）。`python` が Microsoft Store を開くだけの場合は、WindowsApps の仮のファイルが先に見つかっているため、`uv python list --only-installed` で確認する。パッケージが必要なときは `uv run --with <パッケージ>` を使う
+- バックスラッシュ・バッククォート・`$` を含む内容（正規表現、TeX、テンプレートリテラルなど）は、シェルのヒアドキュメントや `node -e` の引数で書かない。ファイルの作成・編集は、エディタ系のツール（AI エージェントのファイル編集機能など）で行う。ヒアドキュメント経由で `\\` が `\` に変わり、スクリプトや数式が壊れたことがある
+- ブラウザでの動作確認には、リポジトリ直下の Playwright（Chromium）を使う。スタンドアロンアプリの確認スクリプトは `<アプリ>/tests/` に置く（例: `node public/standalone-apps/linea/tests/e2e.cjs`）
