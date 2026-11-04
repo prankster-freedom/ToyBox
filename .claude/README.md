@@ -33,6 +33,7 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
         ├── devenv/                          # /devenv
         ├── devtools-update/                 # /devtools-update
         ├── doc/                             # /doc
+        ├── dtp/                             # /dtp（デザイン設計・ラフ・素材管理・校正）
         ├── pi/                              # /pi
         ├── release/                         # /release
         ├── swe1/ swe2/ swe3/ test/          # SKILL.md + template.md（ソフトウェア開発の工程とひな形）
@@ -78,10 +79,11 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
 | pi     | 不可         | プロセス改善（直近の会話・不具合の振り返り。改定案には差分と理由を示す）（v2.0.0）                               |
 | release | 不可        | リリース（前回のリリース以降のコミットから版を決め、版番号の更新とリリースノートの記載、リリースコミット）（v2.0.0） |
 
-### ソフトウェア開発の工程（swe1 → swe2 → swe3 → test → commit の順）
+### ソフトウェア開発の工程（dtp → swe1 → swe2 → swe3 → test → dtp → commit の順）
 
 | スキル | 自動呼び出し | 説明 |
 | :----- | :----------- | :--- |
+| dtp    | 可           | デザイン設計と校正（DTP・エディトリアルデザイン）。前段で基本フォーマット・ラフ（ボツ案含む）・レイアウト・素材仕様（`doc/DTP/`）と本番素材（`assets/`）を作成してエンジニアリングへのインプットとし、test 完了後に描画出力（ゲラ）のデザイン校正（`work/dtp_review/`）を行う（v1.0.0） |
 | swe1   | 可           | 工程 1 (SWE.1): ソフトウェア要求分析。全体のつながりが分かる SRS と個別 feature 要求仕様書を作成・更新する（v2.0.0） |
 | swe2   | 可           | 工程 2 (SWE.2): ソフトウェアアーキテクチャ設計。アーキテクチャ設計書（ADS）と必要に応じて SWC 要求仕様書（SwcRS）を作成・更新し、ブランチを作成する（v2.0.0） |
 | swe3   | 可           | 工程 3 (SWE.3): ソフトウェア詳細設計と実装。承認済み設計に基づくソースコード実装、および必要に応じた Design Notes を作成・更新する（v2.0.0） |
