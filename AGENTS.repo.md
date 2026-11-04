@@ -17,11 +17,12 @@
 本リポジトリは doc スキルの格納先より前から運用しているため、次の構成を正とする。プロジェクトのルートはリポジトリ直下（`<プロジェクト>/` = `./`）。
 ただし、`public/standalone-apps/<アプリ名>/` 配下のスタンドアロンアプリは、それぞれのフォルダを独立した `<プロジェクト>` ルートとし、各フォルダ内の `doc/` に doc スキル既定の構成でドキュメントを格納する。
 
-| 種類                 | doc スキルの既定                  | 本リポジトリ                                     |
-| :------------------- | :-------------------------------- | :----------------------------------------------- |
-| アーキテクチャ設計書 | `doc/2.ARCHITECTURE.md`           | `doc/2.DESIGN.md`                                |
-| 詳細設計書           | `doc/3.detailed_design/features/` | 同じ（目次は `doc/3.detailed_design/README.md`） |
-| 実装ドキュメント     | `doc/4.implementation/`           | `doc/3.implementation/`                          |
+| 種類                 | doc スキルの既定                                | 本リポジトリ            |
+| :------------------- | :---------------------------------------------- | :---------------------- |
+| 要求仕様書           | `doc/SRS.md`, `doc/SRS/features/<feature名>.md` | `doc/1.SPEC.md`         |
+| アーキテクチャ設計書 | `doc/ADS.md`                                    | `doc/2.DESIGN.md`       |
+| 詳細設計書           | `doc/DesignNotes/<対象>.md`（必要な場合のみ）   | `doc/3.detailed_design/features/`（目次は `README.md`） |
+| 実装ドキュメント     | ソースコード（および Design Notes）             | `doc/3.implementation/` |
 
 運用資料は次のファイルで管理する。
 
