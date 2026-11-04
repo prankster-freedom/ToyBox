@@ -54,15 +54,17 @@ metadata:
 
 swe1〜test の各スキルは、次の格納先を使う。番号は工程の順に対応させる。
 
-| 工程   | 種類                         | 格納先                                                         |
-| :----- | :--------------------------- | :------------------------------------------------------------- |
-| swe1   | 要求仕様書                   | `<プロジェクト>/doc/1.SPEC.md`                                 |
-| swe2-1 | アーキテクチャ設計書         | `<プロジェクト>/doc/2.ARCHITECTURE.md`                         |
-| swe3-1 | 詳細設計書（機能単位）       | `<プロジェクト>/doc/3.detailed_design/features/<feature名>.md` |
-| swe3-2 | 実装ドキュメント（ソースと 1:1） | `<プロジェクト>/doc/4.implementation/<ソースのパス>.md`    |
-| test   | テスト仕様書（feature 単位） | `<プロジェクト>/doc/5.test_spec/<サービス>/<feature名>.md`（目次は `doc/5.test_spec/README.md`） |
-| cr     | 変更要求（CR）               | `<プロジェクト>/doc/6.change_request/<サービス>/CR-<SVC>-<nnn>_<件名>.md`（一覧は `doc/6.change_request/README.md`） |
-| doc    | 運用資料                     | `<プロジェクト>/doc/9.運用資料_<名称>.md`（例: 初期設定マニュアル、エンドユーザー向けマニュアル） |
+| 工程         | 種類                         | 格納先                                                        |
+| :----------- | :--------------------------- | :------------------------------------------------------------ |
+| swe1 (SWE.1) | 全体要求仕様書（SRS）        | `<プロジェクト>/doc/SRS.md`                                   |
+| swe1 (SWE.1) | 個別 feature 要求仕様書      | `<プロジェクト>/doc/SRS/features/<feature名>.md`              |
+| swe2 (SWE.2) | アーキテクチャ設計仕様書（ADS） | `<プロジェクト>/doc/ADS.md`（または `doc/2.ARCHITECTURE.md`） |
+| swe2 (SWE.2) | コンポーネント要求仕様書（SwcRS） | `<プロジェクト>/doc/SwcRS/<コンポーネント名>.md`（詳細な定義が必要な SWC のみ） |
+| swe3 (SWE.3) | ソースコード                 | プロダクトのソースコードファイル                              |
+| swe3 (SWE.3) | Design Notes                 | `<プロジェクト>/doc/DesignNotes/<対象>.md`（コードやコメントだけでは不十分な場合のみ） |
+| test (SWE.4) | テスト仕様書（feature 単位） | `<プロジェクト>/doc/5.test_spec/<サービス>/<feature名>.md`（目次は `doc/5.test_spec/README.md`） |
+| cr           | 変更要求（CR）               | `<プロジェクト>/doc/6.change_request/<サービス>/CR-<SVC>-<nnn>_<件名>.md`（一覧は `doc/6.change_request/README.md`） |
+| doc          | 運用資料                     | `<プロジェクト>/doc/9.運用資料_<名称>.md`（例: 初期設定マニュアル、エンドユーザー向けマニュアル） |
 
 サービスが 1 つのプロジェクトでは、`<サービス>` の階層を省略できる。
 
