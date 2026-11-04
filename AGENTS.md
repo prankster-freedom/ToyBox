@@ -115,7 +115,7 @@
 - git commit は、ユーザーから指示があった場合のみ commit スキルの手順で行う。
 - リリース（版番号の更新とリリースノートの記載）は、ユーザーから指示があった場合のみ release スキルの手順で行う。
 - ドキュメントの整合確認・メンテナンスは doc スキルで行う。
-- ソフトウェア開発は swe1 → swe2 → swe3 → test → commit の順にスキルの手順で進める。
+- ソフトウェア開発は swe1 → swe2 → swe3 → test → commit の順にスキルの手順で進める。デザイン（ラフ・レイアウト・素材・校正）を伴う場合は、前段の dtp（設計）の成果物をエンジニアリング工程のインプットとし、test 完了後に dtp（校正）でデザインチェックを行ってから commit へ進む（dtp → swe1 → swe2 → swe3 → test → dtp → commit）。
 - 既存のソフトウェアへの変更要求（CR）は、cr スキルの手順で登録し、影響する工程から進める。
 - 技術文書の作成では markdown-plantuml-documentation、制御系のブロック線図・応答グラフでは control-system-documentation を参照する。
 
