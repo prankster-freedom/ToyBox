@@ -35,7 +35,7 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
         ├── doc/                             # /doc
         ├── pi/                              # /pi
         ├── release/                         # /release
-        ├── swe1/ swe2-1/ swe3-1/ swe3-2/ test/ # SKILL.md + template.md（ソフトウェア開発の工程とひな形）
+        ├── swe1/ swe2/ swe3/ test/          # SKILL.md + template.md（ソフトウェア開発の工程とひな形）
         ├── control-system-documentation/    # SKILL.md + examples.md
         └── markdown-plantuml-documentation/ # SKILL.md + markdown_sample.md
 ```
@@ -78,14 +78,13 @@ tags: ["Claude Code", "Cursor", "GitHub Copilot", "AGENTS.md", "CLAUDE.md", "ski
 | pi     | 不可         | プロセス改善（直近の会話・不具合の振り返り。改定案には差分と理由を示す）（v2.0.0）                               |
 | release | 不可        | リリース（前回のリリース以降のコミットから版を決め、版番号の更新とリリースノートの記載、リリースコミット）（v2.0.0） |
 
-### ソフトウェア開発の工程（swe1 → swe2-1 → swe3-1 → swe3-2 → test → commit の順）
+### ソフトウェア開発の工程（swe1 → swe2 → swe3 → test → commit の順）
 
-| スキル | 自動呼び出し | 説明                                                             |
-| :----- | :----------- | :--------------------------------------------------------------- |
-| swe1   | 可           | 工程 1: 要求獲得と要求分析、計画。ひな形付き（v2.0.0）           |
-| swe2-1 | 可           | 工程 2-1: アーキテクチャ設計とブランチ作成。ひな形付き（v2.0.0） |
-| swe3-1 | 可           | 工程 3-1: 詳細設計。ひな形付き（v2.0.0）                         |
-| swe3-2 | 可           | 工程 3-2: 実装。ひな形付き（v2.0.0）                             |
+| スキル | 自動呼び出し | 説明 |
+| :----- | :----------- | :--- |
+| swe1   | 可           | 工程 1 (SWE.1): ソフトウェア要求分析。全体のつながりが分かる SRS と個別 feature 要求仕様書を作成・更新する（v2.0.0） |
+| swe2   | 可           | 工程 2 (SWE.2): ソフトウェアアーキテクチャ設計。アーキテクチャ設計書（ADS）と必要に応じて SWC 要求仕様書（SwcRS）を作成・更新し、ブランチを作成する（v2.0.0） |
+| swe3   | 可           | 工程 3 (SWE.3): ソフトウェア詳細設計と実装。承認済み設計に基づくソースコード実装、および必要に応じた Design Notes を作成・更新する（v2.0.0） |
 | test   | 可           | 工程 4: テスト。テスト仕様書は `doc/5.test_spec/`、テスト結果は `work/test_result/`（git 管理外）。ひな形（テスト仕様書・テスト結果）付き（v2.0.0） |
 
 ### 知識系（タスクに応じて自動参照）
