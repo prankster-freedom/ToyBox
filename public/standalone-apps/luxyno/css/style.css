@@ -1324,19 +1324,6 @@ body[data-appearance="dark"] .exhibition-diagram-header {
   flex-shrink: 0 !important;
 }
 
-/* ルミナス・フロー演出（DTP-VTPL-095, FR-017, DD-VTPL-026）:
-   Visual Stage のフロー図の結線・メッセージ線の上を光線パルスが始点から終点へ流れる */
-.exhibition-viewport svg .luxyno-flow-beam {
-  fill: none !important;
-  stroke-width: 2.5px !important;
-  stroke-linecap: round !important;
-  stroke-dasharray: 14 140 !important;
-  stroke-dashoffset: 154;
-  opacity: 0.88;
-  pointer-events: none;
-  animation: luxyno-beam-flow 2.8s linear infinite;
-  animation-delay: var(--beam-delay, 0s);
-}
 @keyframes vs-luminous-track {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -1349,14 +1336,9 @@ body[data-appearance="dark"] .exhibition-diagram-header {
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
-@keyframes luxyno-beam-flow {
-  0% { stroke-dashoffset: 154; }
-  100% { stroke-dashoffset: 0; }
-}
 @media (prefers-reduced-motion: reduce) {
   .exhibition-slab .vs-steps::before,
-  .exhibition-slab .vs-step-chevron,
-  .exhibition-viewport svg .luxyno-flow-beam {
+  .exhibition-slab .vs-step-chevron {
     animation: none !important;
   }
 }
