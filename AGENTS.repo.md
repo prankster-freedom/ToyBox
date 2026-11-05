@@ -43,3 +43,4 @@
 - Python は uv で管理する（`uv python install --default` で、`python` / `python3` が uv の Python を指す）。`python` が Microsoft Store を開くだけの場合は、WindowsApps の仮のファイルが先に見つかっているため、`uv python list --only-installed` で確認する。パッケージが必要なときは `uv run --with <パッケージ>` を使う
 - バックスラッシュ・バッククォート・`$` を含む内容（正規表現、TeX、テンプレートリテラルなど）は、シェルのヒアドキュメントや `node -e` の引数で書かない。ファイルの作成・編集は、エディタ系のツール（AI エージェントのファイル編集機能など）で行う。ヒアドキュメント経由で `\\` が `\` に変わり、スクリプトや数式が壊れたことがある
 - ブラウザでの動作確認には、リポジトリ直下の Playwright（Chromium）を使う。スタンドアロンアプリの確認スクリプトは `<アプリ>/tests/` に置く
+- Markdown ファイル内の表整形には、本リポジトリ付属のスクリプト `node agents-support-tools/md-table-align/align-tables.cjs <Markdown ファイル>` を使用する（`AGENTS.md` 4 章の共有ファイルではないため、リポジトリ固有のコマンドとして実行する）
