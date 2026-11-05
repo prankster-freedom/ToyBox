@@ -96,22 +96,9 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    subgraph InputStage [1. Authoring]
-        S1[Markdown Source] --> S2[Frontmatter Parser]
-    end
-    subgraph AnalysisStage [2. Structure Analysis]
-        S2 --> S3[Section Splitter]
-        S3 --> S4[Volume & Pattern Classifier]
-    end
-    subgraph RenderStage [3. Visual Engine]
-        S4 --> S5[Mermaid SVG Generator]
-        S5 --> S6[Node & Palette Decorator]
-        S6 --> S7[Luminous Flow Beam Injector]
-    end
-    subgraph OutputStage [4. Exhibition Stage]
-        S7 --> S8[Interactive Spotlight Stage]
-        S8 --> S9[High-Res PNG / SVG Exporter]
-    end
+    S1[1. 原稿入力] --> S2[2. 構造解析]
+    S2 --> S3[3. 雛形適用]
+    S3 --> S4[4. 光線描画]
 ```
 
 ## 11. 【図表サイズ比較】縦に大きい図表（多段フローチャートと長尺シーケンス図）
@@ -161,7 +148,7 @@ sequenceDiagram
 
 ## 12. 【図表サイズ比較】列数・情報量が多いワイドテーブルと状態遷移図
 
-列数が多く横幅の広いデータテーブルと、曲線エッジを持つ状態遷移図（State Diagram）の表示確認です。表はセル内の単語途中改行を防ぎつつ、コンテナ内で滑らかに横スクロールできます。
+列数が多く情報密度の高いデータテーブルと、曲線エッジを持つ状態遷移図（State Diagram）の表示確認です。多列の表もスラブの版面幅に収まるよう自動折り返しとスクロールコンテナで制御されます。
 
 | 雛形ID     | 雛形名称         | 主な適用条件（構造）                      | ボリューム閾値（上限）         | 適用されるベクター装飾素材     | 動的・インタラクティブ演出               | 閾値超過時の自動フォールバック             |
 | :--------- | :--------------- | :---------------------------------------- | :----------------------------- | :----------------------------- | :--------------------------------------- | :----------------------------------------- |

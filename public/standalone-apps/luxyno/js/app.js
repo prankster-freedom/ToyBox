@@ -728,21 +728,26 @@ function applyReadableFit(svg, cacheKey) {
       .map(el => parseFloat(getComputedStyle(el).fontSize))
       .filter(size => size > 0);
     const minScale = sizes.length ? Math.min(1, MIN_FIT_FONT_PX / Math.min(...sizes)) : 0;
-    fit = { minWidth: Math.ceil(viewBox.width * minScale), maxWidth: Math.ceil(viewBox.width * MAX_FIT_SCALE) };
+    fit = {
+      naturalWidth: Math.ceil(viewBox.width),
+      minWidth: Math.ceil(viewBox.width * minScale),
+      maxWidth: Math.ceil(viewBox.width * MAX_FIT_SCALE)
+    };
     if (cacheKey) fitCache.set(cacheKey, fit);
   }
   if (fit.minWidth) svg.style.minWidth = `${fit.minWidth}px`;
   svg.style.setProperty('--fit-max-width', `${fit.maxWidth}px`);
+  svg.style.setProperty('--natural-width', `${fit.naturalWidth}px`);
   updateSlabSplit(svg.closest('.exhibition-slab-split'));
 }
 
-// 2 段組みスラブで、右カラムの表示枠より図が広い場合は 1 段組み（is-stacked）に切り替える（DD-DIAG-042）
+// 2 段組みスラブで、右カラムの表示枠より図が広い場合、または 1:1（実寸）表示に切り替えた場合は 1 段組み（is-stacked）に切り替える（FR-015, DD-DIAG-042）
 function updateSlabSplit(slab) {
   if (!slab || !slab.classList.contains('exhibition-slab-split')) return;
   const vp = slab.querySelector('.exhibition-viewport');
   if (!vp || !vp.querySelector(':scope > svg')) return;
   slab.classList.remove('is-stacked');
-  if (vp.scrollWidth > vp.clientWidth + 1) {
+  if (vp.classList.contains('is-actual-size') || vp.scrollWidth > vp.clientWidth + 1) {
     slab.classList.add('is-stacked');
   }
 }
@@ -1463,7 +1468,8 @@ function buildVisualStageHtml(cleanHtml) {
     const slots = wrapper.querySelectorAll('.luxyno-slot');
     const children = Array.from(wrapper.children);
     const proseEls = children.filter(el => el !== h2 && !el.classList.contains('front-matter') && !el.classList.contains('luxyno-slot') && !el.querySelector('.luxyno-slot'));
-    if (slots.length === 1 && proseEls.length >= 1) {
+    const hasComplexBlock = proseEls.some(el => /^(H[3-6]|TABLE|PRE)$/.test(el.tagName) || el.querySelector('table, pre'));
+    if (slots.length === 1 && proseEls.length >= 1 && !hasComplexBlock) {
       const fm = wrapper.querySelector(':scope > .front-matter');
       const slotEl = children.find(el => el.classList.contains('luxyno-slot') || el.querySelector('.luxyno-slot'));
       const proseHtml = proseEls.map(el => el.outerHTML).join('');
@@ -1496,6 +1502,18 @@ function buildVisualStageHtml(cleanHtml) {
       ${slabsHtml}
     </div>
   `;
+}
+
+// 表（table）が親コンテナやスラブの枠をはみ出さないよう、横スクロール可能な .table-container で包む（DD-MD-020）
+function wrapTables(container) {
+  if (!container) return;
+  container.querySelectorAll('table').forEach(table => {
+    if (table.parentElement && table.parentElement.classList.contains('table-container')) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-container';
+    table.before(wrapper);
+    wrapper.appendChild(table);
+  });
 }
 
 /* ==========================================================================
@@ -1558,6 +1576,7 @@ function renderApp() {
   }
 
   const activeContainer = isVisual ? visContainer : stdContainer;
+  wrapTables(activeContainer);
   renderMath(activeContainer);
   const slots = activeContainer.querySelectorAll('.luxyno-slot');
   const modeTag = isVisual ? `vis-${state.infographicStyle}` : 'std';

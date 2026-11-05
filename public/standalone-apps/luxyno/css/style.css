@@ -581,12 +581,10 @@ body[data-appearance="dark"] :is(.prose-doc, .exhibition-slab) mark {
 
 .table-container {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin: 1.25rem 0;
-  border-radius: 12px;
-  border: 1px solid var(--border-strong);
-  background: var(--card-bg);
 }
 table {
   min-width: 560px !important;
@@ -600,12 +598,15 @@ thead {
 }
 th, td {
   border: 1px solid var(--border-subtle) !important;
-  padding: 0.75rem 1rem !important;
+  padding: 0.65rem 0.75rem !important;
   text-align: left;
   color: var(--text-secondary);
   line-height: 1.6;
-  word-break: keep-all !important;
+  word-break: normal !important;
   overflow-wrap: break-word !important;
+}
+:is(th, td) code {
+  white-space: nowrap;
 }
 th {
   font-family: 'JetBrains Mono', monospace;
@@ -655,9 +656,10 @@ th {
   display: block;
 }
 .diagram-viewport.is-actual-size svg {
-  width: auto !important;
-  min-width: 640px !important;
+  width: var(--natural-width, auto) !important;
+  min-width: var(--natural-width, 0px) !important;
   max-width: none !important;
+  flex-shrink: 0 !important;
 }
 
 /* ==========================================================================
@@ -774,6 +776,8 @@ body[data-appearance="dark"] .exhibition-hero {
 .four-color-bar span:nth-child(4) { background: var(--vs-c4); }
 
 .exhibition-slab {
+  min-width: 0;
+  max-width: 100%;
   border-radius: 22px;
   padding: clamp(1.25rem, 3vw, 2rem);
   background: #FFFFFF;
@@ -833,6 +837,10 @@ body[data-appearance="dark"] .exhibition-slab {
   grid-template-columns: minmax(15rem, 5fr) minmax(0, 7fr);
   gap: clamp(1.25rem, 2.5vw, 2rem);
   align-items: start;
+}
+.exhibition-slab-split > .exhibition-slab-body > :is(.exhibition-slab-prose, .exhibition-slab-figure) {
+  min-width: 0;
+  max-width: 100%;
 }
 .exhibition-slab-split > .exhibition-slab-body > .exhibition-slab-prose > :first-child {
   margin-top: 0;
@@ -1310,9 +1318,10 @@ body[data-appearance="dark"] .exhibition-diagram-header {
   background: transparent !important;
 }
 .exhibition-viewport.is-actual-size svg {
-  width: auto !important;
-  min-width: 680px !important;
+  width: var(--natural-width, auto) !important;
+  min-width: var(--natural-width, 0px) !important;
   max-width: none !important;
+  flex-shrink: 0 !important;
 }
 
 /* ルミナス・フロー演出（DTP-VTPL-095, FR-017, DD-VTPL-026）:

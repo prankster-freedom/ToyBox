@@ -647,7 +647,7 @@ async function testVisualStageQuality(browser) {
     const svg = document.querySelector('#standard-doc-container [data-stage-index="0"] > svg');
     return { width: svg.getBoundingClientRect().width, vb: svg.viewBox.baseVal.width };
   });
-  record('TC-DIAG-017', scale <= 1.51 && scale >= 1.2 && actual.width >= actual.vb - 1, JSON.stringify({ fitScale: scale, actual }));
+  record('TC-DIAG-017', scale <= 1.51 && scale >= 1.2 && Math.abs(actual.width - actual.vb) <= 2, JSON.stringify({ fitScale: scale, actual }));
 
   // TC-DIAG-018 Visual Stage の細部: Cards の帯と文字、Circles のキャメル色の文字、ヒーローの固定文言、Dark の表の区切り線
   await setMode(page, { style: 'cards', appearance: 'light' });
@@ -1422,6 +1422,11 @@ async function testVisualTemplates(browser) {
     const seqBeams = slabs[11] ? slabs[11].querySelectorAll('svg line.luxyno-flow-beam').length : 0;
     const stateBeams = slabs[12] ? slabs[12].querySelectorAll('svg path.luxyno-flow-beam').length : 0;
     const firstBeam = root.querySelector('svg .luxyno-flow-beam');
+    const slab12 = slabs[12];
+    const tableWrap = slab12 ? slab12.querySelector('.table-container') : null;
+    const tableEl = slab12 ? slab12.querySelector('table') : null;
+    const tableContained = !!(slab12 && tableWrap && tableEl
+      && tableWrap.getBoundingClientRect().right <= slab12.getBoundingClientRect().right + 1);
     return {
       slabCount: slabs.length,
       tpls,
@@ -1432,11 +1437,40 @@ async function testVisualTemplates(browser) {
       split9Stacked: splitStd ? splitStd.classList.contains('is-stacked') : true,
       split10Stacked: splitWide ? splitWide.classList.contains('is-stacked') : false,
       split10Contained: splitWide && wrap ? splitWide.getBoundingClientRect().width <= wrap.getBoundingClientRect().width + 1 : false,
+      tableContained,
       beams: { flowBeams, wideBeams, seqBeams, stateBeams },
       beamAnim: firstBeam ? getComputedStyle(firstBeam).animationName : ''
     };
   });
-  const showcaseExpectedTpls = ['lead', 'lead', 'standard', 'points', 'points', 'standard', 'steps', 'steps', 'quote', 'split', 'split', 'standard', 'split', 'standard'];
+  // STAGE 10（横に広い図）で Fit より 1:1（実寸）の方が大きく表示されること
+  const wideFitWidth = await page.evaluate(() => {
+    const svg = document.querySelector('#visual-stage-container [data-stage-index="1"] > svg');
+    return svg ? svg.getBoundingClientRect().width : 0;
+  });
+  await page.click('#visual-stage-container [data-action="scale-actual"][data-index="1"]');
+  const wideActual = await page.evaluate(() => {
+    const svg = document.querySelector('#visual-stage-container [data-stage-index="1"] > svg');
+    return svg ? { width: svg.getBoundingClientRect().width, vb: svg.viewBox.baseVal.width } : { width: 0, vb: 0 };
+  });
+  await page.click('#visual-stage-container [data-action="scale-fit"][data-index="1"]');
+  const scaleWideOk = wideActual.width > wideFitWidth + 10 && Math.abs(wideActual.width - wideActual.vb) <= 2;
+
+  // Canvas 表示（全幅プレビュー）で STAGE 12 の 7 列テーブルが横スクロールなしでスラブ内に 100% 収まることも確認する
+  await page.click('.view-mode-btn[data-view-mode="canvas"]');
+  await page.waitForTimeout(300);
+  const canvasTableFits = await page.evaluate(() => {
+    const slab12 = document.querySelectorAll('#visual-stage-container .exhibition-slab')[12];
+    const tableWrap = slab12 ? slab12.querySelector('.table-container') : null;
+    const tableEl = slab12 ? slab12.querySelector('table') : null;
+    return !!(slab12 && tableWrap && tableEl
+      && tableWrap.scrollWidth <= tableWrap.clientWidth + 1
+      && tableEl.getBoundingClientRect().right <= slab12.getBoundingClientRect().right + 1);
+  });
+  await page.locator('#visual-stage-container .exhibition-slab').nth(12).screenshot({ path: path.join(SHOT_DIR, 'vtpl-showcase-wide-table.png') });
+  await page.click('.view-mode-btn[data-view-mode="split"]');
+  await page.waitForTimeout(300);
+
+  const showcaseExpectedTpls = ['lead', 'lead', 'standard', 'points', 'points', 'standard', 'steps', 'steps', 'quote', 'split', 'split', 'standard', 'standard', 'standard'];
   const showcaseOk = stdBeams === 0
     && showcase.slabCount === 14
     && JSON.stringify(showcase.tpls) === JSON.stringify(showcaseExpectedTpls)
@@ -1447,12 +1481,15 @@ async function testVisualTemplates(browser) {
     && !showcase.split9Stacked
     && showcase.split10Stacked
     && showcase.split10Contained
+    && showcase.tableContained
+    && canvasTableFits
+    && scaleWideOk
     && showcase.beams.flowBeams >= 4
-    && showcase.beams.wideBeams >= 8
+    && showcase.beams.wideBeams >= 3
     && showcase.beams.seqBeams >= 10
     && showcase.beams.stateBeams >= 6
     && showcase.beamAnim === 'luxyno-beam-flow';
-  record('TC-VTPL-014', showcaseOk, JSON.stringify({ stdBeams, ...showcase }));
+  record('TC-VTPL-014', showcaseOk, JSON.stringify({ stdBeams, wideFitWidth, wideActual, canvasTableFits, ...showcase }));
 
   const showcaseShots = [
     [6, 'vtpl-showcase-steps-flow.png'],
