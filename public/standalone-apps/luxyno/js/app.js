@@ -728,21 +728,26 @@ function applyReadableFit(svg, cacheKey) {
       .map(el => parseFloat(getComputedStyle(el).fontSize))
       .filter(size => size > 0);
     const minScale = sizes.length ? Math.min(1, MIN_FIT_FONT_PX / Math.min(...sizes)) : 0;
-    fit = { minWidth: Math.ceil(viewBox.width * minScale), maxWidth: Math.ceil(viewBox.width * MAX_FIT_SCALE) };
+    fit = {
+      naturalWidth: Math.ceil(viewBox.width),
+      minWidth: Math.ceil(viewBox.width * minScale),
+      maxWidth: Math.ceil(viewBox.width * MAX_FIT_SCALE)
+    };
     if (cacheKey) fitCache.set(cacheKey, fit);
   }
   if (fit.minWidth) svg.style.minWidth = `${fit.minWidth}px`;
   svg.style.setProperty('--fit-max-width', `${fit.maxWidth}px`);
+  svg.style.setProperty('--natural-width', `${fit.naturalWidth}px`);
   updateSlabSplit(svg.closest('.exhibition-slab-split'));
 }
 
-// 2 段組みスラブで、右カラムの表示枠より図が広い場合は 1 段組み（is-stacked）に切り替える（DD-DIAG-042）
+// 2 段組みスラブで、右カラムの表示枠より図が広い場合、または 1:1（実寸）表示に切り替えた場合は 1 段組み（is-stacked）に切り替える（FR-015, DD-DIAG-042）
 function updateSlabSplit(slab) {
   if (!slab || !slab.classList.contains('exhibition-slab-split')) return;
   const vp = slab.querySelector('.exhibition-viewport');
   if (!vp || !vp.querySelector(':scope > svg')) return;
   slab.classList.remove('is-stacked');
-  if (vp.scrollWidth > vp.clientWidth + 1) {
+  if (vp.classList.contains('is-actual-size') || vp.scrollWidth > vp.clientWidth + 1) {
     slab.classList.add('is-stacked');
   }
 }
@@ -819,6 +824,7 @@ function decorateVisualSvg(svg, diagramType) {
 
   if (diagramType === 'sequence') {
     decorateVisualSequence(svg, styleMode, visualSpec, uid);
+    addVisualFlowBeams(svg, diagramType, styleMode);
     return;
   }
   // その他の図種は、構造を保ったまま setupMermaid のスタイル配色だけで描画する（FR-008）
@@ -847,6 +853,51 @@ function decorateVisualSvg(svg, diagramType) {
   if (decorate) decorate(svg, uid);
 
   fixMarkerScale(svg);
+  addVisualFlowBeams(svg, diagramType, styleMode);
+}
+
+// Visual Stage の結線・信号線に沿って光が流れるオーバーレイ軌跡（.luxyno-flow-beam）を追加する（FR-017, DD-VTPL-016）
+const VISUAL_BEAM_COLORS = {
+  shapes: ['#FFFFFF', '#E89B27', '#0E7490', '#E87C6C'],
+  cards: ['#E29578', '#E6B34B', '#5C7CFA', '#38A3A5'],
+  circles: ['#FFFFFF', '#FDE68A', '#BAE6FD', '#FECDD3'],
+  editorial: ['#E29578', '#D68C8C', '#C9A66B', '#588157'],
+  dark: ['#73E8F4', '#F7D05C', '#F6CBC3', '#8CEE97']
+};
+
+function addVisualFlowBeams(svg, diagramType, styleMode) {
+  const palette = state.appearance === 'dark'
+    ? VISUAL_BEAM_COLORS.dark
+    : (VISUAL_BEAM_COLORS[styleMode] || VISUAL_BEAM_COLORS.shapes);
+  const svgNs = 'http://www.w3.org/2000/svg';
+
+  if (diagramType === 'sequence') {
+    svg.querySelectorAll('line.messageLine0, line.messageLine1').forEach((line, idx) => {
+      const beam = document.createElementNS(svgNs, 'line');
+      beam.setAttribute('class', 'luxyno-flow-beam');
+      beam.setAttribute('aria-hidden', 'true');
+      ['x1', 'y1', 'x2', 'y2'].forEach(attr => {
+        const val = line.getAttribute(attr);
+        if (val !== null) beam.setAttribute(attr, val);
+      });
+      beam.style.setProperty('stroke', palette[idx % palette.length], 'important');
+      beam.style.setProperty('--beam-delay', `${(idx % 6) * 0.35}s`);
+      line.after(beam);
+    });
+    return;
+  }
+
+  svg.querySelectorAll('.edgePath path.path, path.flowchart-link, path.transition').forEach((p, idx) => {
+    const d = p.getAttribute('d');
+    if (!d) return;
+    const beam = document.createElementNS(svgNs, 'path');
+    beam.setAttribute('class', 'luxyno-flow-beam');
+    beam.setAttribute('aria-hidden', 'true');
+    beam.setAttribute('d', d);
+    beam.style.setProperty('stroke', palette[idx % palette.length], 'important');
+    beam.style.setProperty('--beam-delay', `${(idx % 6) * 0.35}s`);
+    p.after(beam);
+  });
 }
 
 // Visual Stage で使う影・グラデーションを defs に追加し、id の接尾辞を返す
@@ -1308,6 +1359,7 @@ function applySlabTemplate(template, els) {
       const chevron = document.createElement('span');
       chevron.className = 'vs-step-chevron';
       chevron.setAttribute('aria-hidden', 'true');
+      chevron.style.setProperty('--step-delay', `${(idx - 1) * 0.45}s`);
       li.appendChild(chevron);
     });
   } else if (template === 'quote') {
@@ -1416,7 +1468,8 @@ function buildVisualStageHtml(cleanHtml) {
     const slots = wrapper.querySelectorAll('.luxyno-slot');
     const children = Array.from(wrapper.children);
     const proseEls = children.filter(el => el !== h2 && !el.classList.contains('front-matter') && !el.classList.contains('luxyno-slot') && !el.querySelector('.luxyno-slot'));
-    if (slots.length === 1 && proseEls.length >= 1) {
+    const hasComplexBlock = proseEls.some(el => /^(H[3-6]|TABLE|PRE)$/.test(el.tagName) || el.querySelector('table, pre'));
+    if (slots.length === 1 && proseEls.length >= 1 && !hasComplexBlock) {
       const fm = wrapper.querySelector(':scope > .front-matter');
       const slotEl = children.find(el => el.classList.contains('luxyno-slot') || el.querySelector('.luxyno-slot'));
       const proseHtml = proseEls.map(el => el.outerHTML).join('');
@@ -1449,6 +1502,18 @@ function buildVisualStageHtml(cleanHtml) {
       ${slabsHtml}
     </div>
   `;
+}
+
+// 表（table）が親コンテナやスラブの枠をはみ出さないよう、横スクロール可能な .table-container で包む（DD-MD-020）
+function wrapTables(container) {
+  if (!container) return;
+  container.querySelectorAll('table').forEach(table => {
+    if (table.parentElement && table.parentElement.classList.contains('table-container')) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-container';
+    table.before(wrapper);
+    wrapper.appendChild(table);
+  });
 }
 
 /* ==========================================================================
@@ -1511,6 +1576,7 @@ function renderApp() {
   }
 
   const activeContainer = isVisual ? visContainer : stdContainer;
+  wrapTables(activeContainer);
   renderMath(activeContainer);
   const slots = activeContainer.querySelectorAll('.luxyno-slot');
   const modeTag = isVisual ? `vis-${state.infographicStyle}` : 'std';
