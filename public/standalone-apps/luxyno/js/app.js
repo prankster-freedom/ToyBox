@@ -315,7 +315,9 @@ const LIBRARIES = {
     script: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js',
     style: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css',
     global: 'katex'
-  }
+  },
+  // Visualモードの舞台演出（FR-018, FR-019）。高速モードの起動には読み込まない（NFR-006）
+  stage: { script: './js/stage.js', global: 'LuxynoStage' }
 };
 const libraryLoads = new Map();
 
@@ -1309,11 +1311,11 @@ function applySlabTemplate(template, els) {
     if (count > 4) last.classList.add('is-vertical');
     last.style.setProperty('--vs-n', String(count));
     Array.from(last.children).forEach((li, idx) => {
+      li.style.setProperty('--vs-i', String(idx));
       if (idx === 0) return;
       const chevron = document.createElement('span');
       chevron.className = 'vs-step-chevron';
       chevron.setAttribute('aria-hidden', 'true');
-      chevron.style.setProperty('--step-delay', `${(idx - 1) * 0.45}s`);
       li.appendChild(chevron);
     });
   } else if (template === 'quote') {
@@ -1512,6 +1514,7 @@ function renderApp() {
   const isVisual = state.isVisualMode;
   const generation = ++renderGeneration;
   const isEmpty = rawMarkdown.trim() === '';
+  if (window.LuxynoStage) LuxynoStage.resetLights();
 
   // 非表示側のコンテナは空にする。残すと同じ data-stage-index・SVG 内 id が DOM に重複し、
   // 描画結果の書き込み先やマーカー・グラデーションの参照先が非表示側に向いてしまう
@@ -1558,12 +1561,21 @@ function renderApp() {
     applyReadableFit(activeContainer.querySelector(`[data-stage-index="${idx}"] > svg`), cacheKey);
   });
   bindViewportInteractions(activeContainer);
+  mountStage(activeContainer);
 
   if (dirtyBlocks.length > 0) {
     processDirtyBlocks(dirtyBlocks, { container: activeContainer, generation, isVisual });
   } else {
     updateStatus(`• ${mermaidBlocks.length}/${mermaidBlocks.length} Diagrams Ready`, 'success');
   }
+}
+
+// Visualモードの図に舞台演出を取り付ける。読み込みを待つ間に DOM が作り直された場合は何もしない
+function mountStage(container) {
+  if (!state.isVisualMode) return;
+  loadLibrary('stage').then(ok => {
+    if (ok && state.isVisualMode && container.isConnected) LuxynoStage.mount(container);
+  });
 }
 
 // target: 描画開始時の表示先コンテナ・描画世代・モード。
@@ -1601,6 +1613,7 @@ async function processDirtyBlocks(dirtyBlocks, target) {
       if (stageViewport) {
         stageViewport.innerHTML = finalSvg;
         applyReadableFit(stageViewport.querySelector(':scope > svg'), block.cacheKey);
+        mountStage(stageViewport);
       }
     } catch (err) {
       console.error(`Mermaid render failed for block ${block.index}:`, err);
@@ -1610,6 +1623,7 @@ async function processDirtyBlocks(dirtyBlocks, target) {
         if (fallback) {
           stageViewport.innerHTML = fallback;
           applyReadableFit(stageViewport.querySelector(':scope > svg'));
+          mountStage(stageViewport);
           showToast('構文エラーのため直前の正常状態を表示');
         } else {
           stageViewport.innerHTML = `<div class="p-4 text-xs font-mono text-red-500 bg-red-500/10 rounded-xl">構文エラー: 正しいMermaid記法を入力してください</div>`;
@@ -1718,6 +1732,7 @@ function bindViewportInteractions(container) {
       zoomCanvas.innerHTML = svgEl.outerHTML;
       modal.classList.remove('hidden');
       modal.classList.add('flex');
+      if (state.isVisualMode && window.LuxynoStage) LuxynoStage.mountLights(zoomCanvas);
     };
   });
 }
