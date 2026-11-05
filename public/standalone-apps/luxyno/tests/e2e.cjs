@@ -1252,6 +1252,7 @@ async function testVisualTemplates(browser) {
     });
     const emblem = root.querySelector('.exhibition-hero-emblem');
     const eb = emblem ? emblem.getBoundingClientRect() : { width: 0, height: 0 };
+    const leadEl = root.querySelector('.vs-lead');
     const s26 = slab('要点のカード'), s27 = slab('手順'), s28 = slab('ステートメント');
     const ornaments = s26 ? Array.from(s26.querySelectorAll('.vs-points > li > .vs-card-ornament')) : [];
     const stepItems = s27 ? Array.from(s27.querySelectorAll('.vs-steps > li')) : [];
@@ -1263,6 +1264,10 @@ async function testVisualTemplates(browser) {
         size: eb.width >= 20 && eb.height >= 20,
         bg: cs(emblem).backgroundImage !== 'none'
       },
+      leadSpark: leadEl ? {
+        mask: /flow-spark\.svg/.test(maskOf(leadEl, '::after')),
+        bg: isOpaque(cs(leadEl, '::after').backgroundColor)
+      } : null,
       ornaments: {
         count: ornaments.length,
         mask: ornaments.every(el => /card-corner-ornament\.svg/.test(maskOf(el))),
@@ -1283,6 +1288,7 @@ async function testVisualTemplates(browser) {
     };
   });
   const motifsOk = motifs.emblem.mask && motifs.emblem.size && motifs.emblem.bg
+    && !!(motifs.leadSpark && motifs.leadSpark.mask && motifs.leadSpark.bg)
     && motifs.ornaments.count === 3 && motifs.ornaments.mask && motifs.ornaments.size && motifs.ornaments.bg
     && motifs.chevrons.firstHasNone && motifs.chevrons.count === 3 && motifs.chevrons.mask && motifs.chevrons.size && motifs.chevrons.bg
     && !!(motifs.quote && motifs.quote.mask && motifs.quote.bg);
@@ -1322,12 +1328,12 @@ async function testVisualTemplates(browser) {
   });
 
   await s26Loc.locator('.exhibition-num-badge').click();
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(400);
   const stageSpot = await page.evaluate(() => {
     const wrap = document.querySelector('#visual-stage-container .exhibition-wrap');
     const slabs = document.querySelectorAll('#visual-stage-container .vs-tpl-points');
     const target = slabs[slabs.length - 1];
-    const other = document.querySelector('#visual-stage-container .exhibition-slab');
+    const other = target.previousElementSibling;
     return {
       wrapFocus: wrap.classList.contains('has-stage-focus'),
       slabFocus: target.classList.contains('is-stage-focused'),
@@ -1388,6 +1394,76 @@ async function testVisualTemplates(browser) {
   const o8 = bTpl.find(r => r.title === 'O8');
   record('TC-VTPL-002', bTpl.length === Object.keys(bExpected).length && bWrong.length === 0 && !!o8 && o8.vertical,
     bWrong.length ? JSON.stringify(bWrong) : `${bTpl.length} 章`);
+
+  // TC-VTPL-014 ルミナス・フロー演出と samples/visual-template.md の検証（FR-015, FR-016, FR-017, DD-VTPL-016, DD-VTPL-026）
+  const vtplMd = fs.readFileSync(path.join(APP_DIR, 'samples', 'visual-template.md'), 'utf8');
+  await setMode(page, { style: 'std', appearance: 'light' });
+  await page.evaluate(md => {
+    document.getElementById('markdown-editor').value = md;
+    lastLoadedMarkdown = md;
+    renderApp();
+  }, vtplMd);
+  await waitRendered(page);
+  const stdBeams = await page.evaluate(() => document.querySelectorAll('#standard-doc-container .luxyno-flow-beam').length);
+
+  await setMode(page, { style: 'shapes', appearance: 'light' });
+  const showcase = await page.evaluate(() => {
+    const root = document.getElementById('visual-stage-container');
+    const slabs = Array.from(root.querySelectorAll('.exhibition-slab'));
+    const tpls = slabs.map(s => Array.from(s.classList).filter(c => c.startsWith('vs-tpl-')).map(c => c.slice(7))[0]);
+    const hSteps = slabs[6] && slabs[6].querySelector('.vs-steps');
+    const vSteps = slabs[7] && slabs[7].querySelector('.vs-steps.is-vertical');
+    const chev = hSteps && hSteps.querySelector('.vs-step-chevron');
+    const splitStd = slabs[9];
+    const splitWide = slabs[10];
+    const wrap = root.querySelector('.exhibition-wrap');
+    const flowBeams = splitStd ? splitStd.querySelectorAll('svg path.luxyno-flow-beam').length : 0;
+    const wideBeams = splitWide ? splitWide.querySelectorAll('svg path.luxyno-flow-beam').length : 0;
+    const seqBeams = slabs[11] ? slabs[11].querySelectorAll('svg line.luxyno-flow-beam').length : 0;
+    const stateBeams = slabs[12] ? slabs[12].querySelectorAll('svg path.luxyno-flow-beam').length : 0;
+    const firstBeam = root.querySelector('svg .luxyno-flow-beam');
+    return {
+      slabCount: slabs.length,
+      tpls,
+      hTrackAnim: hSteps ? getComputedStyle(hSteps, '::before').animationName : '',
+      vTrackAnim: vSteps ? getComputedStyle(vSteps, '::before').animationName : '',
+      chevAnim: chev ? getComputedStyle(chev).animationName : '',
+      chevDelay: chev ? chev.style.getPropertyValue('--step-delay') : '',
+      split9Stacked: splitStd ? splitStd.classList.contains('is-stacked') : true,
+      split10Stacked: splitWide ? splitWide.classList.contains('is-stacked') : false,
+      split10Contained: splitWide && wrap ? splitWide.getBoundingClientRect().width <= wrap.getBoundingClientRect().width + 1 : false,
+      beams: { flowBeams, wideBeams, seqBeams, stateBeams },
+      beamAnim: firstBeam ? getComputedStyle(firstBeam).animationName : ''
+    };
+  });
+  const showcaseExpectedTpls = ['lead', 'lead', 'standard', 'points', 'points', 'standard', 'steps', 'steps', 'quote', 'split', 'split', 'standard', 'split', 'standard'];
+  const showcaseOk = stdBeams === 0
+    && showcase.slabCount === 14
+    && JSON.stringify(showcase.tpls) === JSON.stringify(showcaseExpectedTpls)
+    && showcase.hTrackAnim === 'vs-luminous-track'
+    && showcase.vTrackAnim === 'vs-luminous-track-vertical'
+    && showcase.chevAnim === 'vs-chevron-pulse'
+    && showcase.chevDelay === '0s'
+    && !showcase.split9Stacked
+    && showcase.split10Stacked
+    && showcase.split10Contained
+    && showcase.beams.flowBeams >= 4
+    && showcase.beams.wideBeams >= 8
+    && showcase.beams.seqBeams >= 10
+    && showcase.beams.stateBeams >= 6
+    && showcase.beamAnim === 'luxyno-beam-flow';
+  record('TC-VTPL-014', showcaseOk, JSON.stringify({ stdBeams, ...showcase }));
+
+  const showcaseShots = [
+    [6, 'vtpl-showcase-steps-flow.png'],
+    [9, 'vtpl-showcase-split-flow.png'],
+    [10, 'vtpl-showcase-wide-diagram.png'],
+    [11, 'vtpl-showcase-tall-diagrams.png']
+  ];
+  for (const [idx, fname] of showcaseShots) {
+    const loc = page.locator('#visual-stage-container .exhibition-slab').nth(idx);
+    await loc.screenshot({ path: path.join(SHOT_DIR, fname) });
+  }
 
   if (page.consoleErrors.length) record('TC-VTPL-CONSOLE', false, JSON.stringify(page.consoleErrors));
   await page.close();
