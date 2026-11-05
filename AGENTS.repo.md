@@ -15,14 +15,16 @@
 ## 3. ドキュメントの格納先（doc スキルの例外）
 
 本リポジトリは doc スキルの格納先より前から運用しているため、次の構成を正とする。プロジェクトのルートはリポジトリ直下（`<プロジェクト>/` = `./`）。
-ただし、`public/standalone-apps/<アプリ名>/` 配下のスタンドアロンアプリは、それぞれのフォルダを独立した `<プロジェクト>` ルートとし、各フォルダ内の `doc/` に doc スキル既定の構成でドキュメントを格納する。
+ただし、`public/standalone-apps/luxyno/` は独立した `<プロジェクト>` ルートとし、作業の流れに沿った番号付きの構成（下表「Luxyno」）で格納する。
 
-| 種類                 | doc スキルの既定                                | 本リポジトリ            |
-| :------------------- | :---------------------------------------------- | :---------------------- |
-| 要求仕様書           | `doc/SRS.md`, `doc/SRS/features/<feature名>.md` | `doc/1.SPEC.md`         |
-| アーキテクチャ設計書 | `doc/ADS.md`                                    | `doc/2.DESIGN.md`       |
-| 詳細設計書           | `doc/DesignNotes/<対象>.md`（必要な場合のみ）   | `doc/3.detailed_design/features/`（目次は `README.md`） |
-| 実装ドキュメント     | ソースコード（および Design Notes）             | `doc/3.implementation/` |
+| 種類             | doc スキルの既定                    | 本リポジトリ（直下）    | Luxyno（`public/standalone-apps/luxyno/`） |
+| :--------------- | :---------------------------------- | :---------------------- | :----------------------------------------- |
+| DTP デザイン仕様 | `doc/DTP/`                          | —                       | `doc/0.DTP/`（本番素材は `assets/`）       |
+| 要求仕様書       | `doc/SRS.md`, `doc/SRS/features/<feature名>.md` | `doc/1.SPEC.md` | `doc/1.SRS.md`, `doc/1.SRS/features/<feature名>.md` |
+| アーキテクチャ設計書 | `doc/ADS.md`                    | `doc/2.DESIGN.md`       | `doc/2.ARCHITECTURE.md`                    |
+| 詳細設計書       | `doc/DesignNotes/<対象>.md`（必要な場合のみ） | `doc/3.detailed_design/features/`（目次は `README.md`） | `doc/3.sw_design_notes/features/`（目次は `README.md`） |
+| 実装ドキュメント | ソースコード（および Design Notes） | `doc/3.implementation/` | `doc/3.implementation/`                    |
+| テスト仕様書     | `doc/5.test_spec/`                  | `doc/5.test_spec/`      | `doc/4.test_spec/`                         |
 
 運用資料は次のファイルで管理する。
 
@@ -47,3 +49,25 @@
 - Luxyno（`public/standalone-apps/luxyno/`）は、ユーザーから `1.0.0` に上げる指示があるまで、版を `0.y.z` に保つ。この間は、MAJOR に当たる変更（`!` または `BREAKING CHANGE:` を含むコミット）があっても MINOR を上げ、PATCH を 0 に戻す。`feat` は MINOR、`fix` は PATCH を上げる（通常どおり）
 - 背景: `1.0.0` は、ユーザーが製品の仕様がある程度固まったと判断した時点で上げる。それまでは仕様の変更が多く、互換性のない変更のたびに MAJOR を上げると版の意味が薄れるため（Semantic Versioning 2.0.0 の `0.y.z` は初期開発の段階を表す）
 - コミットの型（`feat!` など）と `BREAKING CHANGE:` は、通常どおり変更の内容に合わせて付ける。リリースノートでは、互換性のない変更であることを明記する
+
+## 6. Luxyno「Visualモードの追加訴求ポイントの提案依頼」の定型ワークフロー
+
+Luxyno（`public/standalone-apps/luxyno/`）の開発で、ユーザーから「Visualモードの追加訴求ポイントの提案」を依頼されたときは、次の定型仕様に従って進める。
+
+### 6.1 定型依頼事項（常時満たすべき目的）
+
+プロダクトコンセプト（`doc/1.SRS.md` 1.1）における Visualモードの基準をさらに訴求する提案・設計・実装を行う。
+
+- **目指す水準**: 見た目の品質を最優先しつつ、閲覧操作のリアルタイム性は保つ。各種イベントやショーの講演資料・展示素材として、そのまま表示できる。簡易ビューアーで描画していると感じさせない、トップデザイナーが制作したと思える品質。全体の構図から細部の質感までこだわる。
+- **静的な表示に限定しない**: 紙の印刷物ではなく大画面・ブラウザ上の展示・講演ステージである強みを活かし、静的な組版・装飾だけでなく、**動的・インタラクティブな表現**（講演中の視線誘導・スポットライト強調、ステップやカードのインタラクティブなフォーカス、繊細なマイクロインタラクションや SVG 装飾素材の動的演出など）も積極的に取り入れる。ただし、閲覧操作のリアルタイム性（`NFR-006`, `NFR-007`）と Markdown の純粋性（独自記法を強制しない）を保つ。
+- **DTP 素材とラフの蓄積**: `dtp` スキルに基づき、ラフ案（`doc/0.DTP/roughs/`：採用案だけでなくボツ案・保留ストックも含む）と素材（`doc/0.DTP/assets/`：ストック・元データ、および製品に同梱する本番素材 `public/standalone-apps/luxyno/assets/`）を体系的に準備・整理する。
+
+### 6.2 進行ルール（PR 発行まで承認不要の一気通貫実行）
+
+本定型依頼では、ユーザーから特別な停止指示がない限り、途中工程の【承認】を省略して次の工程を最後まで一気通貫で実行し、Pull Request の発行まで完了させてから結果をまとめて報告する（マージはユーザーの指示があるときに行う）。
+
+1. **`dtp`（Phase 1: デザイン設計）**: 今回の特記事項を踏まえ、構図・動的演出・素材のラフ案（採用・ストック・ボツ）と素材（本番 `assets/` 配置と `doc/0.DTP/assets/` 台帳・ストック）を整備し、デザイン仕様書（`doc/0.DTP/`）を更新する。
+2. **`swe1` → `swe2` → `swe3`**: 要求仕様書（`doc/1.SRS.md`, `doc/1.SRS/features/`）、アーキテクチャ設計書（`doc/2.ARCHITECTURE.md`）、詳細設計ノート（`doc/3.sw_design_notes/`）、実装ドキュメント（`doc/3.implementation/`）、ソースコード（`index.html`, `css/style.css`, `js/app.js` 等）および同梱サンプル（`samples/`）を更新する。
+3. **`test`（E2E 自動検証）**: テスト仕様書（`doc/4.test_spec/`）と Playwright テスト（`tests/e2e.cjs`）を更新・実行し、全テストケースの合格とスクリーンショット（ゲラ）出力を確認する。
+4. **`dtp`（Phase 2: 校正・デザインチェック）**: 出力されたゲラを用いてレイアウト・タイポグラフィ・素材品質・動的状態・指定外変化を検査し、校正結果（`work/dtp_review/`）を記録して校了とする。
+5. **`commit` → PR 発行**: feature ブランチを作成し、Conventional Commits に従ってコミットを分割・push し、`gh pr create` で Pull Request を発行する。
