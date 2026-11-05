@@ -819,6 +819,7 @@ function decorateVisualSvg(svg, diagramType) {
 
   if (diagramType === 'sequence') {
     decorateVisualSequence(svg, styleMode, visualSpec, uid);
+    addVisualFlowBeams(svg, diagramType, styleMode);
     return;
   }
   // その他の図種は、構造を保ったまま setupMermaid のスタイル配色だけで描画する（FR-008）
@@ -847,6 +848,51 @@ function decorateVisualSvg(svg, diagramType) {
   if (decorate) decorate(svg, uid);
 
   fixMarkerScale(svg);
+  addVisualFlowBeams(svg, diagramType, styleMode);
+}
+
+// Visual Stage の結線・信号線に沿って光が流れるオーバーレイ軌跡（.luxyno-flow-beam）を追加する（FR-017, DD-VTPL-016）
+const VISUAL_BEAM_COLORS = {
+  shapes: ['#FFFFFF', '#E89B27', '#0E7490', '#E87C6C'],
+  cards: ['#E29578', '#E6B34B', '#5C7CFA', '#38A3A5'],
+  circles: ['#FFFFFF', '#FDE68A', '#BAE6FD', '#FECDD3'],
+  editorial: ['#E29578', '#D68C8C', '#C9A66B', '#588157'],
+  dark: ['#73E8F4', '#F7D05C', '#F6CBC3', '#8CEE97']
+};
+
+function addVisualFlowBeams(svg, diagramType, styleMode) {
+  const palette = state.appearance === 'dark'
+    ? VISUAL_BEAM_COLORS.dark
+    : (VISUAL_BEAM_COLORS[styleMode] || VISUAL_BEAM_COLORS.shapes);
+  const svgNs = 'http://www.w3.org/2000/svg';
+
+  if (diagramType === 'sequence') {
+    svg.querySelectorAll('line.messageLine0, line.messageLine1').forEach((line, idx) => {
+      const beam = document.createElementNS(svgNs, 'line');
+      beam.setAttribute('class', 'luxyno-flow-beam');
+      beam.setAttribute('aria-hidden', 'true');
+      ['x1', 'y1', 'x2', 'y2'].forEach(attr => {
+        const val = line.getAttribute(attr);
+        if (val !== null) beam.setAttribute(attr, val);
+      });
+      beam.style.setProperty('stroke', palette[idx % palette.length], 'important');
+      beam.style.setProperty('--beam-delay', `${(idx % 6) * 0.35}s`);
+      line.after(beam);
+    });
+    return;
+  }
+
+  svg.querySelectorAll('.edgePath path.path, path.flowchart-link, path.transition').forEach((p, idx) => {
+    const d = p.getAttribute('d');
+    if (!d) return;
+    const beam = document.createElementNS(svgNs, 'path');
+    beam.setAttribute('class', 'luxyno-flow-beam');
+    beam.setAttribute('aria-hidden', 'true');
+    beam.setAttribute('d', d);
+    beam.style.setProperty('stroke', palette[idx % palette.length], 'important');
+    beam.style.setProperty('--beam-delay', `${(idx % 6) * 0.35}s`);
+    p.after(beam);
+  });
 }
 
 // Visual Stage で使う影・グラデーションを defs に追加し、id の接尾辞を返す
@@ -1308,6 +1354,7 @@ function applySlabTemplate(template, els) {
       const chevron = document.createElement('span');
       chevron.className = 'vs-step-chevron';
       chevron.setAttribute('aria-hidden', 'true');
+      chevron.style.setProperty('--step-delay', `${(idx - 1) * 0.45}s`);
       li.appendChild(chevron);
     });
   } else if (template === 'quote') {
