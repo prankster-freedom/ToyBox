@@ -1329,7 +1329,13 @@ async function testVisualTemplates(browser) {
   });
 
   await s26Loc.locator('.exhibition-num-badge').click();
-  await page.waitForTimeout(400);
+  // 減光は opacity の 0.28 秒のトランジション。光の描画で忙しいとトランジションの開始が遅れるため、
+  // 一定時間後の値ではなく、落ち着くのを待ってから調べる（最大 3 秒）
+  await page.waitForFunction(() => {
+    const slabs = document.querySelectorAll('#visual-stage-container .vs-tpl-points');
+    const other = slabs[slabs.length - 1].previousElementSibling;
+    return parseFloat(getComputedStyle(other).opacity) < 0.7;
+  }, null, { timeout: 3000 }).catch(() => {});
   const stageSpot = await page.evaluate(() => {
     const wrap = document.querySelector('#visual-stage-container .exhibition-wrap');
     const slabs = document.querySelectorAll('#visual-stage-container .vs-tpl-points');
