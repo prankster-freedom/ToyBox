@@ -398,7 +398,7 @@
 
   const show = { active: false, scenes: [], index: 0, build: 0, auto: false, timer: 0, idleTimer: 0, restore: null, hud: null };
   // 俯瞰（DTP-SHOW-070）と光のポインター（DTP-SHOW-080）
-  const OVERVIEW = { widthRatio: 0.88, heightRatio: 0.78, gapVw: 1.6, minScale: 0.12, zoomMs: 420 };
+  const OVERVIEW = { widthRatio: 0.88, heightRatio: 0.78, gapVw: 1.6, minScale: 0.12, maxCols: 6, zoomMs: 420 };
   const ov = { active: false, index: 0, busy: false };
   const pointer = { on: false, moved: false, x: 0, y: 0, frame: 0 };
 
@@ -629,17 +629,21 @@
   const overviewWrap = () => stageContainer().querySelector('.exhibition-wrap');
   const overviewScale = () => parseFloat(overviewWrap().style.getPropertyValue('--ov-s')) || 0.2;
 
-  // 列の数はシーンの数から決め、画面の幅と高さの両方に収まる縮小率にする（下限を下回る場合はスクロール）
+  // 画面の幅と高さの両方に収まる縮小率が最も大きくなる列の数（1〜6）を選ぶ。下限を下回る場合はスクロールで見せる
   function layoutOverview() {
     const n = show.scenes.length;
-    const cols = n <= 4 ? n : n <= 9 ? 3 : 4;
-    const rows = Math.ceil(n / cols);
     const gap = window.innerWidth * OVERVIEW.gapVw / 100;
-    const byWidth = (window.innerWidth * OVERVIEW.widthRatio - gap * (cols - 1)) / cols / window.innerWidth;
-    const byHeight = (window.innerHeight * OVERVIEW.heightRatio - gap * (rows - 1)) / rows / window.innerHeight;
+    const fit = cols => {
+      const rows = Math.ceil(n / cols);
+      const byWidth = (window.innerWidth * OVERVIEW.widthRatio - gap * (cols - 1)) / cols / window.innerWidth;
+      const byHeight = (window.innerHeight * OVERVIEW.heightRatio - gap * (rows - 1)) / rows / window.innerHeight;
+      return Math.min(byWidth, byHeight);
+    };
+    let cols = 1;
+    for (let c = 2; c <= Math.min(n, OVERVIEW.maxCols); c++) if (fit(c) > fit(cols)) cols = c;
     const wrap = overviewWrap();
     wrap.style.setProperty('--ov-cols', String(cols));
-    wrap.style.setProperty('--ov-s', Math.max(OVERVIEW.minScale, Math.min(byWidth, byHeight)).toFixed(4));
+    wrap.style.setProperty('--ov-s', Math.max(OVERVIEW.minScale, fit(cols)).toFixed(4));
     wrap.style.setProperty('--ov-gap', `${gap.toFixed(1)}px`);
   }
 
