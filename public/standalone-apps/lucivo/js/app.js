@@ -317,7 +317,7 @@ const LIBRARIES = {
     global: 'katex'
   },
   // Visualモードの舞台演出（FR-018, FR-019）。高速モードの起動には読み込まない（NFR-006）
-  stage: { script: './js/stage.js', global: 'LuxynoStage' }
+  stage: { script: './js/stage.js', global: 'LucivoStage' }
 };
 const libraryLoads = new Map();
 
@@ -546,7 +546,7 @@ function escapeHtml(str) {
 
 // 置き場所の中身は TeX の原文。KaTeX を読み込めない場合は原文がそのまま表示される（DD-MATH-012, 022）
 function mathPlaceholder(tag, tex, isDisplay, raw) {
-  return `<${tag} class="luxyno-math" data-display="${isDisplay}" data-tex="${escapeHtml(tex)}">${escapeHtml(raw)}</${tag}>`;
+  return `<${tag} class="lucivo-math" data-display="${isDisplay}" data-tex="${escapeHtml(tex)}">${escapeHtml(raw)}</${tag}>`;
 }
 
 const mathBlockExtension = {
@@ -589,7 +589,7 @@ function setupMarkedMath() {
 // KaTeX は、数式が初めて現れたときに読み込む（Issue #18）。読み込めなければ置き場所の原文のまま（DD-MATH-022）。
 // 描画結果は TeX ごとにキャッシュし、入力のたびに描画し直さない（Issue #19）
 function renderMath(container) {
-  const targets = container.querySelectorAll('.luxyno-math');
+  const targets = container.querySelectorAll('.lucivo-math');
   if (targets.length === 0) return;
   if (!window.katex) {
     loadLibrary('katex').then(ok => { if (ok && container.isConnected) renderMath(container); });
@@ -647,7 +647,7 @@ function hexToRgba(hex, alpha) {
 // Mermaid はシーケンス図の矢じり（#arrowhead）などを図をまたいで同じ id で出力するため、
 // 同じページに複数の図があると、別の図（非表示のものを含む）のマーカーやグラデーションを参照してしまう
 function scopeSvgIds(svg) {
-  const prefix = svg.id || `luxyno-${Math.random().toString(36).slice(2, 9)}`;
+  const prefix = svg.id || `lucivo-${Math.random().toString(36).slice(2, 9)}`;
   const idMap = new Map();
   const used = new Set();
   svg.querySelectorAll('[id]').forEach(el => {
@@ -1533,13 +1533,13 @@ function buildVisualStageHtml(cleanHtml, yaml) {
       agenda.push({ no: numStr, title: rawTitle });
     }
     const stageAttr = h2 ? ` data-stage-no="${String(sectionCounter).padStart(2, '0')}"` : '';
-    const slots = wrapper.querySelectorAll('.luxyno-slot');
+    const slots = wrapper.querySelectorAll('.lucivo-slot');
     const children = Array.from(wrapper.children);
-    const proseEls = children.filter(el => el !== h2 && !el.classList.contains('front-matter') && !el.classList.contains('luxyno-slot') && !el.querySelector('.luxyno-slot'));
+    const proseEls = children.filter(el => el !== h2 && !el.classList.contains('front-matter') && !el.classList.contains('lucivo-slot') && !el.querySelector('.lucivo-slot'));
     const hasComplexBlock = proseEls.some(el => /^(H[3-6]|TABLE|PRE)$/.test(el.tagName) || el.querySelector('table, pre'));
     if (slots.length === 1 && proseEls.length >= 1 && !hasComplexBlock) {
       const fm = wrapper.querySelector(':scope > .front-matter');
-      const slotEl = children.find(el => el.classList.contains('luxyno-slot') || el.querySelector('.luxyno-slot'));
+      const slotEl = children.find(el => el.classList.contains('lucivo-slot') || el.querySelector('.lucivo-slot'));
       const proseHtml = proseEls.map(el => el.outerHTML).join('');
       const headHtml = `${fm ? fm.outerHTML : ''}${h2 ? h2.outerHTML : ''}`;
       slabsHtml += `<section class="exhibition-slab exhibition-slab-split vs-tpl-split"${stageAttr}>${headHtml}<div class="exhibition-slab-body"><div class="exhibition-slab-prose">${proseHtml}</div><div class="exhibition-slab-figure">${slotEl.outerHTML}</div></div></section>`;
@@ -1596,8 +1596,8 @@ function renderApp() {
       mermaidBlocks.push({ index, code, hash, curve });
       tokensToKeep.push({
         type: 'html',
-        raw: `<div class="luxyno-slot" data-slot="${index}"></div>`,
-        text: `<div class="luxyno-slot" data-slot="${index}"></div>`
+        raw: `<div class="lucivo-slot" data-slot="${index}"></div>`,
+        text: `<div class="lucivo-slot" data-slot="${index}"></div>`
       });
     } else {
       tokensToKeep.push(token);
@@ -1617,7 +1617,7 @@ function renderApp() {
   const isVisual = state.isVisualMode;
   const generation = ++renderGeneration;
   const isEmpty = rawMarkdown.trim() === '';
-  if (window.LuxynoStage) LuxynoStage.resetLights();
+  if (window.LucivoStage) LucivoStage.resetLights();
 
   // 非表示側のコンテナは空にする。残すと同じ data-stage-index・SVG 内 id が DOM に重複し、
   // 描画結果の書き込み先やマーカー・グラデーションの参照先が非表示側に向いてしまう
@@ -1638,7 +1638,7 @@ function renderApp() {
   const activeContainer = isVisual ? visContainer : stdContainer;
   wrapTables(activeContainer);
   renderMath(activeContainer);
-  const slots = activeContainer.querySelectorAll('.luxyno-slot');
+  const slots = activeContainer.querySelectorAll('.lucivo-slot');
   const modeTag = isVisual ? `vis-${state.infographicStyle}` : 'std';
 
   const dirtyBlocks = [];
@@ -1677,7 +1677,7 @@ function renderApp() {
 function mountStage(container) {
   if (!state.isVisualMode) return;
   loadLibrary('stage').then(ok => {
-    if (ok && state.isVisualMode && container.isConnected) LuxynoStage.mount(container);
+    if (ok && state.isVisualMode && container.isConnected) LucivoStage.mount(container);
   });
 }
 
@@ -1835,7 +1835,7 @@ function bindViewportInteractions(container) {
       zoomCanvas.innerHTML = svgEl.outerHTML;
       modal.classList.remove('hidden');
       modal.classList.add('flex');
-      if (state.isVisualMode && window.LuxynoStage) LuxynoStage.mountLights(zoomCanvas);
+      if (state.isVisualMode && window.LucivoStage) LucivoStage.mountLights(zoomCanvas);
     };
   });
 }
@@ -1911,7 +1911,7 @@ function setupEventListeners() {
 
   document.getElementById('btn-stage-show').onclick = async () => {
     setStageMode(true);
-    if (await loadLibrary('stage')) LuxynoStage.enterShow();
+    if (await loadLibrary('stage')) LucivoStage.enterShow();
   };
 
   document.querySelectorAll('.info-style-btn').forEach(btn => {
@@ -1983,7 +1983,7 @@ function setupEventListeners() {
 
   document.getElementById('btn-export-html').onclick = () => {
     const fullHtml = document.documentElement.outerHTML;
-    downloadBlob(fullHtml, 'luxyno-architecture-export.html', 'text/html');
+    downloadBlob(fullHtml, 'lucivo-architecture-export.html', 'text/html');
     showToast('単一HTMLファイルをエクスポートしました');
   };
 

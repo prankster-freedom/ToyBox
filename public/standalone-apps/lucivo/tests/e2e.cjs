@@ -1,6 +1,6 @@
-// Luxyno のブラウザ動作確認スクリプト（テスト仕様: doc/4.test_spec/）
-// 使い方: node public/standalone-apps/luxyno/tests/e2e.cjs
-// 出力: public/standalone-apps/luxyno/work/test/（結果 JSON と図の画像。git 管理外）
+// Lucivo のブラウザ動作確認スクリプト（テスト仕様: doc/4.test_spec/）
+// 使い方: node public/standalone-apps/lucivo/tests/e2e.cjs
+// 出力: public/standalone-apps/lucivo/work/test/（結果 JSON と図の画像。git 管理外）
 const path = require('path');
 const fs = require('fs');
 const { chromium } = require('playwright');
@@ -112,7 +112,7 @@ async function testFileLoading(browser) {
   }));
   const editorValue = await page.evaluate(() => document.getElementById('markdown-editor').value);
   after.sameAsFile = editorValue === fs.readFileSync(SAMPLE, 'utf8').replace(/^﻿/, '');
-  record('TC-FILE-003', !dialogOnFirstLoad && after.sameAsFile && after.h1 === 'Luxyno サンプル文書' && after.cards > 0 && /読み込みました/.test(after.toast), JSON.stringify({ dialogOnFirstLoad, ...after }));
+  record('TC-FILE-003', !dialogOnFirstLoad && after.sameAsFile && after.h1 === 'Lucivo サンプル文書' && after.cards > 0 && /読み込みました/.test(after.toast), JSON.stringify({ dialogOnFirstLoad, ...after }));
   record('TC-FILE-006', after.inputCleared, `file-input.value cleared: ${after.inputCleared}`);
 
   // TC-FILE-011 読み込み直後は読み取り専用で、「編集」ボタンで編集できる
@@ -148,7 +148,7 @@ async function testFileLoading(browser) {
   let accepted = false;
   page.once('dialog', d => { accepted = true; d.accept(); });
   await page.setInputFiles('#file-input', SAMPLE);
-  await page.waitForFunction(() => document.getElementById('markdown-editor').value.includes('\n# Luxyno サンプル文書'));
+  await page.waitForFunction(() => document.getElementById('markdown-editor').value.includes('\n# Lucivo サンプル文書'));
   const relocked = await page.evaluate(() => document.getElementById('markdown-editor').readOnly);
   record('TC-FILE-005', accepted && relocked, `dialog accepted and replaced: ${accepted}, read-only again: ${relocked}`);
 
@@ -162,7 +162,7 @@ async function testFileLoading(browser) {
   const onDialogAfterSave = d => { dialogAfterSave = true; d.dismiss(); };
   page.on('dialog', onDialogAfterSave);
   await page.setInputFiles('#file-input', SAMPLE);
-  await page.waitForFunction(() => document.getElementById('markdown-editor').value.includes('\n# Luxyno サンプル文書'));
+  await page.waitForFunction(() => document.getElementById('markdown-editor').value.includes('\n# Lucivo サンプル文書'));
   page.off('dialog', onDialogAfterSave);
   record('TC-FILE-012', savedName === 'notation_sample.md' && savedText === '---\ntitle: 保存のテスト\n---\n# 保存した文書\n' && !savedText.startsWith('﻿') && !dialogAfterSave,
     JSON.stringify({ savedName, savedLength: savedText.length, dialogAfterSave }));
@@ -498,7 +498,7 @@ async function testMarkdownTypography(browser) {
 // 本文の数式（samples/notation_sample.md の 8 章）を調べる
 function inspectMath(isVisual) {
   const root = document.querySelector(isVisual ? '#visual-stage-container' : '#standard-doc-container');
-  const all = Array.from(root.querySelectorAll('.luxyno-math'));
+  const all = Array.from(root.querySelectorAll('.lucivo-math'));
   const section = Array.from(root.querySelectorAll('h2')).find(h => /数式/.test(h.textContent) && !/図の中/.test(h.textContent));
   // 8 章の段落（見出しの次の要素から、次の h2 まで。Visual Stage ではスラブの中）
   const scope = isVisual ? section.closest('.exhibition-slab') : null;
@@ -519,9 +519,9 @@ function inspectMath(isVisual) {
       errors: root.querySelectorAll('.katex-error').length
     },
     notMath: {
-      money: !!money && !money.querySelector('.luxyno-math') && /\$5 と \$10/.test(money.textContent),
-      escaped: !!escaped && /\$100/.test(escaped.textContent) && !/\\\$100/.test(escaped.textContent) && escaped.querySelectorAll('.luxyno-math').length === 0,
-      code: codeWithDollar.length >= 3 && codeWithDollar.every(c => !c.querySelector('.luxyno-math'))
+      money: !!money && !money.querySelector('.lucivo-math') && /\$5 と \$10/.test(money.textContent),
+      escaped: !!escaped && /\$100/.test(escaped.textContent) && !/\\\$100/.test(escaped.textContent) && escaped.querySelectorAll('.lucivo-math').length === 0,
+      code: codeWithDollar.length >= 3 && codeWithDollar.every(c => !c.querySelector('.lucivo-math'))
     }
   };
 }
@@ -564,7 +564,7 @@ async function testMathRendering(browser) {
     const root = document.getElementById('standard-doc-container');
     return {
       errorShown: root.querySelectorAll('.katex-error').length >= 1,
-      validRendered: Array.from(root.querySelectorAll('.luxyno-math .katex')).some(k => /a/.test(k.textContent) && /2/.test(k.textContent)),
+      validRendered: Array.from(root.querySelectorAll('.lucivo-math .katex')).some(k => /a/.test(k.textContent) && /2/.test(k.textContent)),
       jsLinks: root.querySelectorAll('a[href^="javascript"]').length,
       imgs: root.querySelectorAll('img').length,
       xss: !!window.__xss
@@ -587,7 +587,7 @@ async function testMathRendering(browser) {
   await offline.waitForTimeout(500);
   const raw = await offline.evaluate(() => {
     const root = document.getElementById('standard-doc-container');
-    return { katex: !!window.katex, text: Array.from(root.querySelectorAll('.luxyno-math')).map(e => e.textContent).slice(0, 2), h1: !!root.querySelector('h1') };
+    return { katex: !!window.katex, text: Array.from(root.querySelectorAll('.lucivo-math')).map(e => e.textContent).slice(0, 2), h1: !!root.querySelector('h1') };
   });
   record('TC-MATH-004', !raw.katex && raw.text[0] === '$E = mc^2$' && raw.h1 && pageErrors.length === 0, JSON.stringify({ ...raw, pageErrors }));
   await ctx.close();
@@ -805,7 +805,7 @@ async function testStartupAndCache(browser) {
   // loadSample はエディタが空でなくなるのを待つため、読み込みの前に空に戻す
   await page.evaluate(() => { document.getElementById('markdown-editor').value = ''; lastLoadedMarkdown = ''; renderApp(); });
   await loadSample(page);
-  await page.waitForFunction(() => window.katex && document.querySelector('#standard-doc-container .luxyno-math .katex'));
+  await page.waitForFunction(() => window.katex && document.querySelector('#standard-doc-container .lucivo-math .katex'));
   const withSample = await libs();
   record('TC-PERF-001', !atStart.mermaid && !atStart.katex && !atStart.tailwindCdn && atStart.tailwindCss && atStart.headerFlex === 'flex' && atStart.menuHidden === 'none'
     && !plain.mermaid && !plain.katex && withSample.mermaid && withSample.katex, JSON.stringify({ atStart, plain, withSample }));
@@ -937,7 +937,7 @@ async function testFrontMatter(browser) {
 
   // TC-FM-001 起動直後は OFF で、フロントマターが本文に現れない
   const off = await page.evaluate(inspectFrontMatter, false);
-  record('TC-FM-001', off.pressed === 'false' && !off.present && !off.leakedYaml && !off.hrBeforeH1 && off.h1 === 'Luxyno サンプル文書', JSON.stringify(off));
+  record('TC-FM-001', off.pressed === 'false' && !off.present && !off.leakedYaml && !off.hrBeforeH1 && off.h1 === 'Lucivo サンプル文書', JSON.stringify(off));
 
   // TC-FM-002 ON にすると、本文モードごとに書いたとおりの YAML が色分けされて本文の前に表示される
   await page.click('#btn-front-matter');
@@ -1559,7 +1559,7 @@ async function testCoverAndTables(browser) {
   });
   // 発表の表紙では目次を出さない
   await page.click('#btn-stage-show');
-  await page.waitForFunction(() => LuxynoStage.showState().active);
+  await page.waitForFunction(() => LucivoStage.showState().active);
   await waitRendered(page);
   await page.waitForTimeout(600);
   const inShow = await page.evaluate(() => ({
@@ -1567,7 +1567,7 @@ async function testCoverAndTables(browser) {
     deck: getComputedStyle(document.querySelector('.vs-cover-deck')).display
   }));
   await page.keyboard.press('Escape');
-  await page.waitForFunction(() => !LuxynoStage.showState().active);
+  await page.waitForFunction(() => !LucivoStage.showState().active);
   await waitRendered(page);
   // 章の数の境界（2 章・15 章・16 章）と、h1 がフロントマターの題名より優先されること
   const agendaCount = async md => {
@@ -1676,13 +1676,13 @@ async function scrollToSlab(page, index) {
 }
 
 async function seekLight(page, t) {
-  await page.evaluate(v => LuxynoStage.seekLights(v), t);
+  await page.evaluate(v => LucivoStage.seekLights(v), t);
   await page.waitForTimeout(90);
 }
 
 // 図の順番 flowIndex の光の頭の位置（画面の座標から Canvas の画素へ換算）に、光が描かれているかを調べる
 function inspectLightHead({ flowIndex, edgeIndex, t }) {
-  const flow = LuxynoStage.lightPlans()[flowIndex];
+  const flow = LucivoStage.lightPlans()[flowIndex];
   const edge = flow.plan.edges[edgeIndex];
   const index = Math.round((t - edge.start) * edge.speed / (edge.length / edge.count));
   const m = flow.svg.getScreenCTM();
@@ -1699,7 +1699,7 @@ function inspectLightHead({ flowIndex, edgeIndex, t }) {
 }
 
 function inspectLightPaint(flowIndex) {
-  const flow = LuxynoStage.lightPlans()[flowIndex];
+  const flow = LucivoStage.lightPlans()[flowIndex];
   const painted = canvas => {
     const { data } = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
     let count = 0;
@@ -1717,7 +1717,7 @@ async function testSignalLight(browser) {
   await page.click('.view-mode-btn[data-view-mode="canvas"]');
   await setDocument(page, showcaseMd);
   const fast = await page.evaluate(() => ({
-    loaded: typeof LuxynoStage !== 'undefined',
+    loaded: typeof LucivoStage !== 'undefined',
     script: !!document.querySelector('script[src*="stage.js"]'),
     canvases: document.querySelectorAll('.signal-light-canvas').length
   }));
@@ -1725,16 +1725,16 @@ async function testSignalLight(browser) {
 
   await page.click('.info-style-btn[data-info-style="shapes"]');
   await waitRendered(page);
-  await page.waitForFunction(() => typeof LuxynoStage !== 'undefined' && LuxynoStage.lightPlans().length >= 5);
+  await page.waitForFunction(() => typeof LucivoStage !== 'undefined' && LucivoStage.lightPlans().length >= 5);
 
   // TC-LIGHT-005 図が画面に入るまでは計算しない。入ると動き、外れると止まる
   await scrollToSlab(page, 9);
-  await page.waitForFunction(() => LuxynoStage.lightPlans()[0].plan);
-  const visible = await page.evaluate(() => LuxynoStage.lightPlans().map(f => ({ type: f.type, active: f.active, planned: !!f.plan })));
+  await page.waitForFunction(() => LucivoStage.lightPlans()[0].plan);
+  const visible = await page.evaluate(() => LucivoStage.lightPlans().map(f => ({ type: f.type, active: f.active, planned: !!f.plan })));
 
   // TC-LIGHT-001 光は根のノードから、結線をたどって下流へ伝わる
   const cascade = await page.evaluate(() => {
-    const { plan } = LuxynoStage.lightPlans()[0];
+    const { plan } = LucivoStage.lightPlans()[0];
     const hit = e => e.start + e.length / e.speed;
     const wrong = plan.edges.filter(e => {
       const incoming = plan.edges.filter(i => i.to === e.from);
@@ -1773,7 +1773,7 @@ async function testSignalLight(browser) {
   aligned.zoomCanvases = await page.evaluate(() => document.querySelectorAll('#zoom-canvas .signal-light-canvas').length);
   await page.click('#zoom-close-btn');
   await page.waitForTimeout(200);
-  await page.evaluate(() => LuxynoStage.seekLights(null));
+  await page.evaluate(() => LucivoStage.seekLights(null));
   record('TC-LIGHT-004', aligned.canvas > 100 && aligned.split > 100 && aligned.actual > 100 && aligned.zoomCanvases === 2, JSON.stringify(aligned));
 
   // TC-LIGHT-010 光が走っている間のフレーム間隔
@@ -1795,15 +1795,15 @@ async function testSignalLight(browser) {
 
   await page.evaluate(() => { document.getElementById('preview-scroll').scrollTop = 0; });
   await page.waitForTimeout(350);
-  const away = await page.evaluate(() => LuxynoStage.lightPlans()[0].active);
+  const away = await page.evaluate(() => LucivoStage.lightPlans()[0].active);
   record('TC-LIGHT-005', visible[0].active && visible[0].planned && !visible[3].planned && !visible[4].planned && !away, JSON.stringify({ visible, away }));
 
   // TC-LIGHT-002 シーケンス図は時系列の順に 1 本ずつ流れ、長い図でも一巡の時間に上限がある
   await scrollToSlab(page, 11);
   await page.evaluate(() => document.querySelectorAll('#visual-stage-container .exhibition-slab')[11].querySelectorAll('.exhibition-viewport')[1].scrollIntoView({ block: 'center' }));
-  await page.waitForFunction(() => LuxynoStage.lightPlans()[3].plan);
+  await page.waitForFunction(() => LucivoStage.lightPlans()[3].plan);
   const sequence = await page.evaluate(() => {
-    const { plan } = LuxynoStage.lightPlans()[3];
+    const { plan } = LucivoStage.lightPlans()[3];
     const starts = plan.edges.map(e => e.start);
     return {
       edges: plan.edges.length,
@@ -1855,14 +1855,14 @@ async function testSignalLight(browser) {
   for (const appearance of ['light', 'dark']) {
     for (const style of VISUAL_STYLES) {
       await setMode(page, { style, appearance });
-      await page.waitForFunction(() => typeof LuxynoStage !== 'undefined' && LuxynoStage.lightPlans().length >= 5);
+      await page.waitForFunction(() => typeof LucivoStage !== 'undefined' && LucivoStage.lightPlans().length >= 5);
       await scrollToSlab(page, 9);
-      await page.waitForFunction(() => LuxynoStage.lightPlans()[0].plan);
+      await page.waitForFunction(() => LucivoStage.lightPlans()[0].plan);
       await seekLight(page, 1.0);
       await page.locator('#visual-stage-container .exhibition-viewport').first().screenshot({ path: path.join(SHOT_DIR, `light-${style}-${appearance}-flow.png`) });
       await seekLight(page, 1.75);
       await page.locator('#visual-stage-container .exhibition-viewport').first().screenshot({ path: path.join(SHOT_DIR, `light-${style}-${appearance}-arrival.png`) });
-      await page.evaluate(() => LuxynoStage.seekLights(null));
+      await page.evaluate(() => LucivoStage.seekLights(null));
       await scrollToSlab(page, 6);
       await page.waitForTimeout(1300);
       await page.locator('#visual-stage-container .exhibition-slab').nth(6).screenshot({ path: path.join(SHOT_DIR, `light-${style}-${appearance}-steps.png`) });
@@ -1875,7 +1875,7 @@ async function testSignalLight(browser) {
   const calm = await openStagePage(browser, { reducedMotion: 'reduce' });
   await calm.click('#btn-visual-mode');
   await setDocument(calm, showcaseMd);
-  await calm.waitForFunction(() => typeof LuxynoStage !== 'undefined');
+  await calm.waitForFunction(() => typeof LucivoStage !== 'undefined');
   await calm.waitForTimeout(400);
   const reduced = await calm.evaluate(() => {
     const steps = document.querySelector('#visual-stage-container .vs-steps');
@@ -1894,7 +1894,7 @@ function inspectShow() {
   const rect = root.getBoundingClientRect();
   const shown = Array.from(root.querySelectorAll('.exhibition-wrap > *')).filter(el => getComputedStyle(el).display !== 'none');
   return {
-    ...LuxynoStage.showState(),
+    ...LucivoStage.showState(),
     htmlClass: document.documentElement.classList.contains('is-stage-show'),
     covers: rect.left === 0 && rect.top === 0 && rect.width === innerWidth && rect.height === innerHeight,
     topElement: document.elementFromPoint(20, 20).closest('#visual-stage-container, #stage-hud') !== null,
@@ -1925,7 +1925,7 @@ async function testStageShow(browser) {
 
   // TC-SHOW-001 高速モード・Light・Split から 1 回の操作で発表を始める
   await page.click('#btn-stage-show');
-  await page.waitForFunction(() => typeof LuxynoStage !== 'undefined' && LuxynoStage.showState().active);
+  await page.waitForFunction(() => typeof LucivoStage !== 'undefined' && LucivoStage.showState().active);
   await waitRendered(page);
   await page.waitForTimeout(900);
   const entered = await page.evaluate(inspectShow);
@@ -1993,7 +1993,7 @@ async function testStageShow(browser) {
   });
   const flowHead = await page.evaluate(inspectLightHead, { flowIndex: 0, edgeIndex: 2, t: 1.0 });
   await page.screenshot({ path: path.join(SHOT_DIR, 'show-dark-split.png') });
-  await page.evaluate(() => LuxynoStage.seekLights(null));
+  await page.evaluate(() => LucivoStage.seekLights(null));
   record('TC-SHOW-005', diagram.header === 'none' && diagram.fitsHeight && diagram.width >= diagram.minWidth && flowHead > 100, JSON.stringify({ diagram, flowHead }));
 
   // TC-SHOW-004 画面に収まらない章は、次の章へ進む前に残りをスクロールする
@@ -2030,11 +2030,11 @@ async function testStageShow(browser) {
   await page.waitForTimeout(2900);
   const autoBuild = await page.evaluate(builtCount);
   await page.keyboard.press('a');
-  const autoOff = await page.evaluate(() => LuxynoStage.showState().auto);
+  const autoOff = await page.evaluate(() => LucivoStage.showState().auto);
 
   // TC-SHOW-008 終了すると元の状態に戻り、発表した章を表示する
   await pressUntil(page, () => document.querySelector('.is-scene.vs-tpl-quote'));
-  const quoteIndex = await page.evaluate(() => LuxynoStage.showState().index);
+  const quoteIndex = await page.evaluate(() => LucivoStage.showState().index);
   await page.keyboard.press('Escape');
   await waitRendered(page);
   await page.waitForTimeout(500);
@@ -2043,7 +2043,7 @@ async function testStageShow(browser) {
     const scroller = document.getElementById('preview-scroll').getBoundingClientRect();
     const rect = scenes[i].getBoundingClientRect();
     return {
-      active: LuxynoStage.showState().active,
+      active: LucivoStage.showState().active,
       htmlClass: document.documentElement.classList.contains('is-stage-show'),
       appearance: state.appearance,
       viewMode: state.viewMode,
@@ -2058,11 +2058,11 @@ async function testStageShow(browser) {
   // 短い文書で、自動進行が最後の章から先頭へ戻ること
   await setDocument(page, '# 題名\n\n## 一\n\n短い章です。\n');
   await page.click('#btn-stage-show');
-  await page.waitForFunction(() => LuxynoStage.showState().active);
+  await page.waitForFunction(() => LucivoStage.showState().active);
   await page.keyboard.press('End');
   await page.keyboard.press('a');
   await page.waitForTimeout(7400);
-  const looped = await page.evaluate(() => LuxynoStage.showState());
+  const looped = await page.evaluate(() => LucivoStage.showState());
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
   record('TC-SHOW-006', autoBuild >= 1 && !autoOff && looped.index === 0 && looped.auto, JSON.stringify({ autoBuild, autoOff, looped }));
@@ -2072,7 +2072,7 @@ async function testStageShow(browser) {
   await page.click('#btn-stage-show');
   await page.waitForTimeout(400);
   const empty = await page.evaluate(() => ({
-    active: LuxynoStage.showState().active,
+    active: LucivoStage.showState().active,
     htmlClass: document.documentElement.classList.contains('is-stage-show'),
     appearance: state.appearance,
     viewMode: state.viewMode,
@@ -2083,13 +2083,13 @@ async function testStageShow(browser) {
   // TC-SHOW-010 見た目（全シーン）
   await setDocument(page, showcaseMd);
   await page.click('#btn-stage-show');
-  await page.waitForFunction(() => LuxynoStage.showState().active);
+  await page.waitForFunction(() => LucivoStage.showState().active);
   await waitRendered(page);
   for (let i = 0; i < 15; i++) {
     await page.waitForTimeout(950);
     await page.screenshot({ path: path.join(SHOT_DIR, `show-scene-${String(i).padStart(2, '0')}.png`) });
     // 項目の送りとスクロールを含めて、次の章へ進むまで送る
-    for (let n = 0; n < 12 && await page.evaluate(() => LuxynoStage.showState().index) <= i; n++) {
+    for (let n = 0; n < 12 && await page.evaluate(() => LucivoStage.showState().index) <= i; n++) {
       await page.keyboard.press('ArrowRight');
       await page.waitForTimeout(350);
     }
@@ -2106,10 +2106,10 @@ async function testStageOverviewPointer(browser) {
   const showcaseMd = fs.readFileSync(path.join(APP_DIR, 'samples', 'visual-template.md'), 'utf8');
   await setDocument(page, showcaseMd);
   await page.click('#btn-stage-show');
-  await page.waitForFunction(() => LuxynoStage.showState().active);
+  await page.waitForFunction(() => LucivoStage.showState().active);
   await waitRendered(page);
   await page.waitForTimeout(600);
-  await pressUntil(page, () => LuxynoStage.showState().index === 4);
+  await pressUntil(page, () => LucivoStage.showState().index === 4);
 
   // TC-SHOW-011 俯瞰: 開くまでの時間、並び、光の停止、選択の移動、拡大して入る、元のシーンへ戻る
   const openMs = await page.evaluate(() => new Promise(resolve => {
@@ -2122,14 +2122,14 @@ async function testStageOverviewPointer(browser) {
     const tiles = Array.from(document.querySelectorAll('#visual-stage-container .exhibition-wrap > *'));
     const rects = tiles.map(t => t.getBoundingClientRect());
     return {
-      ...LuxynoStage.showState(),
+      ...LucivoStage.showState(),
       htmlClass: document.documentElement.classList.contains('is-stage-overview'),
       visible: tiles.filter(t => getComputedStyle(t).display !== 'none').length,
       columns: new Set(rects.map(r => Math.round(r.left))).size,
       inside: rects.every(r => r.left >= 0 && r.right <= innerWidth + 1),
       aspect: rects.every(r => Math.abs(r.width / r.height - innerWidth / innerHeight) < 0.03),
       selectedClass: tiles.findIndex(t => t.classList.contains('is-ov-selected')),
-      lightsOff: LuxynoStage.lightPlans().every(p => !p.active),
+      lightsOff: LucivoStage.lightPlans().every(p => !p.active),
       count: document.querySelector('.stage-hud-count').textContent
     };
   });
@@ -2137,7 +2137,7 @@ async function testStageOverviewPointer(browser) {
   const moves = [];
   for (const key of ['ArrowRight', 'ArrowDown', 'ArrowUp', 'End', 'Home', 'ArrowLeft']) {
     await page.keyboard.press(key);
-    moves.push(await page.evaluate(() => LuxynoStage.showState().selected));
+    moves.push(await page.evaluate(() => LucivoStage.showState().selected));
   }
   await page.keyboard.press('ArrowRight');
   await page.keyboard.press('Enter');
@@ -2149,8 +2149,8 @@ async function testStageOverviewPointer(browser) {
   await page.locator('#visual-stage-container .exhibition-wrap > *').nth(10).click();
   await page.waitForTimeout(1200);
   const clicked = await page.evaluate(() => ({
-    ...LuxynoStage.showState(),
-    lightsOn: LuxynoStage.lightPlans().some(p => p.active)
+    ...LucivoStage.showState(),
+    lightsOn: LucivoStage.lightPlans().some(p => p.active)
   }));
   // Escape で、開く前のシーンへ戻る（発表は続く）
   await page.keyboard.press('o');
@@ -2186,7 +2186,7 @@ async function testStageOverviewPointer(browser) {
     const layer = document.querySelector('.stage-pointer');
     return {
       reads: window.__layoutReads,
-      pointer: LuxynoStage.showState().pointer,
+      pointer: LucivoStage.showState().pointer,
       display: getComputedStyle(layer).display,
       px: layer.style.getPropertyValue('--px'),
       py: layer.style.getPropertyValue('--py'),
@@ -2197,13 +2197,13 @@ async function testStageOverviewPointer(browser) {
   await page.screenshot({ path: path.join(SHOT_DIR, 'show-pointer.png') });
   await page.keyboard.press('o');
   await page.waitForTimeout(500);
-  const inOverview = await page.evaluate(() => ({ pointer: LuxynoStage.showState().pointer, display: getComputedStyle(document.querySelector('.stage-pointer')).display }));
+  const inOverview = await page.evaluate(() => ({ pointer: LucivoStage.showState().pointer, display: getComputedStyle(document.querySelector('.stage-pointer')).display }));
   await page.keyboard.press('Escape');
   await page.waitForTimeout(900);
   await page.keyboard.press('l');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
-  const afterExit = await page.evaluate(() => ({ active: LuxynoStage.showState().active, pointer: LuxynoStage.showState().pointer, htmlClass: document.documentElement.className }));
+  const afterExit = await page.evaluate(() => ({ active: LucivoStage.showState().active, pointer: LucivoStage.showState().pointer, htmlClass: document.documentElement.className }));
   const pointerOk = follow.reads === 0 && follow.pointer && follow.display === 'block' && follow.px === '820px' && follow.py === '460px'
     && /translate3d\(820px, 460px/.test(follow.dot) && follow.cursor === 'none'
     && !inOverview.pointer && inOverview.display === 'none'

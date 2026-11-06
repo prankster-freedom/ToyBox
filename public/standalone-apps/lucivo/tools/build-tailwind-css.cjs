@@ -1,6 +1,6 @@
 // index.html と js/app.js で使っている Tailwind のクラスだけを集め、静的な css/tailwind.css を生成する（Issue #17）。
 // Tailwind の CDN 版はページを開くたびにブラウザ内で CSS を生成するため、起動の軽快さ（NFR-006）のために事前に生成しておく。
-// 使い方: node public/standalone-apps/luxyno/tools/build-tailwind-css.cjs（Tailwind のクラスを追加・変更したら実行する）
+// 使い方: node public/standalone-apps/lucivo/tools/build-tailwind-css.cjs（Tailwind のクラスを追加・変更したら実行する）
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
