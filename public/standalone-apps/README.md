@@ -1,7 +1,7 @@
 ---
 title: standalone-apps（スタンドアロン Web アプリケーション群）
 description: ToyBox リポジトリ内で管理・配信するスタンドアロン Web アプリケーションの一覧と構成規則。
-tags: ["standalone-apps", "Luxyno"]
+tags: ["standalone-apps", "Lucivo"]
 ---
 
 # standalone-apps
@@ -17,4 +17,4 @@ tags: ["standalone-apps", "Luxyno"]
 
 | アプリ名          | パス                | 版番号  | 概要 |
 | :---------------- | :------------------ | :------ | :--- |
-| [Luxyno](luxyno/) | `luxyno/index.html` | `0.1.0` | Markdown と Mermaid ダイアグラムのリアルタイム仕様書・インフォグラフィックビューアー |
+| [Lucivo](lucivo/) | `lucivo/index.html` | `0.1.0` | Markdown と Mermaid ダイアグラムのリアルタイム仕様書・インフォグラフィックビューアー |
