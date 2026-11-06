@@ -1,10 +1,10 @@
 ---
-title: Luxyno — Exhibition-Grade Markdown Viewer
+title: Lucivo Markdown Presenter — Exhibition-Grade Markdown Viewer —
 description: Markdown 文書と Mermaid ダイアグラムをリアルタイムに編集・プレビュー・インフォグラフィック変換できるスタンドアロン Web アプリケーション。
-tags: ["Luxyno", "Markdown", "Mermaid", "standalone-apps"]
+tags: ["Lucivo", "Markdown", "Mermaid", "standalone-apps"]
 ---
 
-# Luxyno — Exhibition-Grade Markdown Viewer
+# Lucivo Markdown Presenter — Exhibition-Grade Markdown Viewer —
 
 - **Version**: `0.1.0`（`1.0.0` に上げるまでは、互換性のない変更も MINOR で上げる。`AGENTS.repo.md` 5 章）
 
@@ -24,7 +24,7 @@ Markdown 文書と Mermaid ダイアグラムを、エンジニアリング仕�
 
 ### 最も簡単な使い方
 
-1. ブラウザで [index.html](index.html) を直接開くか、ToyBox の開発サーバー起動中に `http://localhost:3000/standalone-apps/luxyno/` へアクセスします。
+1. ブラウザで [index.html](index.html) を直接開くか、ToyBox の開発サーバー起動中に `http://localhost:3000/standalone-apps/lucivo/` へアクセスします。
 2. ヘッダーの「ファイル」メニュー →「Markdown を開く…」で Markdown ファイル（`.md` / `.markdown` / `.txt`、UTF-8）を読み込みます。起動直後のエディタは空です。
 3. 左ペイン（`SOURCE MARKDOWN`）で Markdown と ```` ```mermaid ```` コードブロックを編集すると、右ペインにリアルタイムでプレビューが表示されます。
 
@@ -50,7 +50,7 @@ Markdown と Mermaid の記法の例は、同梱の [samples/notation_sample.md]
 ## ディレクトリ構成
 
 ```text
-public/standalone-apps/luxyno/
+public/standalone-apps/lucivo/
 ├── README.md          # 本ファイル（概要・使い方・リリースノート）
 ├── index.html         # エントリーポイント HTML
 ├── assets/            # 製品同梱アセット
@@ -81,7 +81,7 @@ public/standalone-apps/luxyno/
 ToyBox のリポジトリ直下に Playwright（Chromium）を導入済みであれば、次のコマンドでテスト仕様（[doc/4.test_spec/](doc/4.test_spec/)）の自動確認を実行できます。図の画像は `work/test/` に保存されます（git 管理外）。CDN からライブラリを読み込むため、インターネット接続が必要です。
 
 ```bash
-node public/standalone-apps/luxyno/tests/e2e.cjs
+node public/standalone-apps/lucivo/tests/e2e.cjs
 ```
 
 - 所要時間は 3〜5 分です。合否は標準出力と `work/test/results.json` に出力されます。
@@ -111,7 +111,7 @@ node public/standalone-apps/luxyno/tests/e2e.cjs
 
 - **同じ id の重複**: 高速モードと Visualモードの両方に図を残すと、描画先と SVG 内の参照（矢じり・グラデーション）が非表示側に向きます。表示しない側は空にし、SVG 内の id は図ごとに一意にしています（`DD-DIAG-001`〜`003`, `DD-DIAG-010`）。
 - **Tailwind のリセット**: Tailwind CSS がブラウザ標準のスタイルを消すため、Markdown の要素の見た目はすべて `style.css` で定義しています（`DD-MD-001`〜）。
-- **Tailwind のクラスの追加**: Tailwind は使っているクラスだけを事前に生成した `css/tailwind.css` を読み込んでいます。`index.html` や `app.js` で新しい Tailwind のクラスを使ったら、`node public/standalone-apps/luxyno/tools/build-tailwind-css.cjs` で作り直してください。作り直さないと、そのクラスは効きません。
+- **Tailwind のクラスの追加**: Tailwind は使っているクラスだけを事前に生成した `css/tailwind.css` を読み込んでいます。`index.html` や `app.js` で新しい Tailwind のクラスを使ったら、`node public/standalone-apps/lucivo/tools/build-tailwind-css.cjs` で作り直してください。作り直さないと、そのクラスは効きません。
 - **遅延読み込み**: Mermaid と KaTeX は、図・数式が文書に現れるまで読み込みません。`window.mermaid` / `window.katex` がない状態でも動くように書いてください（`loadLibrary()`）。
 - **Visualモードの装飾の範囲**: 図形の装飾は、フローチャート・状態遷移図・シーケンス図だけに適用します。他の図種に適用すると崩れます（`DD-DIAG-011`）。
 - **Dark の Visualモード**: カード背景は外観に合わせて暗くなりますが、装飾したノードの塗り（色付きの図形・白いカード）は明るいままです。背景の上に直接描く線・文字は明るく、ノードの上の文字は暗く、それぞれ色を明示します（ページの文字色を継承させない。`DD-DIAG-024`, `DD-DIAG-031`）。
@@ -148,5 +148,5 @@ node public/standalone-apps/luxyno/tests/e2e.cjs
 
 ### 0.1.0（初期構成）
 
-- プロトタイプ（単一 HTML）を HTML / CSS / JS に分割し、`public/standalone-apps/luxyno/` 配下で独立した単位として管理開始
+- プロトタイプ（単一 HTML）を HTML / CSS / JS に分割し、`public/standalone-apps/lucivo/` 配下で独立した単位として管理開始
 

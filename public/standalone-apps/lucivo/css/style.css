@@ -472,7 +472,7 @@ body[data-appearance="dark"] :is(.prose-doc, .exhibition-slab) mark {
 }
 
 /* 数式（FR-010, DD-MATH-023）: 文字色は本文を継承し、横に長いブロック数式は横スクロールする */
-.luxyno-math[data-display="true"] {
+.lucivo-math[data-display="true"] {
   display: block;
   margin: 1rem 0;
   overflow-x: auto;
@@ -480,7 +480,7 @@ body[data-appearance="dark"] :is(.prose-doc, .exhibition-slab) mark {
   text-align: center;
   color: var(--text-primary);
 }
-.luxyno-math .katex-display {
+.lucivo-math .katex-display {
   margin: 0;
 }
 

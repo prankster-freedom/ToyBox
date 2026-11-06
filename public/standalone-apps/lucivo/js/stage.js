@@ -909,7 +909,7 @@
     if (show.active) refreshScenes();
   }
 
-  window.LuxynoStage = {
+  window.LucivoStage = {
     mount,
     mountLights,
     resetLights,
