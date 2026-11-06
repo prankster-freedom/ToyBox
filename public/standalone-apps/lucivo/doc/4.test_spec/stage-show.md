@@ -1,12 +1,12 @@
 ---
-title: Luxyno テスト仕様 Visualモードの舞台演出
+title: Lucivo テスト仕様 Visualモードの舞台演出
 description: FR-018（シグナル・ライト）、FR-019（ステージ発表）、FR-022（俯瞰）、FR-023（光のポインター）のテストケース。
-tags: ["Luxyno", "テスト仕様", "Visualモード", "アニメーション"]
+tags: ["Lucivo", "テスト仕様", "Visualモード", "アニメーション"]
 ---
 
 # テスト仕様: Visualモードの舞台演出（stage-show）
 
-`index.html` を `file://` で開き、`samples/visual-template.md` をエディタに入れて実施する（TC-SHOW-006, 009 は別の短い文書）。確認方法が「自動」の TC は [tests/e2e.cjs](../../tests/e2e.cjs) で確認する。画面の大きさは 1600 × 900 とする。光の確認は、`LuxynoStage.seekLights(t)` で時刻を止めて行う。
+`index.html` を `file://` で開き、`samples/visual-template.md` をエディタに入れて実施する（TC-SHOW-006, 009 は別の短い文書）。確認方法が「自動」の TC は [tests/e2e.cjs](../../tests/e2e.cjs) で確認する。画面の大きさは 1600 × 900 とする。光の確認は、`LucivoStage.seekLights(t)` で時刻を止めて行う。
 
 ## シグナル・ライト
 

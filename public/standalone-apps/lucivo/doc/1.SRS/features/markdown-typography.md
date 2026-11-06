@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - markdown-typography
-description: Luxyno におけるドキュメントシート外観および Markdown 各種記法タイポグラフィの要求仕様。
-tags: ["Luxyno", "SRS", "markdown-typography"]
+title: Lucivo Feature Requirement Specification - markdown-typography
+description: Lucivo におけるドキュメントシート外観および Markdown 各種記法タイポグラフィの要求仕様。
+tags: ["Lucivo", "SRS", "markdown-typography"]
 ---
 
 # Feature Requirement Specification: markdown-typography
 
-本ドキュメントは、Luxyno における高速モードおよび Visualモードのドキュメントシート外観と、Markdown 各種記法のタイポグラフィ・描画に関する機能要求仕様を定義する。
+本ドキュメントは、Lucivo における高速モードおよび Visualモードのドキュメントシート外観と、Markdown 各種記法のタイポグラフィ・描画に関する機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

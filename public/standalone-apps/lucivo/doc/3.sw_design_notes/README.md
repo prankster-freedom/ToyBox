@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 目次
-description: Luxyno の機能単位（Feature-based）の詳細設計書一覧。
-tags: ["Luxyno", "詳細設計"]
+title: Lucivo 詳細設計書 目次
+description: Lucivo の機能単位（Feature-based）の詳細設計書一覧。
+tags: ["Lucivo", "詳細設計"]
 ---
 
 # 詳細設計書 目次

@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 YAML フロントマター
+title: Lucivo テスト仕様 YAML フロントマター
 description: FR-011 のテストケース。
-tags: ["Luxyno", "テスト仕様", "YAML", "フロントマター"]
+tags: ["Lucivo", "テスト仕様", "YAML", "フロントマター"]
 ---
 
 # テスト仕様: YAML フロントマター（front-matter）

@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 YAML フロントマター
+title: Lucivo 詳細設計書 YAML フロントマター
 description: 文書の先頭の YAML フロントマターの切り出し・表示の切替・色分け表示（FR-011）の詳細設計。
-tags: ["Luxyno", "詳細設計", "YAML", "フロントマター"]
+tags: ["Lucivo", "詳細設計", "YAML", "フロントマター"]
 ---
 
 # YAML フロントマター（front-matter）

@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - file-loading
-description: Luxyno におけるファイル読み込み・保存・初期表示・読み取り専用機能の要求仕様。
-tags: ["Luxyno", "SRS", "file-loading"]
+title: Lucivo Feature Requirement Specification - file-loading
+description: Lucivo におけるファイル読み込み・保存・初期表示・読み取り専用機能の要求仕様。
+tags: ["Lucivo", "SRS", "file-loading"]
 ---
 
 # Feature Requirement Specification: file-loading
 
-本ドキュメントは、Luxyno におけるファイル操作およびエディタの保護・初期状態に関する機能要求仕様を定義する。
+本ドキュメントは、Lucivo におけるファイル操作およびエディタの保護・初期状態に関する機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

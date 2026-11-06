@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 Visualモードの記述パターン別の雛形
+title: Lucivo テスト仕様 Visualモードの記述パターン別の雛形
 description: FR-016, FR-017, FR-020, FR-021 のテストケース。
-tags: ["Luxyno", "テスト仕様", "Visualモード", "レイアウト"]
+tags: ["Lucivo", "テスト仕様", "Visualモード", "レイアウト"]
 ---
 
 # テスト仕様: Visualモードの記述パターン別の雛形（visual-templates）

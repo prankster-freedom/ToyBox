@@ -1,7 +1,7 @@
 ---
-title: Luxyno 実装ドキュメント index.html
+title: Lucivo 実装ドキュメント index.html
 description: index.html の依存関係と、コードからは読み取りにくい実装上の注意点。
-tags: ["Luxyno", "実装", "HTML"]
+tags: ["Lucivo", "実装", "HTML"]
 ---
 
 # index.html

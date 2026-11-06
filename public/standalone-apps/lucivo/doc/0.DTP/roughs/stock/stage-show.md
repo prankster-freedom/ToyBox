@@ -1,7 +1,7 @@
 ---
-title: Luxyno ストック・ボツのラフ Visualモードの舞台演出
+title: Lucivo ストック・ボツのラフ Visualモードの舞台演出
 description: シグナル・ライトとステージ発表の検討で採らなかったラフ。
-tags: ["Luxyno", "DTP", "ラフ"]
+tags: ["Lucivo", "DTP", "ラフ"]
 ---
 
 # ストック・ボツのラフ: Visualモードの舞台演出（stage-show）

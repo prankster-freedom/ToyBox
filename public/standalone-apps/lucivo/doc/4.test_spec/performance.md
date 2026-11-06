@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 起動と再描画の軽快さ
+title: Lucivo テスト仕様 起動と再描画の軽快さ
 description: NFR-006 に関わる起動時の読み込み（Issue #17, #18）と再描画のキャッシュ（Issue #19）のテストケース。
-tags: ["Luxyno", "テスト仕様", "性能"]
+tags: ["Lucivo", "テスト仕様", "性能"]
 ---
 
 # テスト仕様: 起動と再描画の軽快さ（performance）

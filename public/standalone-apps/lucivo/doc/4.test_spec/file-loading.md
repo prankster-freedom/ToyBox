@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 ファイルの読み込みと初期表示
+title: Lucivo テスト仕様 ファイルの読み込みと初期表示
 description: FR-006・FR-007・FR-013・FR-014 のテストケース。
-tags: ["Luxyno", "テスト仕様", "ファイル読み込み"]
+tags: ["Lucivo", "テスト仕様", "ファイル読み込み"]
 ---
 
 # テスト仕様: ファイルの読み込みと初期表示（file-loading）

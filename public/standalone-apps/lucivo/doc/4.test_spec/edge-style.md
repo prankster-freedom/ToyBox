@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 図ごとの矢印の形状
+title: Lucivo テスト仕様 図ごとの矢印の形状
 description: FR-012 のテストケース。
-tags: ["Luxyno", "テスト仕様", "Mermaid", "矢印"]
+tags: ["Lucivo", "テスト仕様", "Mermaid", "矢印"]
 ---
 
 # テスト仕様: 図ごとの矢印の形状（edge-style）
