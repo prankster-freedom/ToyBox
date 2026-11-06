@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - front-matter
-description: Luxyno における YAML フロントマターの分離・色分け・表示切替の要求仕様。
-tags: ["Luxyno", "SRS", "front-matter"]
+title: Lucivo Feature Requirement Specification - front-matter
+description: Lucivo における YAML フロントマターの分離・色分け・表示切替の要求仕様。
+tags: ["Lucivo", "SRS", "front-matter"]
 ---
 
 # Feature Requirement Specification: front-matter
 
-本ドキュメントは、Luxyno における YAML フロントマターの解釈、本文との分離、シンタックスハイライト、および表示切替（ON/OFF）に関する機能要求仕様を定義する。
+本ドキュメントは、Lucivo における YAML フロントマターの解釈、本文との分離、シンタックスハイライト、および表示切替（ON/OFF）に関する機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

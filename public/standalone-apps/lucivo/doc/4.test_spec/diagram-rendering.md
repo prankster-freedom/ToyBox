@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 図の描画と後処理
+title: Lucivo テスト仕様 図の描画と後処理
 description: FR-003・FR-008・NFR-004 と図の描画の不具合修正のテストケース。
-tags: ["Luxyno", "テスト仕様", "Mermaid"]
+tags: ["Lucivo", "テスト仕様", "Mermaid"]
 ---
 
 # テスト仕様: 図の描画と後処理（diagram-rendering）

@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 図の描画と後処理
+title: Lucivo 詳細設計書 図の描画と後処理
 description: Mermaid 図の描画先の管理、SVG 内 id の一意化、図種ごとの装飾と配色（FR-003, FR-008, NFR-004）の詳細設計。
-tags: ["Luxyno", "詳細設計", "Mermaid", "SVG"]
+tags: ["Lucivo", "詳細設計", "Mermaid", "SVG"]
 ---
 
 # 図の描画と後処理（diagram-rendering）
@@ -124,7 +124,7 @@ flowchart TD
 
 | ID          | 項目                                      | 設計                                                                                                                                                                                                                                                                                                                                       | 対応する要求        |
 | :---------- | :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------ |
-| DD-DIAG-040 | 2 段組み対象スラブの構築                  | `buildVisualStageHtml()` でスラブの要素群を調べ、`.luxyno-slot` がちょうど 1 つあり、かつ `h2`・`.front-matter`・`.luxyno-slot` 以外の要素ノード（本文要素）が 1 つ以上あり、かつ本文要素に小見出し（`h3`〜`h6`）・表（`table`）・コードブロック（`pre`）を含まない場合は、スラブに `.exhibition-slab-split` を付け、`h2`（および先頭の `.front-matter`）の下に `<div class="exhibition-slab-body"><div class="exhibition-slab-prose">…</div><div class="exhibition-slab-figure">…</div></div>` を出力する | `FR-015`, `FR-016` |
+| DD-DIAG-040 | 2 段組み対象スラブの構築                  | `buildVisualStageHtml()` でスラブの要素群を調べ、`.lucivo-slot` がちょうど 1 つあり、かつ `h2`・`.front-matter`・`.lucivo-slot` 以外の要素ノード（本文要素）が 1 つ以上あり、かつ本文要素に小見出し（`h3`〜`h6`）・表（`table`）・コードブロック（`pre`）を含まない場合は、スラブに `.exhibition-slab-split` を付け、`h2`（および先頭の `.front-matter`）の下に `<div class="exhibition-slab-body"><div class="exhibition-slab-prose">…</div><div class="exhibition-slab-figure">…</div></div>` を出力する | `FR-015`, `FR-016` |
 | DD-DIAG-041 | 2 段組みの CSS グリッド                   | `.exhibition-slab-split > .exhibition-slab-body` は CSS Grid（左 `minmax(15rem, 5fr)`、右 `minmax(0, 7fr)`、`align-items: start`）で横並びにする。`.is-stacked` が付いた場合と画面幅 `767px` 以下の場合は `grid-template-columns: minmax(0, 1fr)`（縦積み 1 段）にする                                                                    | `FR-015`, `NFR-007` |
 | DD-DIAG-042 | 幅超過時の 1 段組みへの自動フォールバック | `applyReadableFit()` の直後、図の倍率切替（`Fit` / `1:1`）時、ビューモード切替（`Split` / `Canvas`）時、およびウィンドウの `resize` 時に `updateSlabSplit()` を呼ぶ。いったん `.is-stacked` を外した状態で、`.exhibition-viewport` に `.is-actual-size`（`1:1` 表示）が付いているか、または `scrollWidth > clientWidth + 1` であれば、`.is-stacked` を付ける | `FR-015`, `NFR-005` |
 

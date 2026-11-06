@@ -1,7 +1,7 @@
 ---
-title: Luxyno テスト仕様 数式の描画
+title: Lucivo テスト仕様 数式の描画
 description: FR-010 のテストケース。
-tags: ["Luxyno", "テスト仕様", "数式"]
+tags: ["Lucivo", "テスト仕様", "数式"]
 ---
 
 # テスト仕様: 数式の描画（math-rendering）

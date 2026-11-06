@@ -1,7 +1,7 @@
 ---
-title: Luxyno 採用ラフ Visualモードの舞台演出
+title: Lucivo 採用ラフ Visualモードの舞台演出
 description: シグナル・ライトとステージ発表の採用ラフ。
-tags: ["Luxyno", "DTP", "ラフ"]
+tags: ["Lucivo", "DTP", "ラフ"]
 ---
 
 # 採用ラフ: Visualモードの舞台演出（stage-show）

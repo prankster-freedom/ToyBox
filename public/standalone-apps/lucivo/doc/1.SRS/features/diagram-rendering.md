@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - diagram-rendering
-description: Luxyno における Mermaid ダイアグラム描画・Visualモード 4 スタイル・個別操作・自動 2 段組みレイアウトの要求仕様。
-tags: ["Luxyno", "SRS", "diagram-rendering"]
+title: Lucivo Feature Requirement Specification - diagram-rendering
+description: Lucivo における Mermaid ダイアグラム描画・Visualモード 4 スタイル・個別操作・自動 2 段組みレイアウトの要求仕様。
+tags: ["Lucivo", "SRS", "diagram-rendering"]
 ---
 
 # Feature Requirement Specification: diagram-rendering
 
-本ドキュメントは、Luxyno における Mermaid ダイアグラムの描画スタイル（高速モードおよび Visualモード 4 スタイル）、ビューモード、図の個別操作・エクスポート、全図種描画、および自動 2 段組みレイアウトの機能要求仕様を定義する。
+本ドキュメントは、Lucivo における Mermaid ダイアグラムの描画スタイル（高速モードおよび Visualモード 4 スタイル）、ビューモード、図の個別操作・エクスポート、全図種描画、および自動 2 段組みレイアウトの機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

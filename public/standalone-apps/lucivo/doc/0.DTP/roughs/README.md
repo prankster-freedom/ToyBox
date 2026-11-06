@@ -1,7 +1,7 @@
 ---
-title: Luxyno ラフ案台帳
-description: Luxyno の Visualモードのラフ案（採用・ストック・ボツ）の台帳。
-tags: ["Luxyno", "DTP", "ラフ"]
+title: Lucivo ラフ案台帳
+description: Lucivo の Visualモードのラフ案（採用・ストック・ボツ）の台帳。
+tags: ["Lucivo", "DTP", "ラフ"]
 ---
 
 # ラフ案台帳
@@ -25,7 +25,7 @@ tags: ["Luxyno", "DTP", "ラフ"]
 | `RGH-013` | 表紙（アイブロウ・大きな題名・デック・目次）                         | 採用     | [adopted/visual-templates.md](adopted/visual-templates.md#rgh-013-表紙)                       | `DTP-VTPL-100`。題名 1 行だけの表紙は簡易ビューアーの印象が強い。フロントマターと章の構成から、展示パネルの扉を組む                    |
 | `RGH-014` | エディトリアル・テーブル（横の罫線と見出しのアクセントの線）         | 採用     | [adopted/visual-templates.md](adopted/visual-templates.md#rgh-014-エディトリアルテーブル)     | `DTP-VTPL-110`。`RGH-101` を、すべての表に効く規則として具体化した                                                                     |
 | `RGH-015` | 俯瞰（ライトテーブル。全シーンを実物のまま縮小して並べる）           | 採用     | [adopted/stage-show.md](adopted/stage-show.md#rgh-015-俯瞰ライトテーブル)                     | `DTP-SHOW-070`。発表中に全体の構成と現在地を示し、質疑で戻る章を一目で選べる。シーンの要素そのものを縮小するため軽い                   |
-| `RGH-016` | 光のポインター（マウスの位置へのスポットライト）                     | 採用     | [adopted/stage-show.md](adopted/stage-show.md#rgh-016-光のポインター)                         | `DTP-SHOW-080`。大画面で指し示す手段がなかった。ブランドのアクセントライトで Luxyno 自身の光として見せる                               |
+| `RGH-016` | 光のポインター（マウスの位置へのスポットライト）                     | 採用     | [adopted/stage-show.md](adopted/stage-show.md#rgh-016-光のポインター)                         | `DTP-SHOW-080`。大画面で指し示す手段がなかった。ブランドのアクセントライトで Lucivo 自身の光として見せる                               |
 | `RGH-101` | データ表型（表を全幅の主役にし、先頭列と数値列を強調）               | 採用     | [stock/visual-templates.md](stock/visual-templates.md#rgh-101-データ表型)                     | `DTP-VTPL-110`。表だけの章の専用の雛形にはせず、すべての表に効く規則（横の罫線、先頭の列、数値の列、短いラベルの列）として採用した。列の種類はセルの文字だけで判定でき、多列の表も版面に収まることを確かめた |
 | `RGH-102` | コード主役型（暗色の全幅パネル＋言語ラベル）                         | ストック | [stock/visual-templates.md](stock/visual-templates.md#rgh-102-コード主役型)                   | 発表用の表示（Issue #20）でコードを見せる場面が具体化したら再検討する                                                                  |
 | `RGH-103` | 図版主役型（図だけの章を余白の大きな額装にし、キャプションを付ける） | ストック | [stock/visual-templates.md](stock/visual-templates.md#rgh-103-図版主役型)                     | 図のカードは既に展示用の装飾を持ち、額装を重ねると装飾過多になるため保留。キャプションの記法の要望が出たら再検討する                   |
@@ -37,7 +37,7 @@ tags: ["Luxyno", "DTP", "ラフ"]
 | `RGH-907` | 表のセルを文節でだけ折り返す                                         | ボツ     | [stock/visual-templates.md](stock/visual-templates.md#rgh-907-表のセルを文節でだけ折り返す)   | 長い複合語が 1 つの文節として列の最小幅になり、7 列の表が版面からはみ出した                                                            |
 | `RGH-109` | 俯瞰の縮小図を画像（PNG）にして並べる                                | ボツ     | [stock/stage-show.md](stock/stage-show.md#rgh-109-俯瞰の縮小図を画像にして並べる)             | 図ごとの画像化で開くまでに時間がかかり、発表の表示と見た目がずれる。実物の縮小（`RGH-015`）を採った                                    |
 | `RGH-908` | ポインターの周りを強く沈める（半径 7vmin、濃さ 42〜55%）             | ボツ     | [stock/stage-show.md](stock/stage-show.md#rgh-908-ポインターの周りを強く沈める)               | 光の外の文字が読めなくなり、話の文脈が消えた                                                                                           |
-| `RGH-901` | 独自の記法で雛形を指定する（`<!-- luxyno: layout=cards -->`）        | ボツ     | [stock/visual-templates.md](stock/visual-templates.md#rgh-901-独自の記法で雛形を指定する)     | 文書が Luxyno 専用になり、Markdown の可搬性を損なう（`FR-015` と同じ方針）。自動判定で意図どおりにならない例が多く出た場合に再検討する |
+| `RGH-901` | 独自の記法で雛形を指定する（`<!-- lucivo: layout=cards -->`）        | ボツ     | [stock/visual-templates.md](stock/visual-templates.md#rgh-901-独自の記法で雛形を指定する)     | 文書が Lucivo 専用になり、Markdown の可搬性を損なう（`FR-015` と同じ方針）。自動判定で意図どおりにならない例が多く出た場合に再検討する |
 | `RGH-902` | 要点カード型を 3 列固定・最小幅の自動段数にする                      | ボツ     | [stock/visual-templates.md](stock/visual-templates.md#rgh-902-要点カード型を-3-列固定最小幅の自動段数にする) | 3 列固定は、項目が 4 個のとき最後の行に 1 枚だけ残る。項目の数で列を決める方式（`RGH-002`）を採用                       |
 | `RGH-903` | 常時ループする背景パーティクル・光彩アニメーション                   | ボツ     | [stock/visual-templates.md](stock/visual-templates.md#rgh-903-常時ループする背景パーティクル光彩アニメーション) | 何も操作していない間も背景が動き続けると、本文や図の読解を妨げ、常時 GPU 負荷が発生して軽快さ（`NFR-006` / `NFR-007`）を損なうためボツ |
 | `RGH-904` | SVG のフィルターで線をぼかして光らせる                               | ボツ     | [stock/stage-show.md](stock/stage-show.md#rgh-904-svg-のフィルターで線をぼかして光らせる)     | 再描画が重くなる見込みで、尾を細くする表現もできないため                                                                               |

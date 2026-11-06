@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - math-rendering
-description: Luxyno における TeX 数式描画（インライン・ブロック・Mermaid 図内）の要求仕様。
-tags: ["Luxyno", "SRS", "math-rendering"]
+title: Lucivo Feature Requirement Specification - math-rendering
+description: Lucivo における TeX 数式描画（インライン・ブロック・Mermaid 図内）の要求仕様。
+tags: ["Lucivo", "SRS", "math-rendering"]
 ---
 
 # Feature Requirement Specification: math-rendering
 
-本ドキュメントは、Luxyno における Markdown 本文および Mermaid 図内ラベルにおける TeX 数式描画に関する機能要求仕様を定義する。
+本ドキュメントは、Lucivo における Markdown 本文および Mermaid 図内ラベルにおける TeX 数式描画に関する機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

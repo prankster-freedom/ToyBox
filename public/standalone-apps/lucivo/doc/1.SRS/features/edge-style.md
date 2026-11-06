@@ -1,12 +1,12 @@
 ---
-title: Luxyno Feature Requirement Specification - edge-style
-description: Luxyno におけるテーマ・カラーパレット切替および図ごとの結線（矢印）形状選択の要求仕様。
-tags: ["Luxyno", "SRS", "edge-style"]
+title: Lucivo Feature Requirement Specification - edge-style
+description: Lucivo におけるテーマ・カラーパレット切替および図ごとの結線（矢印）形状選択の要求仕様。
+tags: ["Lucivo", "SRS", "edge-style"]
 ---
 
 # Feature Requirement Specification: edge-style
 
-本ドキュメントは、Luxyno におけるテーマ（Light / Dark）・アクセントカラーパレット切替、およびダイアグラムごとの結線（矢印）形状選択に関する機能要求仕様を定義する。
+本ドキュメントは、Lucivo におけるテーマ（Light / Dark）・アクセントカラーパレット切替、およびダイアグラムごとの結線（矢印）形状選択に関する機能要求仕様を定義する。
 
 対応する全体 SRS: [doc/1.SRS.md](../../1.SRS.md)
 

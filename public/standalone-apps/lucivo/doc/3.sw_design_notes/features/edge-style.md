@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 図ごとの矢印の形状
+title: Lucivo 詳細設計書 図ごとの矢印の形状
 description: 図のカードごとに矢印の形状（曲線 / 直角 / 直線）を選ぶ機能（FR-012）の詳細設計。
-tags: ["Luxyno", "詳細設計", "Mermaid", "矢印"]
+tags: ["Lucivo", "詳細設計", "Mermaid", "矢印"]
 ---
 
 # 図ごとの矢印の形状（edge-style）

@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 Visualモードの舞台演出
+title: Lucivo 詳細設計書 Visualモードの舞台演出
 description: シグナル・ライト（FR-018）とステージ発表（FR-019）の詳細設計。
-tags: ["Luxyno", "詳細設計", "Visualモード", "アニメーション"]
+tags: ["Lucivo", "詳細設計", "Visualモード", "アニメーション"]
 ---
 
 # Visualモードの舞台演出（stage-show）
@@ -13,7 +13,7 @@ tags: ["Luxyno", "詳細設計", "Visualモード", "アニメーション"]
 | ID           | 項目          | 設計                                                                                                                               | 対応する要求・デザイン |
 | :----------- | :------------ | :--------------------------------------------------------------------------------------------------------------------------------- | :--------------------- |
 | DD-LIGHT-001 | 遅延読み込み  | `js/stage.js` は `LIBRARIES.stage` として、Visualモードの描画で初めて `loadLibrary('stage')` を呼んだときに読み込む                | `FR-018`, `NFR-006`    |
-| DD-LIGHT-002 | 取り付け      | `mountStage(container)` が `LuxynoStage.mount()` を呼ぶ。`renderApp()` の最後、`processDirtyBlocks()` の図の差し替えの後、拡大モーダルを開いた後に呼ぶ。`renderApp()` は DOM を作り直す前に `LuxynoStage.resetLights()` を呼ぶ | `FR-018` |
+| DD-LIGHT-002 | 取り付け      | `mountStage(container)` が `LucivoStage.mount()` を呼ぶ。`renderApp()` の最後、`processDirtyBlocks()` の図の差し替えの後、拡大モーダルを開いた後に呼ぶ。`renderApp()` は DOM を作り直す前に `LucivoStage.resetLights()` を呼ぶ | `FR-018` |
 | DD-LIGHT-003 | 2 枚の Canvas | 図ごとに、図の親（表示枠）へ `canvas.signal-light-canvas` を 2 枚（`.is-back`, `.is-front`）足す。`z-index` で SVG を挟む          | `DTP-LIGHT-030`        |
 | DD-LIGHT-004 | 動作の範囲    | `IntersectionObserver` で表示枠が画面に入った図だけを動かす。1 本の `requestAnimationFrame` のループで、動いている図をまとめて描く | `DTP-LIGHT-060`        |
 
@@ -57,7 +57,7 @@ tags: ["Luxyno", "詳細設計", "Visualモード", "アニメーション"]
 | DD-SHOW-004 | 図の大きさ     | `fitSceneDiagrams()` が残りの幅と高さ（本文の下に図がある章は画面の高さの 60% を確保）から倍率を求め、`--scene-width` に渡す。`applyReadableFit()` の最小の幅を下回らない | `DTP-SHOW-030`, `NFR-005` |
 | DD-SHOW-010 | 送りの順序     | `next()` は、未表示の項目 → 画面に収まらない章のスクロール → 次のシーンの順に進める。`prev()` は逆順。前のシーンへ戻るときは全項目を表示した状態にする               | `DTP-SHOW-050`         |
 | DD-SHOW-011 | 自動進行       | `scheduleAuto()` が次の送りを `setTimeout` で予約する。図のあるシーンは光の一巡（`plan.cycle`）を待つ                                                                | `FR-019`               |
-| DD-SHOW-020 | 再描画の扱い   | `LuxynoStage.mount()` は発表中なら `refreshScenes()` を呼び、作り直された DOM からシーンを取り直して、番号を保つ                                                     | `FR-019`               |
+| DD-SHOW-020 | 再描画の扱い   | `LucivoStage.mount()` は発表中なら `refreshScenes()` を呼び、作り直された DOM からシーンを取り直して、番号を保つ                                                     | `FR-019`               |
 | DD-SHOW-021 | 終了           | `exitShow()` はクラスと `--scene-width` を消し、開始時の外観・ビューモードへ戻して、最後の章を `scrollIntoView` する。`Esc` で全画面が先に解除された場合は `fullscreenchange` から呼ぶ | `FR-019` |
 | DD-SHOW-030 | 操作の受け取り | 発表中はキー操作を捕捉フェーズで受け、クリックは捕捉フェーズで次へ送る。リンクとボタンのクリックは除く                                                               | `FR-019`               |
 

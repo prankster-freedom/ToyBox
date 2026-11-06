@@ -1,7 +1,7 @@
 ---
-title: Luxyno 実装ドキュメント 目次
-description: Luxyno のソースと 1:1 の実装ドキュメントの一覧。
-tags: ["Luxyno", "実装"]
+title: Lucivo 実装ドキュメント 目次
+description: Lucivo のソースと 1:1 の実装ドキュメントの一覧。
+tags: ["Lucivo", "実装"]
 ---
 
 # 実装ドキュメント 目次

@@ -1,7 +1,7 @@
 ---
-title: Luxyno 実装ドキュメント js/app.js
+title: Lucivo 実装ドキュメント js/app.js
 description: js/app.js の依存関係と、コードからは読み取りにくい実装上の注意点。
-tags: ["Luxyno", "実装", "JavaScript"]
+tags: ["Lucivo", "実装", "JavaScript"]
 ---
 
 # js/app.js
@@ -40,7 +40,7 @@ flowchart TD
 ## 変更するときの注意
 
 - **テストからの間接的な依存**: `tests/e2e.cjs` は、ページ内のグローバルな `state`・`renderApp`・`lastLoadedMarkdown` と、`#telemetry-status` の文言（`Rendering` を含むかどうかで描画の完了を判定）を直接参照する。名前や文言を変えるときはテストも直す。
-- **CSS との間接的な依存**: 生成する HTML のクラス名（`luxyno-math`、`front-matter`、`fm-*`、`edge-curve-btn`、`exhibition-*`、`vs-*` など）と、雛形の組み替えで付ける CSS 変数（`--vs-n`、`--vs-cols`、`--vs-cols-wide`）は `style.css` が前提にしている。`--accent` などの CSS 変数は `syncCssTokens()` がパレットに合わせて上書きする。
+- **CSS との間接的な依存**: 生成する HTML のクラス名（`lucivo-math`、`front-matter`、`fm-*`、`edge-curve-btn`、`exhibition-*`、`vs-*` など）と、雛形の組み替えで付ける CSS 変数（`--vs-n`、`--vs-cols`、`--vs-cols-wide`）は `style.css` が前提にしている。`--accent` などの CSS 変数は `syncCssTokens()` がパレットに合わせて上書きする。
 - **描画結果のキャッシュのキー**: 図の SVG は、Mermaid のコードと見た目に関わる設定（外観、パレット、矢印の形状、スタイル、モード）のハッシュをキーにキャッシュする。図の見た目に影響する設定を追加したら、キーにも含める。含めないと、設定を変えても古い図が表示される。
 - **要素の探索範囲**: 図のカードの要素は、表示中のコンテナの中だけから探す。`document` 全体から探すと、別のモードの同じ番号のカードを拾う（`DD-DIAG-003`）。
 - **DOM に入れる前と後**: `postProcessSvg()` は文書に入れていない要素を処理するため、計算後のスタイルや大きさは取れない。それらが必要な処理は `applyReadableFit()`（およびその中の `updateSlabSplit()`）のように DOM に入れた後に行う。キャッシュから表示するたびにも呼ぶ。
@@ -49,7 +49,7 @@ flowchart TD
 - **表紙の値と表の列の判定**: 表紙は `readCoverMeta()` がフロントマターの原文から読んだ値で組むため、`renderApp()` は `buildVisualStageHtml()` に YAML の原文を渡す。表紙の上限（`COVER_LIMITS`）と表の列の判定（`NUMERIC_CELL`・`EMPTY_CELL`・`TABLE_LABEL_CHARS`）の値は、デザイン仕様 `DTP-VTPL-100`・`110` と同じにする。目次の項目は `button` のため、クリックの委譲で `a, button` を除外する前に処理する（`DD-VTPL-040`〜`042`）。
 - **図の SVG に光を足さない**: 光は `js/stage.js` が SVG の外の Canvas に描く。`postProcessSvg()` の結果はキャッシュされ、PNG / SVG の書き出しにそのまま使うため、見た目の演出の要素を SVG に足すと書き出しに混ざる（`DD-LIGHT-003`）。
 - **サニタイズの順序**: 本文とフロントマターの HTML は DOMPurify を通してから DOM に入れる。KaTeX の数式だけは、サニタイズ後に置き場所へ描画する（KaTeX の出力はサニタイズで崩れるため、`DD-MATH-020`）。
-- **遅延読み込み**: `window.mermaid` / `window.katex` は、図・数式が現れるまで存在しない。`window.LuxynoStage` は Visualモードの描画で読み込むまで存在しない。`setupMermaid()` は Mermaid がなければ何もしないため、描画の直前（`processDirtyBlocks()` で `loadLibrary('mermaid')` を待った後）に呼ぶ。
+- **遅延読み込み**: `window.mermaid` / `window.katex` は、図・数式が現れるまで存在しない。`window.LucivoStage` は Visualモードの描画で読み込むまで存在しない。`setupMermaid()` は Mermaid がなければ何もしないため、描画の直前（`processDirtyBlocks()` で `loadLibrary('mermaid')` を待った後）に呼ぶ。
 - **Mermaid の `securityLevel`**: `strict` にしている（Issue #23）。`loose` に戻すと、開いた Markdown の図の中の HTML とクリック時のスクリプト呼び出しが有効になる。
 - **Tailwind のクラス**: 生成する HTML で新しい Tailwind のクラスを使ったら、`tools/build-tailwind-css.cjs` で `css/tailwind.css` を作り直す。
 - **Mermaid の設定は描画ごと**: `mermaid.initialize()` はグローバルな設定のため、図ごとに異なる設定（モード、矢印の形状）は、各図の `mermaid.render()` の直前に `setupMermaid()` で設定し直している。

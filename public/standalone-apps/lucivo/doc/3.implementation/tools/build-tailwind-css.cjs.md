@@ -1,7 +1,7 @@
 ---
-title: Luxyno 実装ドキュメント tools/build-tailwind-css.cjs
+title: Lucivo 実装ドキュメント tools/build-tailwind-css.cjs
 description: Tailwind の CSS を事前に生成するスクリプトの依存関係と注意点。
-tags: ["Luxyno", "実装", "Tailwind"]
+tags: ["Lucivo", "実装", "Tailwind"]
 ---
 
 # tools/build-tailwind-css.cjs

@@ -1,7 +1,7 @@
 ---
-title: Luxyno 詳細設計書 Markdown 要素の表示
+title: Lucivo 詳細設計書 Markdown 要素の表示
 description: Markdown から生成した要素（見出し、リスト、リンク、コード、引用、表、水平線、標準の HTML 要素）の表示（FR-009）の詳細設計。
-tags: ["Luxyno", "詳細設計", "Markdown", "CSS"]
+tags: ["Lucivo", "詳細設計", "Markdown", "CSS"]
 ---
 
 # Markdown 要素の表示（markdown-typography）
