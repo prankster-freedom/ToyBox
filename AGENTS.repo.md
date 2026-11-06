@@ -15,9 +15,9 @@
 ## 3. ドキュメントの格納先（doc スキルの例外）
 
 本リポジトリは doc スキルの格納先より前から運用しているため、次の構成を正とする。プロジェクトのルートはリポジトリ直下（`<プロジェクト>/` = `./`）。
-ただし、`public/standalone-apps/luxyno/` は独立した `<プロジェクト>` ルートとし、作業の流れに沿った番号付きの構成（下表「Luxyno」）で格納する。
+ただし、`public/standalone-apps/lucivo/` は独立した `<プロジェクト>` ルートとし、作業の流れに沿った番号付きの構成（下表「Lucivo」）で格納する。
 
-| 種類             | doc スキルの既定                    | 本リポジトリ（直下）    | Luxyno（`public/standalone-apps/luxyno/`） |
+| 種類             | doc スキルの既定                    | 本リポジトリ（直下）    | Lucivo（`public/standalone-apps/lucivo/`） |
 | :--------------- | :---------------------------------- | :---------------------- | :----------------------------------------- |
 | DTP デザイン仕様 | `doc/DTP/`                          | —                       | `doc/0.DTP/`（本番素材は `assets/`）       |
 | 要求仕様書       | `doc/SRS.md`, `doc/SRS/features/<feature名>.md` | `doc/1.SPEC.md` | `doc/1.SRS.md`, `doc/1.SRS/features/<feature名>.md` |
@@ -42,18 +42,18 @@
 - 開発 PC は Windows。シェルは Git Bash と PowerShell を使える
 - Python は uv で管理する（`uv python install --default` で、`python` / `python3` が uv の Python を指す）。`python` が Microsoft Store を開くだけの場合は、WindowsApps の仮のファイルが先に見つかっているため、`uv python list --only-installed` で確認する。パッケージが必要なときは `uv run --with <パッケージ>` を使う
 - バックスラッシュ・バッククォート・`$` を含む内容（正規表現、TeX、テンプレートリテラルなど）は、シェルのヒアドキュメントや `node -e` の引数で書かない。ファイルの作成・編集は、エディタ系のツール（AI エージェントのファイル編集機能など）で行う。ヒアドキュメント経由で `\\` が `\` に変わり、スクリプトや数式が壊れたことがある
-- ブラウザでの動作確認には、リポジトリ直下の Playwright（Chromium）を使う。スタンドアロンアプリの確認スクリプトは `<アプリ>/tests/` に置く（例: `node public/standalone-apps/luxyno/tests/e2e.cjs`）
+- ブラウザでの動作確認には、リポジトリ直下の Playwright（Chromium）を使う。スタンドアロンアプリの確認スクリプトは `<アプリ>/tests/` に置く（例: `node public/standalone-apps/lucivo/tests/e2e.cjs`）
 - Markdown ファイル内の表整形には、本リポジトリ付属のスクリプト `node agents-support-tools/md-table-align/align-tables.cjs <Markdown ファイル>` を使用する（`AGENTS.md` 4 章の共有ファイルではないため、リポジトリ固有のコマンドとして実行する）
 
 ## 5. 版番号（`AGENTS.md` 1.9・release スキルの例外）
 
-- Luxyno（`public/standalone-apps/luxyno/`）は、ユーザーから `1.0.0` に上げる指示があるまで、版を `0.y.z` に保つ。この間は、MAJOR に当たる変更（`!` または `BREAKING CHANGE:` を含むコミット）があっても MINOR を上げ、PATCH を 0 に戻す。`feat` は MINOR、`fix` は PATCH を上げる（通常どおり）
+- Lucivo（`public/standalone-apps/lucivo/`）は、ユーザーから `1.0.0` に上げる指示があるまで、版を `0.y.z` に保つ。この間は、MAJOR に当たる変更（`!` または `BREAKING CHANGE:` を含むコミット）があっても MINOR を上げ、PATCH を 0 に戻す。`feat` は MINOR、`fix` は PATCH を上げる（通常どおり）
 - 背景: `1.0.0` は、ユーザーが製品の仕様がある程度固まったと判断した時点で上げる。それまでは仕様の変更が多く、互換性のない変更のたびに MAJOR を上げると版の意味が薄れるため（Semantic Versioning 2.0.0 の `0.y.z` は初期開発の段階を表す）
 - コミットの型（`feat!` など）と `BREAKING CHANGE:` は、通常どおり変更の内容に合わせて付ける。リリースノートでは、互換性のない変更であることを明記する
 
-## 6. Luxyno「Visualモードの追加訴求ポイントの提案依頼」の定型ワークフロー
+## 6. Lucivo「Visualモードの追加訴求ポイントの提案依頼」の定型ワークフロー
 
-Luxyno（`public/standalone-apps/luxyno/`）の開発で、ユーザーから「Visualモードの追加訴求ポイントの提案」を依頼されたときは、次の定型仕様に従って進める。
+Lucivo（`public/standalone-apps/lucivo/`）の開発で、ユーザーから「Visualモードの追加訴求ポイントの提案」を依頼されたときは、次の定型仕様に従って進める。
 
 ### 6.1 定型依頼事項と特記事項の扱い
 
